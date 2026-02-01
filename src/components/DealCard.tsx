@@ -1,7 +1,9 @@
 import { ArrowUpRight, Crown, Sparkles, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 interface DealCardProps {
+  id?: string;
   name: string;
   logo: string;
   description: string;
@@ -14,6 +16,7 @@ interface DealCardProps {
 }
 
 const DealCard = ({
+  id,
   name,
   logo,
   description,
@@ -24,6 +27,13 @@ const DealCard = ({
   isFree = true,
   isPick = false,
 }: DealCardProps) => {
+  const dealId = id || name.toLowerCase().replace(/\s+/g, '-');
+
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
     <div className="deal-card group relative">
       {/* Badges */}
@@ -73,14 +83,16 @@ const DealCard = ({
           <Users className="h-4 w-4" />
           <span>{memberCount.toLocaleString()} members</span>
         </div>
-        <Button 
-          variant={isFree ? "default" : "outline"}
-          size="sm"
-          className={`gap-1.5 group-hover:gap-2 transition-all ${!isFree ? 'border-primary text-primary hover:bg-primary hover:text-primary-foreground' : ''}`}
-        >
-          {isFree ? "Get free deal" : "Get deal"}
-          <ArrowUpRight className="h-4 w-4" />
-        </Button>
+        <Link to={`/deals/${dealId}/redeem`} onClick={handleButtonClick}>
+          <Button 
+            variant={isFree ? "default" : "outline"}
+            size="sm"
+            className={`gap-1.5 group-hover:gap-2 transition-all ${!isFree ? 'border-primary text-primary hover:bg-primary hover:text-primary-foreground' : ''}`}
+          >
+            {isFree ? "Get free deal" : "Get deal"}
+            <ArrowUpRight className="h-4 w-4" />
+          </Button>
+        </Link>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const deals = [
   {
+    id: "notion",
     name: "Notion",
     logo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png",
     description: "Organize teamwork and increase productivity",
@@ -15,6 +16,7 @@ const deals = [
     isPick: false,
   },
   {
+    id: "stripe",
     name: "Stripe",
     logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg",
     description: "Manage your online payments",
@@ -26,6 +28,7 @@ const deals = [
     isPick: true,
   },
   {
+    id: "google-cloud",
     name: "Google Cloud",
     logo: "https://www.gstatic.com/devrel-devsite/prod/v0e0f589edd85502a40d78d7d0825db8ea5ef3b99ab4070381ee86977c9168730/cloud/images/favicons/onecloud/super_cloud.png",
     description: "Cloud services by Google",
@@ -35,6 +38,7 @@ const deals = [
     isFree: true,
   },
   {
+    id: "make",
     name: "Make",
     logo: "https://images.ctfassets.net/qqlj6g4ee76j/2qBkARKOnfQ4CDnntDdkKM/3c2d0d45ec67ce4ab0e2f77eabb13ec8/make-logo-square-small.png",
     description: "A no-code AI platform for limitless automation",
@@ -44,6 +48,7 @@ const deals = [
     isFree: true,
   },
   {
+    id: "brevo",
     name: "Brevo",
     logo: "https://asset.brandfetch.io/idHYpS17EC/idlM3u45p2.jpeg",
     description: "Centralize marketing and sales tools to increase your growth",
@@ -54,6 +59,7 @@ const deals = [
     isPick: true,
   },
   {
+    id: "hubspot",
     name: "HubSpot",
     logo: "https://www.hubspot.com/hubfs/assets/hubspot.com/style-guide/brand-guidelines/guidelines_the-logo.svg",
     description: "CRM, marketing, sales and service platform",
@@ -64,6 +70,7 @@ const deals = [
     isFree: false,
   },
   {
+    id: "slack",
     name: "Slack",
     logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg",
     description: "Team communication and collaboration",
@@ -73,6 +80,7 @@ const deals = [
     isFree: true,
   },
   {
+    id: "figma",
     name: "Figma",
     logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg",
     description: "Collaborative interface design tool",
@@ -82,6 +90,7 @@ const deals = [
     isFree: true,
   },
   {
+    id: "airtable",
     name: "Airtable",
     logo: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Airtable_Logo.svg",
     description: "Low-code platform for building apps",
