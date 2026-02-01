@@ -5,21 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SafeImage from "@/components/SafeImage";
 
-// Featured deal cards for the hero section with stagger positions
+// Featured deal cards - reduced to 8 cards
 const featuredDeals = [
   { name: "MongoDB", logo: "https://upload.wikimedia.org/wikipedia/commons/9/93/MongoDB_Logo.svg", deal: "$500 Free Cloud Credits", subtitle: "The developer data platform", isNew: false, hasTrend: true, offsetY: "mt-0" },
-  { name: "Cookiebot", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Cookiebot_logo.svg/512px-Cookiebot_logo.svg.png", deal: "10% off for 6 months", subtitle: "Solutions for cookie consent for websites and apps", isNew: false, hasFlame: true, offsetY: "mt-8" },
-  { name: "Google Workspace", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Workspace_icon.svg/512px-Google_Workspace_icon.svg.png", deal: "20% off for 12 months", subtitle: "Everything you need to get anything done", isNew: false, hasFlame: true, offsetY: "mt-4" },
-  { name: "TikTok for Business", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/512px-TikTok_logo.svg.png", deal: "Up to $6,000 Free", subtitle: "Engage with your audience on TikTok with Ads", isNew: true, hasFlame: false, offsetY: "mt-12" },
-  { name: "HubSpot", logo: "https://www.hubspot.com/hubfs/HubSpot_Logos/HubSpot-Inversed-Favicon.png", deal: "90% off your first year", subtitle: "Leading CRM & Customer Platform", isNew: false, hasFlame: true, offsetY: "mt-2", highlight: true },
-  { name: "Make", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Make_%28formerly_Integromat%29_Logo.png", deal: "12 Months Free", subtitle: "No-code workflow automation", isNew: false, hasFlame: true, offsetY: "mt-6" },
-];
-
-const secondRowDeals = [
-  { name: "GitHub", logo: "https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg", deal: "12 Months Free", subtitle: "The developer platform to build and deliver software", isNew: false, hasFlame: true, offsetY: "mt-4" },
-  { name: "Dell", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dell_logo_2016.svg/512px-Dell_logo_2016.svg.png", deal: "Up to 20% off", subtitle: "Computers, Monitors & Technology Solutions", isNew: false, hasFlame: true, offsetY: "mt-0" },
-  { name: "Intercom", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Intercom_logo.svg/512px-Intercom_logo.svg.png", deal: "100% off 1st Year", subtitle: "Customer Support and Satisfaction Platform", isNew: false, hasFlame: true, offsetY: "mt-8" },
-  { name: "Asana", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Asana_logo.svg/512px-Asana_logo.svg.png", deal: "80% off", subtitle: "Manage your team's work, projects & tasks online", isNew: true, hasFlame: false, offsetY: "mt-2" },
+  { name: "HubSpot", logo: "https://www.hubspot.com/hubfs/HubSpot_Logos/HubSpot-Inversed-Favicon.png", deal: "90% off your first year", subtitle: "Leading CRM & Customer Platform", isNew: false, hasFlame: true, offsetY: "mt-12", highlight: true },
+  { name: "TikTok for Business", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/512px-TikTok_logo.svg.png", deal: "Up to $6,000 Free", subtitle: "Engage with your audience on TikTok with Ads", isNew: true, hasFlame: false, offsetY: "mt-6" },
+  { name: "Make", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Make_%28formerly_Integromat%29_Logo.png", deal: "12 Months Free", subtitle: "No-code workflow automation", isNew: false, hasFlame: true, offsetY: "mt-16" },
+  { name: "GitHub", logo: "https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg", deal: "12 Months Free", subtitle: "The developer platform to build and deliver software", isNew: false, hasFlame: true, offsetY: "mt-8" },
+  { name: "Asana", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Asana_logo.svg/512px-Asana_logo.svg.png", deal: "80% off", subtitle: "Manage your team's work, projects & tasks online", isNew: true, hasFlame: false, offsetY: "mt-0" },
   { name: "Webflow", logo: "https://upload.wikimedia.org/wikipedia/commons/9/92/Webflow_logo.svg", deal: "100% Off For One Year", subtitle: "A visual way to build the web", isNew: false, hasFlame: true, offsetY: "mt-10" },
   { name: "Pipedrive", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Pipedrive_Logo.svg/512px-Pipedrive_Logo.svg.png", deal: "20% off for 12 months", subtitle: "Leading sales CRM & pipeline management", isNew: false, hasFlame: true, offsetY: "mt-4" },
 ];
@@ -27,42 +20,44 @@ const secondRowDeals = [
 const DealCard = ({ deal, className = "" }: { deal: typeof featuredDeals[0], className?: string }) => (
   <Link
     to="/deals"
-    className={`group bg-card rounded-xl border border-border p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col ${deal.highlight ? 'ring-2 ring-primary' : ''} ${className}`}
+    className={`group bg-card rounded-2xl border border-border p-6 transition-all duration-300 
+      hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:scale-[1.02]
+      ${deal.highlight ? 'ring-2 ring-primary shadow-lg' : 'shadow-md'} ${className}`}
   >
     {/* Icon badges */}
-    <div className="flex justify-between items-start mb-3">
-      <div className="w-12 h-12 flex items-center justify-center">
+    <div className="flex justify-between items-start mb-4">
+      <div className="w-16 h-16 flex items-center justify-center bg-secondary/50 rounded-xl p-2 group-hover:bg-primary/10 transition-colors">
         <SafeImage
           src={deal.logo}
           alt={deal.name}
           className="w-full h-full object-contain"
         />
       </div>
-      <div className="flex gap-1">
+      <div className="flex gap-1.5">
         {deal.isNew && (
-          <span className="bg-primary text-primary-foreground text-[10px] font-semibold px-1.5 py-0.5 rounded">
+          <span className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-md">
             NEW
           </span>
         )}
         {deal.hasTrend && (
-          <TrendingUp className="h-4 w-4 text-primary" />
+          <TrendingUp className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
         )}
         {deal.hasFlame && (
-          <Flame className="h-4 w-4 text-primary" />
+          <Flame className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
         )}
       </div>
     </div>
     
-    <h3 className="font-semibold text-sm text-foreground mb-1 line-clamp-1">
+    <h3 className="font-bold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
       {deal.deal}
     </h3>
-    <p className="text-xs text-muted-foreground line-clamp-2 flex-1">
+    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
       {deal.subtitle}
     </p>
     
     <Button 
-      size="sm" 
-      className="w-full mt-3 bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
+      size="default" 
+      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold group-hover:shadow-md transition-all"
     >
       Get this deal
     </Button>
@@ -99,7 +94,7 @@ const HeroBanner = () => {
               The #1 Perks Platform for Founders
             </h1>
 
-            {/* Savings highlight - using primary/aubergine color */}
+            {/* Savings highlight */}
             <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Unlock{" "}
               <span className="bg-primary text-primary-foreground px-3 py-1 rounded-md">
@@ -223,8 +218,8 @@ const HeroBanner = () => {
         />
       </div>
 
-      {/* Floating Deal Cards Section - Haphazard Layout */}
-      <div className="bg-gradient-to-b from-primary/5 to-background pb-20 relative">
+      {/* Floating Deal Cards Section - Larger cards, fewer items */}
+      <div className="bg-gradient-to-b from-primary/5 to-background pb-24 relative">
         {/* Decorative diagonal on right */}
         <div 
           className="absolute right-0 top-20 w-[40%] h-20 bg-primary/10"
@@ -232,18 +227,9 @@ const HeroBanner = () => {
         />
         
         <div className="container-wide relative z-10">
-          {/* First Row - Scattered */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+          {/* Scattered Grid - 4 columns on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredDeals.map((deal) => (
-              <div key={deal.name} className={deal.offsetY}>
-                <DealCard deal={deal} />
-              </div>
-            ))}
-          </div>
-
-          {/* Second Row - Scattered */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {secondRowDeals.map((deal) => (
               <div key={deal.name} className={deal.offsetY}>
                 <DealCard deal={deal} />
               </div>
