@@ -1,8 +1,5 @@
 import analyticsIllustration from "@/assets/illustrations/analytics-illustration.png";
-import productivityIllustration from "@/assets/illustrations/productivity-illustration.png";
-import collaborationIllustration from "@/assets/illustrations/collaboration-illustration.png";
 import marketingIllustration from "@/assets/illustrations/marketing-illustration.png";
-import securityIllustration from "@/assets/illustrations/security-illustration.png";
 
 interface FeatureSection {
   title: string;
@@ -14,11 +11,12 @@ interface FeatureSection {
 
 const features: FeatureSection[] = [
   {
-    title: "Computation and analytics",
+    title: "Discover deals tailored for you",
     description: (
       <>
-        Deploy your applications on <strong>AWS, Digital Ocean,</strong> use{" "}
-        <strong>Zoho Flow,</strong> amongst several other automators.
+        Browse <strong>350+ exclusive perks</strong> across categories like cloud hosting, 
+        marketing tools, and productivity apps. Every deal is <strong>directly negotiated</strong> to 
+        give founders the best possible savings.
       </>
     ),
     illustration: analyticsIllustration,
@@ -26,52 +24,16 @@ const features: FeatureSection[] = [
     reverse: false,
   },
   {
-    title: "Productivity Tools",
+    title: "Scale faster, spend smarter",
     description: (
       <>
-        Keep yourself and your team organized with tools like{" "}
-        <strong>Notion, Clickup, Miro, Typeform</strong> so you build even better!
-      </>
-    ),
-    illustration: productivityIllustration,
-    bgColor: "bg-background",
-    reverse: true,
-  },
-  {
-    title: "Team Collaboration",
-    description: (
-      <>
-        Connect your team with <strong>Slack, Zoom, Microsoft Teams,</strong> and{" "}
-        <strong>Loom</strong> to communicate seamlessly across the globe.
-      </>
-    ),
-    illustration: collaborationIllustration,
-    bgColor: "bg-primary/5",
-    reverse: false,
-  },
-  {
-    title: "Marketing & Growth",
-    description: (
-      <>
-        Supercharge your marketing with <strong>HubSpot, Mailchimp, Semrush,</strong> and{" "}
-        <strong>Brevo</strong> to reach more customers effectively.
+        Stop overpaying for essential tools. Access <strong>$250,000+ in credits</strong> from 
+        top SaaS providers and reinvest your savings back into <strong>growing your startup</strong>.
       </>
     ),
     illustration: marketingIllustration,
     bgColor: "bg-background",
     reverse: true,
-  },
-  {
-    title: "Security & Compliance",
-    description: (
-      <>
-        Keep your data safe with <strong>1Password, Okta,</strong> and{" "}
-        <strong>Auth0</strong> for enterprise-grade security solutions.
-      </>
-    ),
-    illustration: securityIllustration,
-    bgColor: "bg-primary/5",
-    reverse: false,
   },
 ];
 
