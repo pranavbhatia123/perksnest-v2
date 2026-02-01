@@ -1,26 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { ArrowRight, Check, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import SafeImage from "@/components/SafeImage";
-
-// Floating brand logos - randomly positioned with consistent sizing
-const floatingLogos = [
-  // Left side logos
-  { name: "Figma", logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg", size: "w-16 h-16", position: "left-[5%] top-[15%]", animation: "animate-float", delay: "0s" },
-  { name: "AWS", logo: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg", size: "w-16 h-16", position: "left-[8%] top-[40%]", animation: "animate-float-reverse", delay: "1.2s" },
-  { name: "Zendesk", logo: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Zendesk_logo.svg", size: "w-16 h-16", position: "left-[3%] top-[65%]", animation: "animate-float-diagonal", delay: "0.8s" },
-  { name: "Notion", logo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png", size: "w-16 h-16", position: "left-[12%] top-[85%]", animation: "animate-float-gentle", delay: "2s" },
-  { name: "Airtable", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Airtable_Logo.svg", size: "w-20 h-20", position: "left-[15%] top-[25%]", animation: "animate-float", delay: "1.5s" },
-  
-  // Right side logos
-  { name: "Twilio", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Twilio-logo-red.svg", size: "w-20 h-20", position: "right-[10%] top-[35%]", animation: "animate-float-diagonal", delay: "1.8s" },
-  { name: "Slack", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg", size: "w-16 h-16", position: "right-[4%] top-[55%]", animation: "animate-float-gentle", delay: "0.3s" },
-  { name: "Stripe", logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg", size: "w-16 h-16", position: "right-[12%] top-[75%]", animation: "animate-float", delay: "2.2s" },
-  { name: "HubSpot", logo: "https://www.hubspot.com/hubfs/HubSpot_Logos/HubSpot-Inversed-Favicon.png", size: "w-16 h-16", position: "right-[8%] top-[90%]", animation: "animate-float-reverse", delay: "1s" },
-  { name: "Zoom", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Zoom_Communications_Logo.svg", size: "w-20 h-20", position: "right-[18%] top-[20%]", animation: "animate-float-diagonal", delay: "1.4s" },
-];
 
 const HeroBanner = () => {
   const [email, setEmail] = useState("");
@@ -31,53 +12,38 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-background via-background to-primary/5 py-16 lg:py-24 min-h-[700px]">
-      {/* Decorative Purple Diagonal Shapes */}
-      <div className="absolute bottom-0 right-0 w-full h-[300px] pointer-events-none overflow-hidden">
-        <div 
-          className="absolute bottom-0 right-0 w-[700px] h-[200px] bg-primary/10 origin-bottom-right"
-          style={{ transform: 'skewY(-6deg) translateY(50px)' }}
-        />
-        <div 
-          className="absolute bottom-0 right-0 w-[600px] h-[180px] bg-primary/15 origin-bottom-right"
-          style={{ transform: 'skewY(-6deg) translateY(80px)' }}
-        />
-      </div>
-
-      {/* Floating Logos - Randomly Scattered */}
-      {floatingLogos.map((logo) => (
-        <div
-          key={logo.name}
-          className={`absolute ${logo.position} ${logo.size} ${logo.animation} hidden lg:block z-10`}
-          style={{ animationDelay: logo.delay }}
-        >
-          <SafeImage
-            src={logo.logo}
-            alt={logo.name}
-            className="w-full h-full object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-      ))}
-
+    <section className="relative overflow-hidden bg-background py-16 lg:py-20">
       {/* Center Content */}
       <div className="container-wide relative z-20">
-        <div className="max-w-2xl mx-auto text-center">
-          {/* Main headline with mixed weight */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl text-foreground mb-6 leading-tight">
-            <span className="font-bold">Top deals</span>{" "}
-            <span className="font-normal">for</span>{" "}
-            <span className="font-bold">founders</span>
+        <div className="max-w-3xl mx-auto text-center">
+          {/* New badge */}
+          <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-8">
+            <span className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded-full">
+              New
+            </span>
+            <span className="text-sm text-foreground">
+              11 new perks added this month
+            </span>
+            <ArrowRight className="h-4 w-4 text-foreground" />
+          </div>
+
+          {/* Main headline */}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
+            The #1 Perks Platform for Founders
           </h1>
 
-          {/* Highlighted amount */}
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-6">
-            Get USD 250,000<br />
-            in Credits & Perks
+          {/* Savings highlight */}
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
+            Unlock{" "}
+            <span className="bg-[hsl(145,63%,42%)] text-white px-3 py-1 rounded-md">
+              $3,000,000+
+            </span>{" "}
+            in exclusive savings from 350+ partners.
           </p>
 
           {/* Description */}
-          <p className="text-muted-foreground text-lg mb-8 max-w-lg mx-auto">
-            Affording SaaS resources and tools is tough for startups early on. This fixes it.
+          <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
+            Discover the ultimate membership tailored for entrepreneurs, businesses, startups, and founders
           </p>
 
           {/* Trust badges */}
@@ -174,21 +140,6 @@ const HeroBanner = () => {
               ))}
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Mobile Logos Row */}
-      <div className="lg:hidden mt-12 overflow-x-auto">
-        <div className="flex items-center justify-center gap-6 px-4">
-          {floatingLogos.slice(0, 6).map((logo) => (
-            <div key={logo.name} className={`w-10 h-10 shrink-0 ${logo.animation}`} style={{ animationDelay: logo.delay }}>
-              <SafeImage
-                src={logo.logo}
-                alt={logo.name}
-                className="w-full h-full object-contain"
-              />
-            </div>
-          ))}
         </div>
       </div>
     </section>
