@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import PromoBanner from "@/components/PromoBanner";
 import HeroBanner from "@/components/HeroBanner";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import TestimonialCards from "@/components/TestimonialCards";
 import DealCarousel from "@/components/DealCarousel";
 import PopularCategoriesSection from "@/components/PopularCategoriesSection";
 import CompareToolsSection from "@/components/CompareToolsSection";
@@ -65,6 +66,9 @@ const Index = () => {
 
         {/* Compare Tools */}
         <CompareToolsSection />
+
+        {/* Testimonial Cards */}
+        <TestimonialCards />
 
         {/* Pricing */}
         <PricingSection />
