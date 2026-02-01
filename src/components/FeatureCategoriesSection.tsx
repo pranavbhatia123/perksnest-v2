@@ -5,8 +5,6 @@ interface FeatureSection {
   title: string;
   description: React.ReactNode;
   illustration: string;
-  bgColor: string;
-  reverse?: boolean;
 }
 
 const features: FeatureSection[] = [
@@ -20,8 +18,6 @@ const features: FeatureSection[] = [
       </>
     ),
     illustration: analyticsIllustration,
-    bgColor: "bg-primary/5",
-    reverse: false,
   },
   {
     title: "Scale faster, spend smarter",
@@ -32,36 +28,39 @@ const features: FeatureSection[] = [
       </>
     ),
     illustration: marketingIllustration,
-    bgColor: "bg-background",
-    reverse: true,
   },
 ];
 
 const FeatureCategoriesSection = () => {
   return (
-    <section className="py-16">
+    <section className="py-16 space-y-8">
       {features.map((feature, index) => (
-        <div key={index} className={`${feature.bgColor} py-16 lg:py-24`}>
-          <div className="container-wide">
-            <div className={`flex flex-col ${feature.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 lg:gap-20`}>
-              {/* Text Content */}
-              <div className="flex-1 max-w-xl">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
-                  {feature.title}
-                </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-
-              {/* Illustration */}
-              <div className="flex-1 flex items-center justify-center">
-                <div className="w-72 h-72 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-lg">
-                  <img 
-                    src={feature.illustration} 
-                    alt={feature.title}
-                    className="w-full h-full object-cover"
-                  />
+        <div 
+          key={index} 
+          className="container-wide"
+        >
+          <div 
+            className="relative rounded-3xl overflow-hidden min-h-[400px] lg:min-h-[500px]"
+          >
+            {/* Background Image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${feature.illustration})` }}
+            />
+            
+            {/* Gradient overlay for better blending */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-primary/20 to-transparent" />
+            
+            {/* Glass effect card */}
+            <div className="relative h-full min-h-[400px] lg:min-h-[500px] flex items-center">
+              <div className="w-full lg:w-1/2 p-8 lg:p-12">
+                <div className="backdrop-blur-xl bg-background/70 border border-white/20 rounded-2xl p-8 lg:p-10 shadow-2xl">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
+                    {feature.title}
+                  </h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             </div>
