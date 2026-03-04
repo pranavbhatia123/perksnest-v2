@@ -48,8 +48,24 @@ const Login = () => {
     else toast.success("Account created! Welcome to PerksNest.");
   };
 
-  const handleGoogle = () => {
-    toast.info("Google Sign-In coming soon! Use email login for now.", { duration: 3000 });
+  const handleGoogle = async () => {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabaseAuth = createClient(
+        'https://supabase.stirringminds.com',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.flEXaRV1Ku-LEeKUiTTXvjlekdwZvGY8oOFiNDPMgkA'
+      );
+      const { error } = await supabaseAuth.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: { access_type: 'offline', prompt: 'consent' },
+        },
+      });
+      if (error) toast.error('Google sign-in failed: ' + error.message);
+    } catch (err) {
+      toast.error('Google sign-in unavailable');
+    }
   };
 
   return (

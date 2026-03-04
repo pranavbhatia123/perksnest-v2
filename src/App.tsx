@@ -72,6 +72,7 @@ const App = () => (
             <Route path="/portal/customer" element={<Navigate to="/customer" replace />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
