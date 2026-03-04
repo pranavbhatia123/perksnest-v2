@@ -95,7 +95,7 @@ const HeroBanner = () => {
               variant="outline" 
               size="lg"
               className="h-12 px-6 text-base font-medium gap-2 rounded-full border-border hover:bg-secondary"
-              onClick={() => window.location.href = 'https://supabase.stirringminds.com/auth/v1/authorize?provider=google&redirect_to=https://perksnest.co/auth/callback'}
+              onClick={() => window.location.href = 'https://auth.perksnest.co/auth/v1/authorize?provider=google&redirect_to=https://perksnest.co/auth/callback'}
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

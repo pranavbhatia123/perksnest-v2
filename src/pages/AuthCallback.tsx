@@ -5,7 +5,7 @@ import { db } from "@/lib/supabase";
 
 // Supabase auth client (anon key, same instance as login page uses)
 const supabaseAuth = createClient(
-  'https://supabase.stirringminds.com',
+  'https://auth.perksnest.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.flEXaRV1Ku-LEeKUiTTXvjlekdwZvGY8oOFiNDPMgkA',
   { auth: { flowType: 'implicit', persistSession: true, autoRefreshToken: true } }
 );
