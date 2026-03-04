@@ -1,4 +1,5 @@
 import { ArrowUpRight, Crown, Sparkles, Users } from "lucide-react";
+import UpvoteButton from "@/components/UpvoteButton";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getAverageRating } from "@/lib/reviews";
@@ -10,6 +11,7 @@ interface DealCardProps {
   logo: string;
   description: string;
   dealText: string;
+  id: string;
   savings: string;
   memberCount: number;
   isPremium?: boolean;
@@ -25,6 +27,7 @@ const DealCard = ({
   logo,
   description,
   dealText,
+  id,
   savings,
   memberCount,
   isPremium = false,
@@ -94,7 +97,7 @@ const DealCard = ({
       {/* Savings */}
       <div className="flex items-center gap-2 mb-5">
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-success/10 text-success">
-          Save up to {savings}
+Save up to {savings}
         </span>
       </div>
 
@@ -103,6 +106,7 @@ const DealCard = ({
         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <Users className="h-4 w-4" />
           <span>{memberCount.toLocaleString()} members</span>
+          <UpvoteButton dealId={id} compact />
         </div>
         <Link to={`/deals/${dealId}/redeem`}>
           <Button 

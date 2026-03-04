@@ -12,6 +12,7 @@ import DealRedeem from "./pages/DealRedeem";
 import Pricing from "./pages/Pricing";
 import Blog from "./pages/Blog";
 import Invite from "./pages/Invite";
+import Newsletter from "./pages/Newsletter";
 import Compare from "./pages/Compare";
 import Login from "./pages/Login";
 import Communities from "./pages/Communities";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:postId" element={<Blog />} />
             <Route path="/invite" element={<Invite />} />
+            <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/compare/:slug" element={<Compare />} />
             <Route path="/login" element={<Login />} />
             <Route path="/communities" element={<Communities />} />

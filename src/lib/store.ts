@@ -223,3 +223,93 @@ export const sendEmail = async (payload: {
     return false;
   }
 };
+
+// ─── UPVOTES ──────────────────────────────────────────────────────────────────
+export interface UpvoteStore {
+  [dealId: string]: string[]; // dealId → array of userIds who upvoted
+}
+
+export function getUpvotes(): UpvoteStore {
+  try { return JSON.parse(localStorage.getItem('pn_upvotes') || '{}'); } catch { return {}; }
+}
+
+export function toggleUpvote(dealId: string, userId: string): boolean {
+  const store = getUpvotes();
+  const voters = store[dealId] || [];
+  const already = voters.includes(userId);
+  store[dealId] = already ? voters.filter(id => id !== userId) : [...voters, userId];
+  localStorage.setItem('pn_upvotes', JSON.stringify(store));
+  return !already; // true = upvoted, false = un-upvoted
+}
+
+export function getUpvoteCount(dealId: string): number {
+  const store = getUpvotes();
+  return (store[dealId] || []).length;
+}
+
+export function hasUpvoted(dealId: string, userId: string): boolean {
+  const store = getUpvotes();
+  return (store[dealId] || []).includes(userId);
+}
+
+// ─── REFERRALS ────────────────────────────────────────────────────────────────
+export interface ReferralEntry {
+  code: string;          // referrer's code
+  referrerId: string;
+  referrerName: string;
+  referreeEmail: string;
+  referreeId?: string;
+  status: 'pending' | 'converted' | 'paid';
+  creditAmount: number;
+  createdAt: string;
+  convertedAt?: string;
+}
+
+export function getReferrals(): ReferralEntry[] {
+  try { return JSON.parse(localStorage.getItem('pn_referrals') || '[]'); } catch { return []; }
+}
+
+export function trackReferral(code: string, referrerId: string, referrerName: string, referreeEmail: string): void {
+  const refs = getReferrals();
+  if (refs.find(r => r.referreeEmail === referreeEmail)) return; // already referred
+  refs.push({ code, referrerId, referrerName, referreeEmail, status: 'pending', creditAmount: 20, createdAt: new Date().toISOString() });
+  localStorage.setItem('pn_referrals', JSON.stringify(refs));
+}
+
+export function getReferralsByUser(userId: string): ReferralEntry[] {
+  return getReferrals().filter(r => r.referrerId === userId);
+}
+
+export function convertReferral(referreeEmail: string, referreeId: string): void {
+  const refs = getReferrals().map(r =>
+    r.referreeEmail === referreeEmail
+      ? { ...r, status: 'converted' as const, referreeId, convertedAt: new Date().toISOString() }
+      : r
+  );
+  localStorage.setItem('pn_referrals', JSON.stringify(refs));
+}
+
+// ─── DIGEST SUBSCRIBERS ───────────────────────────────────────────────────────
+export interface DigestSubscriber {
+  email: string;
+  name?: string;
+  subscribedAt: string;
+  frequency: 'weekly' | 'monthly';
+}
+
+export function getDigestSubscribers(): DigestSubscriber[] {
+  try { return JSON.parse(localStorage.getItem('pn_digest_subscribers') || '[]'); } catch { return []; }
+}
+
+export function subscribeToDigest(email: string, name?: string, frequency: 'weekly' | 'monthly' = 'weekly'): boolean {
+  const subs = getDigestSubscribers();
+  if (subs.find(s => s.email === email)) return false; // already subscribed
+  subs.push({ email, name, subscribedAt: new Date().toISOString(), frequency });
+  localStorage.setItem('pn_digest_subscribers', JSON.stringify(subs));
+  return true;
+}
+
+export function unsubscribeFromDigest(email: string): void {
+  const subs = getDigestSubscribers().filter(s => s.email !== email);
+  localStorage.setItem('pn_digest_subscribers', JSON.stringify(subs));
+}
