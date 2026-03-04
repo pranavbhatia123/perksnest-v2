@@ -23,6 +23,8 @@ export interface User {
   referralCode: string;
   referralCount: number;
   claimedDeals: string[];
+  roles?: string[];
+  status?: string;
   createdAt: string;
 }
 
