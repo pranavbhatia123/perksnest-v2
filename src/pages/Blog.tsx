@@ -6,6 +6,17 @@ import Footer from "@/components/Footer";
 import { blogPosts, categories, getBlogPostById, getRelatedPosts } from "@/data/blog";
 
 const Blog = () => {
+  const [blogEmail, setBlogEmail] = useState("");
+  const [blogSubscribed, setBlogSubscribed] = useState(false);
+
+  const handleBlogSubscribe = () => {
+    if (!blogEmail.includes("@")) { toast.error("Enter a valid email"); return; }
+    const isNew = subscribeToDigest(blogEmail, undefined, "weekly");
+    setBlogSubscribed(true);
+    toast.success(isNew ? "You're subscribed! 🎉" : "You're already subscribed!");
+    setBlogEmail("");
+  };
+
   const { postId } = useParams();
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -195,15 +206,23 @@ const Blog = () => {
                 Join 50,000+ founders who receive our weekly newsletter with the best deals and insights.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-lg bg-primary-foreground text-foreground placeholder:text-muted-foreground focus:outline-none"
-                />
-                <button className="px-6 py-3 bg-primary-foreground text-primary font-semibold rounded-lg hover:bg-primary-foreground/90 transition-colors flex items-center justify-center gap-2">
-                  Subscribe
-                  <ArrowRight className="h-4 w-4" />
-                </button>
+                {!blogSubscribed ? (
+                  <>
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={blogEmail}
+                      onChange={e => setBlogEmail(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && handleBlogSubscribe()}
+                      className="flex-1 px-4 py-3 rounded-lg bg-primary-foreground text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    />
+                    <button onClick={handleBlogSubscribe} className="px-6 py-3 bg-primary-foreground text-primary font-semibold rounded-lg hover:bg-primary-foreground/90 transition-colors flex items-center justify-center gap-2">
+                      Subscribe <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-primary-foreground font-semibold text-center w-full">✅ You're subscribed! Check your inbox Monday.</p>
+                )}
               </div>
             </div>
           </section>

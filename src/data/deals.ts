@@ -14,6 +14,8 @@ export interface Deal {
   featured?: boolean;
   category: string;
   lastAdded?: string;
+  expiresAt?: string;  // ISO date string, undefined = no expiry
+  collection?: string; // e.g. "yc-starter-kit", "free-tools", "growth-stack"
 }
 
 export const dealsData: Deal[] = [
@@ -29,6 +31,8 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "project",
+    expiresAt: "2026-03-31",
+    collection: "yc-starter-kit",
     lastAdded: "2026-02-28",
   },
   {
@@ -44,6 +48,8 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "finance",
+    expiresAt: "2026-04-15",
+    collection: "yc-starter-kit",
   },
   {
     id: "google-cloud",
@@ -56,6 +62,8 @@ export const dealsData: Deal[] = [
     isFree: true,
     featured: true,
     category: "data",
+    expiresAt: "2026-05-01",
+    collection: "dev-essentials",
   },
   {
     id: "make",
@@ -67,6 +75,8 @@ export const dealsData: Deal[] = [
     memberCount: 9806,
     isFree: true,
     category: "ai",
+    expiresAt: "2026-03-20",
+    collection: "growth-stack",
   },
   {
     id: "brevo",
@@ -79,6 +89,8 @@ export const dealsData: Deal[] = [
     isFree: true,
     isPick: true,
     category: "marketing",
+    expiresAt: "2026-04-30",
+    collection: "growth-stack",
   },
   {
     id: "zoom",
@@ -90,6 +102,8 @@ export const dealsData: Deal[] = [
     memberCount: 1862,
     isFree: true,
     category: "communication",
+    expiresAt: "2026-03-10",
+    collection: "free-tools",
   },
   {
     id: "hubspot",
@@ -102,6 +116,8 @@ export const dealsData: Deal[] = [
     isFree: true,
     featured: true,
     category: "customer",
+    expiresAt: "2026-06-01",
+    collection: "growth-stack",
   },
   {
     id: "slack",
@@ -113,6 +129,8 @@ export const dealsData: Deal[] = [
     memberCount: 3208,
     isFree: true,
     category: "communication",
+    expiresAt: "2026-04-01",
+    collection: "yc-starter-kit",
   },
   {
     id: "figma",
@@ -124,6 +142,8 @@ export const dealsData: Deal[] = [
     memberCount: 7821,
     isFree: true,
     category: "development",
+    expiresAt: "2026-05-15",
+    collection: "dev-essentials",
   },
   {
     id: "airtable",
@@ -136,6 +156,8 @@ export const dealsData: Deal[] = [
     isPremium: true,
     isFree: false,
     category: "project",
+    expiresAt: "2026-03-25",
+    collection: "yc-starter-kit",
   },
   {
     id: "aws",
@@ -149,6 +171,8 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "data",
+    expiresAt: "2026-07-01",
+    collection: "dev-essentials",
   },
   {
     id: "intercom",
@@ -160,6 +184,8 @@ export const dealsData: Deal[] = [
     memberCount: 2754,
     isFree: true,
     category: "customer",
+    expiresAt: "2026-04-10",
+    collection: "growth-stack",
   },
   {
     id: "digitalocean",
@@ -171,6 +197,8 @@ export const dealsData: Deal[] = [
     memberCount: 5788,
     isFree: true,
     category: "data",
+    expiresAt: "2026-06-15",
+    collection: "dev-essentials",
   },
   {
     id: "monday",
@@ -182,6 +210,8 @@ export const dealsData: Deal[] = [
     memberCount: 1315,
     isFree: true,
     category: "project",
+    expiresAt: "2026-03-28",
+    collection: "yc-starter-kit",
   },
   {
     id: "semrush",
@@ -193,6 +223,8 @@ export const dealsData: Deal[] = [
     memberCount: 2492,
     isFree: true,
     category: "marketing",
+    expiresAt: "2026-04-20",
+    collection: "growth-stack",
   },
   {
     id: "zendesk",
@@ -204,6 +236,8 @@ export const dealsData: Deal[] = [
     memberCount: 2382,
     isFree: true,
     category: "customer",
+    expiresAt: "2026-05-10",
+    collection: "growth-stack",
   },
   {
     id: "clickup",
@@ -215,6 +249,8 @@ export const dealsData: Deal[] = [
     memberCount: 3033,
     isFree: true,
     category: "project",
+    expiresAt: "2026-04-05",
+    collection: "free-tools",
   },
   {
     id: "perplexity",
@@ -226,6 +262,8 @@ export const dealsData: Deal[] = [
     memberCount: 1282,
     isFree: true,
     category: "ai",
+    expiresAt: "2026-03-15",
+    collection: "ai-stack",
     lastAdded: "2026-03-01",
   },
   {
@@ -239,6 +277,8 @@ export const dealsData: Deal[] = [
     isPremium: true,
     isFree: false,
     category: "development",
+    expiresAt: "2026-05-20",
+    collection: "dev-essentials",
     lastAdded: "2026-03-02",
   },
   {
@@ -251,6 +291,8 @@ export const dealsData: Deal[] = [
     memberCount: 1876,
     isFree: true,
     category: "sales",
+    expiresAt: "2026-06-30",
+    collection: "growth-stack",
   },
 ];
 
@@ -266,6 +308,38 @@ export const getPremiumDeals = () =>
 
 export const getRecentlyAddedDeals = () => 
   [...dealsData].reverse().slice(0, 12);
+
+export const getDaysUntilExpiry = (expiresAt?: string): number | null => {
+  if (!expiresAt) return null;
+  const diff = new Date(expiresAt).getTime() - Date.now();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+};
+
+export const getExpiryLabel = (expiresAt?: string): { label: string; urgent: boolean } | null => {
+  const days = getDaysUntilExpiry(expiresAt);
+  if (days === null) return null;
+  if (days < 0) return { label: "Expired", urgent: true };
+  if (days === 0) return { label: "Expires today!", urgent: true };
+  if (days <= 3) return { label: `Expires in ${days}d`, urgent: true };
+  if (days <= 14) return { label: `${days} days left`, urgent: false };
+  return { label: `${days} days left`, urgent: false };
+};
+
+export const getDealsByCollection = (collection: string) =>
+  dealsData.filter(d => d.collection === collection);
+
+export const getCollections = () => {
+  const map: Record<string, { id: string; name: string; description: string; icon: string; count: number }> = {
+    "yc-starter-kit": { id: "yc-starter-kit", name: "YC Starter Kit", description: "Essential tools for YC & early-stage founders", icon: "🚀", count: 0 },
+    "growth-stack":   { id: "growth-stack",   name: "Growth Stack",   description: "Best deals for scaling marketing & sales",       icon: "📈", count: 0 },
+    "free-tools":     { id: "free-tools",     name: "Free Tools",     description: "Zero cost — 100% free plans & trials",           icon: "🎁", count: 0 },
+    "dev-essentials": { id: "dev-essentials", name: "Dev Essentials", description: "Must-have tools for every engineering team",     icon: "⚙️", count: 0 },
+    "ai-stack":       { id: "ai-stack",       name: "AI Stack",       description: "Best AI tools with exclusive startup discounts", icon: "🤖", count: 0 },
+  };
+  dealsData.forEach(d => { if (d.collection && map[d.collection]) map[d.collection].count++; });
+  return Object.values(map).filter(c => c.count > 0);
+};
+
 
 export const getDealsByCategory = (category: string) => 
   dealsData.filter(deal => deal.category === category);

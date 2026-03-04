@@ -1,5 +1,6 @@
 import { addClaimEvent, sendEmail } from '@/lib/store';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { convertReferral } from "@/lib/store";
 
 export type UserPlan = 'free' | 'pro' | 'enterprise';
 export type UserRole = 'customer' | 'admin' | 'partner';
@@ -19,7 +20,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (email: string, password: string, name: string) => Promise<boolean>;
+  register: (email: string, password: string, name: string, referrerCode?: string) => Promise<boolean>;
   logout: () => void;
   claimDeal: (dealId: string, dealName?: string) => boolean;
   updateUser: (updates: Partial<Pick<User, 'name' | 'email'>>) => boolean;
@@ -128,7 +129,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (
     email: string,
     password: string,
-    name: string
+    name: string,
+    referrerCode?: string
   ): Promise<boolean> => {
     const usersData = localStorage.getItem(USERS_KEY);
     const users = usersData ? JSON.parse(usersData) : DEMO_ACCOUNTS;
@@ -157,6 +159,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { password: _, ...userWithoutPassword } = newUser;
     setUser(userWithoutPassword);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userWithoutPassword));
+
+    // Track referral conversion if a referrer code was provided
+    if (referrerCode) {
+      convertReferral(email, newUser.id);
+    }
 
     return true;
   };

@@ -8,11 +8,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DealCardNew from "@/components/DealCardNew";
 import CategorySidebar from "@/components/CategorySidebar";
-import { dealsData } from "@/data/deals";
+import { dealsData, getExpiryLabel } from "@/data/deals";
+import { getUpvoteCount } from "@/lib/store";
 
 const DEALS_PER_PAGE = 9;
 
-const filterOptions = ["Most popular", "Premium", "Free", "Recently added"];
+const filterOptions = ["Most popular", "Most upvoted", "Expiring soon", "Premium", "Free", "Recently added"];
 
 const Deals = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -61,12 +62,22 @@ const Deals = () => {
                            deal.category.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = activeCategory === "all" || deal.category === activeCategory;
       const matchesFilter = activeFilter === "Most popular" ||
+                           activeFilter === "Most upvoted" ||
+                           activeFilter === "Expiring soon" ||
                            activeFilter === "Recently added" ||
                            (activeFilter === "Premium" && deal.isPremium) ||
                            (activeFilter === "Free" && deal.isFree);
       return matchesSearch && matchesCategory && matchesFilter;
     })
     .sort((a, b) => {
+      if (activeFilter === "Most upvoted") {
+        return getUpvoteCount(b.id) - getUpvoteCount(a.id);
+      }
+      if (activeFilter === "Expiring soon") {
+        const daysA = a.expiresAt ? (new Date(a.expiresAt).getTime() - Date.now()) : Infinity;
+        const daysB = b.expiresAt ? (new Date(b.expiresAt).getTime() - Date.now()) : Infinity;
+        return daysA - daysB;
+      }
       if (activeFilter === "Recently added") {
         // Sort by lastAdded date, most recent first
         const dateA = a.lastAdded ? new Date(a.lastAdded).getTime() : 0;

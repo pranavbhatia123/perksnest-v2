@@ -1,11 +1,27 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Users, Building2, ArrowRight, CheckCircle } from "lucide-react";
 
 const Communities = () => {
+  const [formData, setFormData] = useState({ name: "", email: "", org: "", size: "" });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.email.includes("@") || !formData.name) {
+      toast.error("Please fill in your name and email");
+      return;
+    }
+    setSubmitted(true);
+    toast.success("Thanks! We'll be in touch within 24 hours 🎉");
+  };
+
   const { pathname } = useLocation();
   const isAccelerators = pathname.includes("accelerators");
 
@@ -78,7 +94,30 @@ const Communities = () => {
             <Link to="/deals" className="text-primary hover:underline font-medium">Browse all deals →</Link>
           </div>
         </div>
-      </main>
+      <div className="max-w-lg mx-auto px-4 pb-10">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            {!submitted ? (
+              <form onSubmit={handleSubmit} className="space-y-3">
+                <h3 className="font-semibold text-foreground text-center mb-4">Book a Free Demo</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input placeholder="Your name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
+                  <Input type="email" placeholder="Work email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
+                  <Input placeholder="Organisation name" value={formData.org} onChange={e => setFormData({...formData, org: e.target.value})} />
+                  <Input placeholder="Community size" value={formData.size} onChange={e => setFormData({...formData, size: e.target.value})} />
+                </div>
+                <Button type="submit" className="w-full gap-2 h-11">
+                  <ArrowRight className="h-4 w-4" /> Request Demo
+                </Button>
+              </form>
+            ) : (
+              <div className="text-center py-4">
+                <div className="text-4xl mb-3">🎉</div>
+                <p className="text-sm text-muted-foreground">We will reach out to {formData.email} within 24 hours.</p>
+              </div>
+            )}
+          </div>
+        </div>
+        </main>
       <Footer />
     </div>
   );

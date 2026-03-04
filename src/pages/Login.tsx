@@ -13,6 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnUrl = searchParams.get("returnUrl");
+  const refCode = searchParams.get("ref") || undefined;
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -41,7 +42,7 @@ const Login = () => {
     e.preventDefault();
     if (!regName.trim()) { toast.error("Name is required"); return; }
     setLoading(true);
-    const ok = await register(regEmail, regPassword, regName);
+    const ok = await register(regEmail, regPassword, regName, refCode);
     setLoading(false);
     if (!ok) toast.error("Registration failed. Email may already exist.");
     else toast.success("Account created! Welcome to PerksNest.");

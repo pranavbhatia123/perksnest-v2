@@ -13,6 +13,11 @@ import Pricing from "./pages/Pricing";
 import Blog from "./pages/Blog";
 import Invite from "./pages/Invite";
 import Newsletter from "./pages/Newsletter";
+import Collections from "./pages/Collections";
+import CollectionDetail from "./pages/CollectionDetail";
+import Categories from "./pages/Categories";
+import Category from "./pages/Category";
+import Leaderboard from "./pages/Leaderboard";
 import Compare from "./pages/Compare";
 import Login from "./pages/Login";
 import Communities from "./pages/Communities";
@@ -44,6 +49,11 @@ const App = () => (
             <Route path="/blog/:postId" element={<Blog />} />
             <Route path="/invite" element={<Invite />} />
             <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/collections" element={<Collections />} />
+            <Route path="/collections/:id" element={<CollectionDetail />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/category/:slug" element={<Category />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/compare/:slug" element={<Compare />} />
             <Route path="/login" element={<Login />} />
             <Route path="/communities" element={<Communities />} />
