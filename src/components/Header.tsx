@@ -164,7 +164,7 @@ const Header = () => {
                                 sales@perksnest.com
                               </a>
                               <Button className="w-full mt-4">
-                                Book a demo
+                                <span onClick={() => window.open('mailto:hello@perksnest.co?subject=Demo Request', '_blank')}>Book a demo</span>
                               </Button>
                             </div>
                             <div className="text-center pt-6 border-t border-border">
@@ -326,6 +326,7 @@ const Header = () => {
                 <Button
                   variant="outline"
                   className="hidden sm:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                  onClick={() => window.open('mailto:hello@perksnest.co?subject=Demo Request', '_blank')}
                 >
                   Request a demo
                 </Button>

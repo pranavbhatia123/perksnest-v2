@@ -80,7 +80,7 @@ const Communities = () => {
               </div>
               <div className="space-y-3">
                 <Button className="w-full gap-2" size="lg" onClick={() => window.location.href = "mailto:partnerships@perksnest.co"}>
-                  Book a demo <ArrowRight className="w-4 h-4" />
+                  <a href="mailto:hello@perksnest.co?subject=Demo Request" className="flex items-center gap-2">Book a demo <ArrowRight className="w-4 h-4" /></a>
                 </Button>
                 <Button variant="outline" className="w-full" asChild>
                   <Link to="/pricing">View standard pricing</Link>
