@@ -25,8 +25,13 @@ export const MessagingTab = ({ portalRole }: MessagingTabProps) => {
     if (!user) return;
     const list = await getThreadList(user.id, portalRole);
     setThreads(list);
-    if (!isAdmin) setActiveThread(myThreadId);
-    else if (isAdmin && list.length > 0 && !activeThread) setActiveThread(list[0].threadId);
+    if (!isAdmin) {
+      // Always set to own thread — even if no messages yet
+      const tid = `${portalRole}_${user.id}_admin`;
+      setActiveThread(tid);
+    } else if (isAdmin && list.length > 0 && !activeThread) {
+      setActiveThread(list[0].threadId);
+    }
   };
 
   const loadMessages = async (threadId: string) => {
@@ -37,7 +42,12 @@ export const MessagingTab = ({ portalRole }: MessagingTabProps) => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
-  useEffect(() => { loadThreads(); }, [user]);
+  useEffect(() => {
+    if (user && !isAdmin) {
+      setActiveThread(`${portalRole}_${user.id}_admin`);
+    }
+    loadThreads();
+  }, [user]);
   useEffect(() => { if (activeThread) loadMessages(activeThread); }, [activeThread]);
   useEffect(() => {
     const iv = setInterval(() => { if (activeThread) loadMessages(activeThread); loadThreads(); }, 8000);
