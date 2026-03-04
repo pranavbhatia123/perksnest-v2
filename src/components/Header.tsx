@@ -232,9 +232,8 @@ const Header = () => {
             </Link>
 
             {/* Login/Profile icon — always visible on all screen sizes */}
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(isAuthenticated && user ? '/customer' : '/login'); }}
+            <Link
+              to={isAuthenticated && user ? '/customer' : '/login'}
               className="relative z-20 flex items-center justify-center h-9 w-9 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary/20 transition-colors shrink-0 cursor-pointer"
               title={isAuthenticated && user ? `Signed in as ${user.name}` : 'Sign in to your account'}
             >
@@ -242,7 +241,7 @@ const Header = () => {
                 ? <span className="text-xs font-bold text-primary">{getUserInitials()}</span>
                 : <User className="h-4 w-4 text-primary" />
               }
-            </button>
+            </Link>
 
             {isAuthenticated && user ? (
               <>
@@ -363,9 +362,8 @@ const Header = () => {
               <Link to="/invite" className="nav-link px-3 py-2 rounded-md hover:bg-secondary" onClick={() => setMobileMenuOpen(false)}>Invite & Earn</Link>
               <div className="pt-3 border-t border-border mt-2 space-y-2">
                 {/* Login/Profile icon — always visible on all screen sizes */}
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(isAuthenticated && user ? '/customer' : '/login'); }}
+            <Link
+              to={isAuthenticated && user ? '/customer' : '/login'}
               className="relative z-20 flex items-center justify-center h-9 w-9 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary/20 transition-colors shrink-0 cursor-pointer"
               title={isAuthenticated && user ? `Signed in as ${user.name}` : 'Sign in to your account'}
             >
@@ -373,7 +371,7 @@ const Header = () => {
                 ? <span className="text-xs font-bold text-primary">{getUserInitials()}</span>
                 : <User className="h-4 w-4 text-primary" />
               }
-            </button>
+            </Link>
 
             {isAuthenticated && user ? (
                   <>
