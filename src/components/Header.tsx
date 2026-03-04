@@ -233,13 +233,14 @@ const Header = () => {
 
             {/* Login/Profile icon — always visible on all screen sizes */}
             <button
-              onClick={() => window.location.href = isAuthenticated && user ? '/customer' : '/login'}
-              className="flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-primary/10 transition-colors shrink-0"
-              title={isAuthenticated && user ? user.name : 'Sign in'}
+              type="button"
+              onClick={(e) => { e.stopPropagation(); window.location.href = isAuthenticated && user ? '/customer' : '/login'; }}
+              className="relative z-20 flex items-center justify-center h-9 w-9 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary/20 transition-colors shrink-0 cursor-pointer"
+              title={isAuthenticated && user ? `Signed in as ${user.name}` : 'Sign in to your account'}
             >
               {isAuthenticated && user
                 ? <span className="text-xs font-bold text-primary">{getUserInitials()}</span>
-                : <User className="h-4 w-4 text-muted-foreground" />
+                : <User className="h-4 w-4 text-primary" />
               }
             </button>
 
@@ -363,13 +364,14 @@ const Header = () => {
               <div className="pt-3 border-t border-border mt-2 space-y-2">
                 {/* Login/Profile icon — always visible on all screen sizes */}
             <button
-              onClick={() => window.location.href = isAuthenticated && user ? '/customer' : '/login'}
-              className="flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-primary/10 transition-colors shrink-0"
-              title={isAuthenticated && user ? user.name : 'Sign in'}
+              type="button"
+              onClick={(e) => { e.stopPropagation(); window.location.href = isAuthenticated && user ? '/customer' : '/login'; }}
+              className="relative z-20 flex items-center justify-center h-9 w-9 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary/20 transition-colors shrink-0 cursor-pointer"
+              title={isAuthenticated && user ? `Signed in as ${user.name}` : 'Sign in to your account'}
             >
               {isAuthenticated && user
                 ? <span className="text-xs font-bold text-primary">{getUserInitials()}</span>
-                : <User className="h-4 w-4 text-muted-foreground" />
+                : <User className="h-4 w-4 text-primary" />
               }
             </button>
 
