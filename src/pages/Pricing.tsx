@@ -14,6 +14,17 @@ import { useAuth } from "@/lib/auth";
 import { AuthModal } from "@/components/AuthModal";
 import { useState } from "react";
 
+async function startCheckout(userId: string, email: string, name: string, period: 'monthly' | 'annual') {
+  const res = await fetch('https://api.perksnest.co/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, email, name, period }),
+  });
+  const data = await res.json();
+  if (data.url) window.location.href = data.url;
+  else throw new Error(data.error || 'Checkout failed');
+}
+
 const plans = [
   {
     name: "Free",

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "@/lib/auth";
+import { useAuth, sendVerificationEmail, verifyEmailCode } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,11 @@ const Login = () => {
   const [regPassword, setRegPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [verifyStep, setVerifyStep] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState("");
+  const [verifyName, setVerifyName] = useState("");
+  const [verifyCode, setVerifyCode] = useState("");
+  const [verifyError, setVerifyError] = useState("");
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -44,8 +49,30 @@ const Login = () => {
     setLoading(true);
     const ok = await register(regEmail, regPassword, regName, refCode);
     setLoading(false);
-    if (!ok) toast.error("Registration failed. Email may already exist.");
-    else toast.success("Account created! Welcome to PerksNest.");
+    if (!ok) {
+      toast.error("Registration failed. Email may already exist.");
+    } else {
+      // Send verification email
+      await sendVerificationEmail(regEmail, regName);
+      setVerifyEmail(regEmail);
+      setVerifyName(regName);
+      setVerifyStep(true);
+    }
+  };
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setVerifyError("");
+    setLoading(true);
+    const ok = await verifyEmailCode(verifyEmail, verifyCode);
+    setLoading(false);
+    if (ok) {
+      toast.success("Email verified! Welcome to PerksNest 🎉");
+      const dest = returnUrl || "/customer";
+      navigate(dest);
+    } else {
+      setVerifyError("Invalid or expired code. Check your email.");
+    }
   };
 
   const handleGoogle = async () => {
@@ -67,6 +94,52 @@ const Login = () => {
       toast.error('Google sign-in unavailable');
     }
   };
+
+  if (verifyStep) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <a href="/" className="text-2xl font-bold text-primary">perksnest.</a>
+          </div>
+          <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-3">📧</div>
+              <h2 className="text-xl font-semibold mb-1">Check your email</h2>
+              <p className="text-muted-foreground text-sm">We sent a 6-digit code to <strong>{verifyEmail}</strong></p>
+            </div>
+            <form onSubmit={handleVerify} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Verification Code</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  required
+                  value={verifyCode}
+                  onChange={e => setVerifyCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="123456"
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+              </div>
+              {verifyError && <p className="text-red-500 text-sm text-center">{verifyError}</p>}
+              <button
+                type="submit"
+                disabled={loading || verifyCode.length !== 6}
+                className="w-full py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg transition-colors disabled:opacity-50"
+              >
+                {loading ? "Verifying..." : "Verify Email"}
+              </button>
+            </form>
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              Didn't get it?{" "}
+              <button onClick={() => sendVerificationEmail(verifyEmail, verifyName).then(() => toast.success("Code resent!"))} className="text-primary hover:underline">Resend code</button>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

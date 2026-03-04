@@ -182,3 +182,34 @@ export async function getAllUsers(): Promise<User[]> {
   const { data } = await db.from('users').select('*').order('created_at', { ascending: false });
   return (data || []).map(rowToUser);
 }
+
+// ── Email verification ────────────────────────────────────────────────────
+function generateVerifyCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+export async function sendVerificationEmail(email: string, name: string): Promise<void> {
+  const code = generateVerifyCode();
+  const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+  await db.from('users')
+    .update({ verification_code: code, verification_expires: expires })
+    .eq('email', email.toLowerCase().trim());
+  await fetch('https://api.perksnest.co/api/send-verification', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, name, code }),
+  }).catch(() => {});
+}
+
+export async function verifyEmailCode(email: string, code: string): Promise<boolean> {
+  const { data } = await db.from('users')
+    .select('verification_code, verification_expires')
+    .eq('email', email.toLowerCase().trim())
+    .single();
+  if (!data || data.verification_code !== code) return false;
+  if (new Date(data.verification_expires) < new Date()) return false;
+  await db.from('users')
+    .update({ email_verified: true, verification_code: null, verification_expires: null })
+    .eq('email', email.toLowerCase().trim());
+  return true;
+}
