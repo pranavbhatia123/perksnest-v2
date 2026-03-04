@@ -28,7 +28,7 @@ const CustomerPortal = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       toast.error("Please log in to access your portal");
-      navigate("/");
+      navigate("/login?returnUrl=/customer");
     }
   }, [isAuthenticated, navigate]);
 

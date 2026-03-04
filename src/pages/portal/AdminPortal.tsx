@@ -15,7 +15,7 @@ const AdminPortal = () => {
 
   // Authentication guard - only admin role can access
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login?returnUrl=/admin" replace />;
   }
 
   if (!isAdmin) {

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/lib/auth";
 import Index from "./pages/Index";
 import HomeStripe from "./pages/HomeStripe";
@@ -13,6 +13,8 @@ import Pricing from "./pages/Pricing";
 import Blog from "./pages/Blog";
 import Invite from "./pages/Invite";
 import Compare from "./pages/Compare";
+import Login from "./pages/Login";
+import Communities from "./pages/Communities";
 import AdminPortal from "./pages/portal/AdminPortal";
 import PartnerPortal from "./pages/portal/PartnerPortal";
 import CustomerPortal from "./pages/portal/CustomerPortal";
@@ -38,10 +40,17 @@ const App = () => (
             <Route path="/blog/:postId" element={<Blog />} />
             <Route path="/invite" element={<Invite />} />
             <Route path="/compare/:slug" element={<Compare />} />
-            <Route path="/portal/admin" element={<AdminPortal />} />
-            <Route path="/portal/partner" element={<PartnerPortal />} />
-            <Route path="/portal/customer" element={<CustomerPortal />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/communities" element={<Communities />} />
+            <Route path="/accelerators" element={<Communities />} />
+            {/* Clean portal URLs */}
+            <Route path="/admin" element={<AdminPortal />} />
+            <Route path="/partner" element={<PartnerPortal />} />
+            <Route path="/customer" element={<CustomerPortal />} />
+            {/* Legacy redirects */}
+            <Route path="/portal/admin" element={<Navigate to="/admin" replace />} />
+            <Route path="/portal/partner" element={<Navigate to="/partner" replace />} />
+            <Route path="/portal/customer" element={<Navigate to="/customer" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

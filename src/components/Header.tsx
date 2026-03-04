@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, ChevronDown, Menu, X, Sparkles, Crown, ArrowUpRight, User, LogOut, Package, Settings } from "lucide-react";
@@ -237,7 +238,7 @@ const Header = () => {
                 {/* Claimed Deals Badge */}
                 {user.claimedDeals.length > 0 && (
                   <Link
-                    to="/portal/customer"
+                    to="/customer"
                     className="hidden sm:flex items-center gap-2 p-2 rounded-lg hover:bg-secondary transition-colors relative"
                   >
                     <Package className="h-5 w-5 text-muted-foreground" />
@@ -268,20 +269,20 @@ const Header = () => {
                       </Badge>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link to="/portal/customer">
+                    <Link to="/customer">
                       <DropdownMenuItem className="cursor-pointer">
                         <User className="h-4 w-4 mr-2" />
                         My Account
                       </DropdownMenuItem>
                     </Link>
-                    <Link to="/portal/customer">
+                    <Link to="/customer">
                       <DropdownMenuItem className="cursor-pointer">
                         <Package className="h-4 w-4 mr-2" />
                         Claimed Deals ({user.claimedDeals.length})
                       </DropdownMenuItem>
                     </Link>
                     {user.role === 'admin' && (
-                      <Link to="/portal/admin">
+                      <Link to="/admin">
                         <DropdownMenuItem className="cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
                           Admin Portal
@@ -289,7 +290,7 @@ const Header = () => {
                       </Link>
                     )}
                     {user.role === 'partner' && (
-                      <Link to="/portal/partner">
+                      <Link to="/partner">
                         <DropdownMenuItem className="cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
                           Partner Portal
@@ -351,7 +352,7 @@ const Header = () => {
               <div className="pt-3 border-t border-border mt-2 space-y-2">
                 {isAuthenticated && user ? (
                   <>
-                    <Link to="/portal/customer" className="block" onClick={() => setMobileMenuOpen(false)}>
+                    <Link to="/customer" className="block" onClick={() => setMobileMenuOpen(false)}>
                       <Button variant="outline" className="w-full">
                         My Account
                       </Button>

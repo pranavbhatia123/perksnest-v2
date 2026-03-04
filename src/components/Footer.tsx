@@ -9,7 +9,7 @@ const footerLinks = {
     { name: "Enterprise", href: "#" },
   ],
   company: [
-    { name: "About", href: "#" },
+    { name: "About", href: "/" },
     { name: "Blog", href: "/blog" },
     { name: "Careers", href: "#" },
     { name: "Press", href: "#" },
@@ -18,18 +18,18 @@ const footerLinks = {
     { name: "Help Center", href: "#" },
     { name: "Community", href: "#" },
     { name: "Partners", href: "#" },
-    { name: "Developers", href: "#" },
+    { name: "Developers", href: "mailto:dev@perksnest.co" },
   ],
   portals: [
-    { name: "Customer Portal", href: "/portal/customer" },
-    { name: "Partner Portal", href: "/portal/partner" },
-    { name: "Admin Portal", href: "/portal/admin" },
-    { name: "H1 Demo", href: "/h1" },
+    { name: "Customer Portal", href: "/customer" },
+    { name: "Partner Portal", href: "/partner" },
+    { name: "Admin Portal", href: "/admin" },
+    { name: "Login", href: "/login" },
   ],
   legal: [
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" },
-    { name: "Security", href: "#" },
+    { name: "Privacy", href: "/" },
+    { name: "Terms", href: "/" },
+    { name: "Security", href: "/" },
   ],
 };
 

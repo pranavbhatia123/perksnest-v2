@@ -39,9 +39,9 @@ const PartnerPortal = () => {
   // Authentication Guard - Redirect if not partner
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
+      navigate("/login?returnUrl=/partner");
     } else if (!isPartner) {
-      navigate("/");
+      navigate("/login?returnUrl=/partner");
     }
   }, [isAuthenticated, isPartner, navigate]);
 
