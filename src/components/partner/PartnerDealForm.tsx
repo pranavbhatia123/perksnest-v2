@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { addPartnerDeal, updatePartnerDeal, PartnerDeal } from "@/lib/store";
+import { addPartnerDeal, updatePartnerDealFields, PartnerDeal } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 
 const CATEGORIES = [
@@ -51,22 +51,29 @@ export const PartnerDealForm = ({ open, onClose, editDeal, onSuccess }: PartnerD
     setLoading(true);
     await new Promise(r => setTimeout(r, 400));
 
-    if (editDeal) {
-      updatePartnerDeal(editDeal.id, { ...form });
-      toast.success("Deal updated!");
-    } else {
-      const deal: PartnerDeal = {
-        id: `partner_${Date.now()}`,
-        partnerId: user.id,
-        partnerName: user.name,
-        ...form,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        views: 0,
-        claims: 0,
-      };
-      addPartnerDeal(deal);
-      toast.success("Deal submitted for review! You'll be notified when approved.");
+    try {
+      if (editDeal) {
+        await updatePartnerDealFields(editDeal.id, form);
+        toast.success("Deal updated!");
+      } else {
+        const result = await addPartnerDeal({
+          partnerId: user.id,
+          partnerName: user.name,
+          ...form,
+          status: "pending",
+        });
+        if (result) {
+          toast.success("Deal submitted for review! You'll be notified when approved.");
+        } else {
+          toast.error("Failed to submit deal. Please try again.");
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (err) {
+      toast.error("Something went wrong. Please try again.");
+      setLoading(false);
+      return;
     }
 
     setLoading(false);

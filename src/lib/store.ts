@@ -298,6 +298,22 @@ export function savePartnerSettings(partnerId: string, settings: Record<string, 
 
 export const updatePartnerDeal = updatePartnerDealStatus;
 
+export async function updatePartnerDealFields(
+  id: string, fields: Partial<{name: string, description: string, dealText: string, savings: string, category: string, websiteUrl: string, logoUrl: string, promoCode: string}>
+): Promise<void> {
+  const mapped: Record<string, unknown> = {};
+  if (fields.name) mapped.name = fields.name;
+  if (fields.description) mapped.description = fields.description;
+  if (fields.dealText) mapped.deal_text = fields.dealText;
+  if (fields.savings) mapped.savings = fields.savings;
+  if (fields.category) mapped.category = fields.category;
+  if (fields.websiteUrl) mapped.website_url = fields.websiteUrl;
+  if (fields.logoUrl !== undefined) mapped.logo_url = fields.logoUrl;
+  if (fields.promoCode !== undefined) mapped.promo_code = fields.promoCode;
+  await db.from('partner_deals').update(mapped).eq('id', id);
+}
+
+
 export const addPartnerDeal = submitPartnerDeal;
 
 export const getMessageThread = getMessages;
