@@ -85,7 +85,7 @@ const Login = () => {
       const { error } = await supabaseAuth.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: 'https://perksnest.co/auth/callback',
           queryParams: { access_type: 'offline', prompt: 'consent' },
         },
       });
