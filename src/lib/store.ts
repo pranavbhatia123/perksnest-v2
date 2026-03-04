@@ -1,315 +1,307 @@
-// src/lib/store.ts — Central localStorage data store for PerksNest
+// store.ts — Supabase-backed data store with localStorage fallback
+import db from './supabase';
 
+// ─── TYPES ────────────────────────────────────────────────────────────────────
 export interface PartnerDeal {
-  id: string;
-  partnerId: string;
-  partnerName: string;
-  name: string;
-  description: string;
-  dealText: string;
-  savings: string;
-  category: string;
-  websiteUrl: string;
-  logoUrl: string;
-  promoCode?: string;
+  id: string; partnerId: string; partnerName: string;
+  name: string; description: string; dealText: string;
+  savings: string; category: string; websiteUrl: string;
+  logoUrl: string; promoCode?: string;
   status: 'pending' | 'approved' | 'rejected';
-  rejectionReason?: string;
-  createdAt: string;
-  approvedAt?: string;
-  views: number;
-  claims: number;
+  rejectionReason?: string; createdAt: string; approvedAt?: string;
+  views: number; claims: number;
 }
 
-export interface Bookmark {
-  userId: string;
-  dealIds: string[];
-}
-
+export interface Bookmark { userId: string; dealIds: string[]; }
 export interface Notification {
-  id: string;
-  userId: string;
-  title: string;
-  message: string;
-  type: 'deal_approved' | 'deal_rejected' | 'general';
-  read: boolean;
-  createdAt: string;
-  dealId?: string;
+  id: string; userId: string; type: string;
+  title: string; message: string; read: boolean; createdAt: string;
 }
-
-export interface AdminSettings {
-  siteName: string;
-  siteDescription: string;
-  contactEmail: string;
-  supportEmail: string;
-  twitter: string;
-  linkedin: string;
+export interface Message {
+  id: string; threadId: string; senderId: string; senderName: string;
+  senderRole: string; content: string; createdAt: string;
 }
-
-export interface PartnerSettings {
-  companyName: string;
-  website: string;
-  contactEmail: string;
-  description: string;
-  twitter: string;
-  linkedin: string;
-}
-
 export interface ClaimEvent {
-  userId: string;
-  userName: string;
-  dealId: string;
-  dealName: string;
-  timestamp: string;
+  id: string; userId: string; dealId: string;
+  promoCode?: string; claimedAt: string;
+}
+export interface ReferralEntry {
+  code: string; referrerId: string; referrerName: string;
+  referreeEmail: string; referreeId?: string;
+  status: 'pending' | 'converted' | 'paid';
+  creditAmount: number; createdAt: string; convertedAt?: string;
+}
+export interface DigestSubscriber {
+  email: string; name?: string; subscribedAt: string;
+  frequency: 'weekly' | 'monthly';
+}
+export interface WLClient {
+  id: string; name: string; subdomain: string; logoUrl?: string;
+  primaryColor: string; status: string; plan: string;
+  mrr: number; members: number; createdAt: string;
 }
 
-export interface MessageThread {
-  conversationId: number;
-  messages: { id: number; sender: string; text: string; time: string; read: boolean; isOwn?: boolean }[];
+// ─── BOOKMARKS ────────────────────────────────────────────────────────────────
+export async function getBookmarkedDealIds(userId: string): Promise<string[]> {
+  const { data } = await db.from('bookmarks').select('deal_id').eq('user_id', userId);
+  return (data || []).map((r: { deal_id: string }) => r.deal_id);
 }
 
-// ── Partner Deals ──
-export const getPartnerDeals = (): PartnerDeal[] => {
-  try { return JSON.parse(localStorage.getItem('pn_partner_deals') || '[]'); } catch { return []; }
-};
-export const savePartnerDeals = (deals: PartnerDeal[]) =>
-  localStorage.setItem('pn_partner_deals', JSON.stringify(deals));
+export async function toggleBookmark(dealId: string, userId: string): Promise<boolean> {
+  const { data: existing } = await db
+    .from('bookmarks').select('id').eq('user_id', userId).eq('deal_id', dealId).single();
 
-export const addPartnerDeal = (deal: PartnerDeal) => {
-  const deals = getPartnerDeals();
-  deals.unshift(deal);
-  savePartnerDeals(deals);
-};
-
-export const updatePartnerDeal = (id: string, updates: Partial<PartnerDeal>) => {
-  const deals = getPartnerDeals().map(d => d.id === id ? { ...d, ...updates } : d);
-  savePartnerDeals(deals);
-};
-
-// ── Bookmarks ──
-export const getBookmarks = (userId: string): string[] => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_bookmarks') || '{}');
-    return all[userId] || [];
-  } catch { return []; }
-};
-export const toggleBookmark = (userId: string, dealId: string): boolean => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_bookmarks') || '{}');
-    const current: string[] = all[userId] || [];
-    const isBookmarked = current.includes(dealId);
-    all[userId] = isBookmarked ? current.filter(id => id !== dealId) : [...current, dealId];
-    localStorage.setItem('pn_bookmarks', JSON.stringify(all));
-    return !isBookmarked;
-  } catch { return false; }
-};
-
-// ── Notifications ──
-export const getNotifications = (userId: string): Notification[] => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_notifications') || '{}');
-    return (all[userId] || []).sort((a: Notification, b: Notification) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  } catch { return []; }
-};
-export const addNotification = (notification: Notification) => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_notifications') || '{}');
-    all[notification.userId] = [notification, ...(all[notification.userId] || [])];
-    localStorage.setItem('pn_notifications', JSON.stringify(all));
-  } catch {}
-};
-export const markNotificationRead = (userId: string, notificationId: string) => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_notifications') || '{}');
-    all[userId] = (all[userId] || []).map((n: Notification) =>
-      n.id === notificationId ? { ...n, read: true } : n);
-    localStorage.setItem('pn_notifications', JSON.stringify(all));
-  } catch {}
-};
-export const markAllNotificationsRead = (userId: string) => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_notifications') || '{}');
-    all[userId] = (all[userId] || []).map((n: Notification) => ({ ...n, read: true }));
-    localStorage.setItem('pn_notifications', JSON.stringify(all));
-  } catch {}
-};
-
-// ── Admin Settings ──
-export const getAdminSettings = (): AdminSettings => {
-  try {
-    return JSON.parse(localStorage.getItem('pn_admin_settings') || 'null') || {
-      siteName: 'PerksNest',
-      siteDescription: 'The #1 platform for exclusive SaaS deals',
-      contactEmail: 'hello@perksnest.co',
-      supportEmail: 'support@perksnest.co',
-      twitter: 'https://twitter.com/perksnest',
-      linkedin: 'https://linkedin.com/company/perksnest',
-    };
-  } catch { return { siteName: 'PerksNest', siteDescription: '', contactEmail: '', supportEmail: '', twitter: '', linkedin: '' }; }
-};
-export const saveAdminSettings = (settings: AdminSettings) =>
-  localStorage.setItem('pn_admin_settings', JSON.stringify(settings));
-
-// ── Partner Settings ──
-export const getPartnerSettings = (partnerId: string): PartnerSettings => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_partner_settings') || '{}');
-    return all[partnerId] || { companyName: '', website: '', contactEmail: '', description: '', twitter: '', linkedin: '' };
-  } catch { return { companyName: '', website: '', contactEmail: '', description: '', twitter: '', linkedin: '' }; }
-};
-export const savePartnerSettings = (partnerId: string, settings: PartnerSettings) => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_partner_settings') || '{}');
-    all[partnerId] = settings;
-    localStorage.setItem('pn_partner_settings', JSON.stringify(all));
-  } catch {}
-};
-
-// ── Claim Events (for activity feed) ──
-export const getClaimEvents = (): ClaimEvent[] => {
-  try { return JSON.parse(localStorage.getItem('pn_claim_events') || '[]'); } catch { return []; }
-};
-export const addClaimEvent = (event: ClaimEvent) => {
-  const events = getClaimEvents();
-  events.unshift(event);
-  localStorage.setItem('pn_claim_events', JSON.stringify(events.slice(0, 100)));
-};
-
-// ── Message Threads ──
-export const getMessageThread = (conversationId: number): MessageThread | null => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_messages') || '{}');
-    return all[conversationId] || null;
-  } catch { return null; }
-};
-export const saveMessageThread = (thread: MessageThread) => {
-  try {
-    const all = JSON.parse(localStorage.getItem('pn_messages') || '{}');
-    all[thread.conversationId] = thread;
-    localStorage.setItem('pn_messages', JSON.stringify(all));
-  } catch {}
-};
-
-// ── Deal Views ──
-export const trackDealView = (dealId: string) => {
-  try {
-    const views = JSON.parse(localStorage.getItem('pn_deal_views') || '{}');
-    views[dealId] = (views[dealId] || 0) + 1;
-    localStorage.setItem('pn_deal_views', JSON.stringify(views));
-  } catch {}
-};
-
-// ── Email Notifications (via PerksNest API) ──────────────────────────────────
-const API_URL = 'https://api.perksnest.co';
-
-export const sendEmail = async (payload: {
-  type: 'welcome' | 'deal_approved' | 'deal_rejected' | 'deal_claimed';
-  to: string;
-  name?: string;
-  dealName?: string;
-  dealCategory?: string;
-  reason?: string;
-  promoCode?: string;
-}): Promise<boolean> => {
-  try {
-    const res = await fetch(`${API_URL}/api/notify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return res.ok;
-  } catch (e) {
-    console.warn('Email notification failed (non-critical):', e);
+  if (existing) {
+    await db.from('bookmarks').delete().eq('user_id', userId).eq('deal_id', dealId);
     return false;
+  } else {
+    await db.from('bookmarks').insert({ user_id: userId, deal_id: dealId });
+    return true;
   }
-};
+}
+
+// Sync helper: returns bookmarks for non-async contexts (falls back to localStorage)
+export function getBookmarks(): { userId: string; dealIds: string[] } {
+  try { return JSON.parse(localStorage.getItem('pn_bookmarks') || '{"userId":"","dealIds":[]}'); }
+  catch { return { userId: '', dealIds: [] }; }
+}
 
 // ─── UPVOTES ──────────────────────────────────────────────────────────────────
-export interface UpvoteStore {
-  [dealId: string]: string[]; // dealId → array of userIds who upvoted
-}
-
-export function getUpvotes(): UpvoteStore {
+// Keep upvotes in localStorage for instant UI response + sync to DB in background
+function getUpvoteStore(): Record<string, string[]> {
   try { return JSON.parse(localStorage.getItem('pn_upvotes') || '{}'); } catch { return {}; }
 }
 
 export function toggleUpvote(dealId: string, userId: string): boolean {
-  const store = getUpvotes();
+  const store = getUpvoteStore();
   const voters = store[dealId] || [];
   const already = voters.includes(userId);
   store[dealId] = already ? voters.filter(id => id !== userId) : [...voters, userId];
   localStorage.setItem('pn_upvotes', JSON.stringify(store));
-  return !already; // true = upvoted, false = un-upvoted
+
+  // Sync to Supabase in background
+  if (already) {
+    db.from('upvotes').delete().eq('deal_id', dealId).eq('user_id', userId).then(() => {});
+  } else {
+    db.from('upvotes').upsert({ deal_id: dealId, user_id: userId }, { onConflict: 'deal_id,user_id' }).then(() => {});
+  }
+
+  return !already;
 }
 
 export function getUpvoteCount(dealId: string): number {
-  const store = getUpvotes();
-  return (store[dealId] || []).length;
+  return (getUpvoteStore()[dealId] || []).length;
 }
 
 export function hasUpvoted(dealId: string, userId: string): boolean {
-  const store = getUpvotes();
-  return (store[dealId] || []).includes(userId);
+  return (getUpvoteStore()[dealId] || []).includes(userId);
+}
+
+// Sync upvotes from DB on load
+export async function syncUpvotesFromDB(): Promise<void> {
+  const { data } = await db.from('upvotes').select('deal_id, user_id');
+  if (!data) return;
+  const store: Record<string, string[]> = {};
+  data.forEach((r: { deal_id: string; user_id: string }) => {
+    if (!store[r.deal_id]) store[r.deal_id] = [];
+    store[r.deal_id].push(r.user_id);
+  });
+  localStorage.setItem('pn_upvotes', JSON.stringify(store));
+}
+
+// ─── PARTNER DEALS ────────────────────────────────────────────────────────────
+export async function getPartnerDeals(): Promise<PartnerDeal[]> {
+  const { data } = await db.from('partner_deals').select('*').order('created_at', { ascending: false });
+  return (data || []).map((r: Record<string, unknown>) => ({
+    id: r.id as string, partnerId: r.partner_id as string, partnerName: r.partner_name as string,
+    name: r.name as string, description: r.description as string, dealText: r.deal_text as string,
+    savings: r.savings as string, category: r.category as string, websiteUrl: r.website_url as string,
+    logoUrl: r.logo_url as string, promoCode: r.promo_code as string | undefined,
+    status: r.status as PartnerDeal['status'], rejectionReason: r.rejection_reason as string | undefined,
+    createdAt: r.created_at as string, approvedAt: r.approved_at as string | undefined,
+    views: r.views as number, claims: r.claims as number,
+  }));
+}
+
+export async function submitPartnerDeal(deal: Omit<PartnerDeal, 'id' | 'createdAt' | 'approvedAt' | 'views' | 'claims'>): Promise<string | null> {
+  const { data, error } = await db.from('partner_deals').insert({
+    partner_id: deal.partnerId, partner_name: deal.partnerName,
+    name: deal.name, description: deal.description, deal_text: deal.dealText,
+    savings: deal.savings, category: deal.category, website_url: deal.websiteUrl,
+    logo_url: deal.logoUrl, promo_code: deal.promoCode, status: 'pending',
+  }).select('id').single();
+  return error ? null : (data?.id as string);
+}
+
+export async function updatePartnerDealStatus(
+  id: string, status: 'approved' | 'rejected', rejectionReason?: string
+): Promise<void> {
+  await db.from('partner_deals').update({
+    status,
+    rejection_reason: rejectionReason || null,
+    approved_at: status === 'approved' ? new Date().toISOString() : null,
+  }).eq('id', id);
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+export async function getNotifications(userId: string): Promise<Notification[]> {
+  const { data } = await db.from('notifications').select('*')
+    .eq('user_id', userId).order('created_at', { ascending: false }).limit(50);
+  return (data || []).map((r: Record<string, unknown>) => ({
+    id: r.id as string, userId: r.user_id as string, type: r.type as string,
+    title: r.title as string, message: r.message as string,
+    read: r.read as boolean, createdAt: r.created_at as string,
+  }));
+}
+
+export async function markNotificationRead(id: string): Promise<void> {
+  await db.from('notifications').update({ read: true }).eq('id', id);
+}
+
+export async function addNotification(userId: string, type: string, title: string, message: string): Promise<void> {
+  await db.from('notifications').insert({ user_id: userId, type, title, message, read: false });
+}
+
+// ─── MESSAGES ────────────────────────────────────────────────────────────────
+export async function getMessages(threadId: string): Promise<Message[]> {
+  const { data } = await db.from('messages').select('*')
+    .eq('thread_id', threadId).order('created_at', { ascending: true });
+  return (data || []).map((r: Record<string, unknown>) => ({
+    id: r.id as string, threadId: r.thread_id as string,
+    senderId: r.sender_id as string, senderName: r.sender_name as string,
+    senderRole: r.sender_role as string, content: r.content as string,
+    createdAt: r.created_at as string,
+  }));
+}
+
+export async function sendMessage(threadId: string, senderId: string, senderName: string, senderRole: string, content: string): Promise<void> {
+  await db.from('messages').insert({ thread_id: threadId, sender_id: senderId, sender_name: senderName, sender_role: senderRole, content });
 }
 
 // ─── REFERRALS ────────────────────────────────────────────────────────────────
-export interface ReferralEntry {
-  code: string;          // referrer's code
-  referrerId: string;
-  referrerName: string;
-  referreeEmail: string;
-  referreeId?: string;
-  status: 'pending' | 'converted' | 'paid';
-  creditAmount: number;
-  createdAt: string;
-  convertedAt?: string;
+export async function getReferralsByUser(userId: string): Promise<ReferralEntry[]> {
+  const { data } = await db.from('referrals').select('*').eq('referrer_id', userId);
+  return (data || []).map((r: Record<string, unknown>) => ({
+    code: r.code as string, referrerId: r.referrer_id as string,
+    referrerName: r.referrer_name as string, referreeEmail: r.referree_email as string,
+    referreeId: r.referree_id as string | undefined,
+    status: r.status as ReferralEntry['status'],
+    creditAmount: r.credit_amount as number,
+    createdAt: r.created_at as string, convertedAt: r.converted_at as string | undefined,
+  }));
 }
 
+export async function trackReferral(code: string, referrerId: string, referrerName: string, referreeEmail: string): Promise<void> {
+  await db.from('referrals').upsert(
+    { code, referrer_id: referrerId, referrer_name: referrerName, referree_email: referreeEmail, status: 'pending', credit_amount: 20 },
+    { onConflict: 'referree_email' }
+  );
+}
+
+export async function convertReferral(referreeEmail: string, referreeId: string): Promise<void> {
+  await db.from('referrals').update({
+    status: 'converted', referree_id: referreeId, converted_at: new Date().toISOString()
+  }).eq('referree_email', referreeEmail);
+}
+
+// Sync helper for non-async (localStorage fallback for legacy usage)
 export function getReferrals(): ReferralEntry[] {
   try { return JSON.parse(localStorage.getItem('pn_referrals') || '[]'); } catch { return []; }
 }
 
-export function trackReferral(code: string, referrerId: string, referrerName: string, referreeEmail: string): void {
-  const refs = getReferrals();
-  if (refs.find(r => r.referreeEmail === referreeEmail)) return; // already referred
-  refs.push({ code, referrerId, referrerName, referreeEmail, status: 'pending', creditAmount: 20, createdAt: new Date().toISOString() });
-  localStorage.setItem('pn_referrals', JSON.stringify(refs));
-}
-
-export function getReferralsByUser(userId: string): ReferralEntry[] {
-  return getReferrals().filter(r => r.referrerId === userId);
-}
-
-export function convertReferral(referreeEmail: string, referreeId: string): void {
-  const refs = getReferrals().map(r =>
-    r.referreeEmail === referreeEmail
-      ? { ...r, status: 'converted' as const, referreeId, convertedAt: new Date().toISOString() }
-      : r
-  );
-  localStorage.setItem('pn_referrals', JSON.stringify(refs));
-}
-
 // ─── DIGEST SUBSCRIBERS ───────────────────────────────────────────────────────
-export interface DigestSubscriber {
-  email: string;
-  name?: string;
-  subscribedAt: string;
-  frequency: 'weekly' | 'monthly';
+export async function subscribeToDigestDB(email: string, name?: string, frequency: 'weekly' | 'monthly' = 'weekly'): Promise<boolean> {
+  const { error } = await db.from('digest_subscribers').upsert(
+    { email, name, frequency, active: true },
+    { onConflict: 'email' }
+  );
+  return !error;
+}
+
+// Sync wrapper that also updates localStorage for immediate UI feedback
+export function subscribeToDigest(email: string, name?: string, frequency: 'weekly' | 'monthly' = 'weekly'): boolean {
+  const subs: DigestSubscriber[] = JSON.parse(localStorage.getItem('pn_digest_subscribers') || '[]');
+  if (subs.find(s => s.email === email)) return false;
+  subs.push({ email, name, subscribedAt: new Date().toISOString(), frequency });
+  localStorage.setItem('pn_digest_subscribers', JSON.stringify(subs));
+  // Async sync to DB
+  subscribeToDigestDB(email, name, frequency).catch(() => {});
+  return true;
 }
 
 export function getDigestSubscribers(): DigestSubscriber[] {
   try { return JSON.parse(localStorage.getItem('pn_digest_subscribers') || '[]'); } catch { return []; }
 }
 
-export function subscribeToDigest(email: string, name?: string, frequency: 'weekly' | 'monthly' = 'weekly'): boolean {
-  const subs = getDigestSubscribers();
-  if (subs.find(s => s.email === email)) return false; // already subscribed
-  subs.push({ email, name, subscribedAt: new Date().toISOString(), frequency });
-  localStorage.setItem('pn_digest_subscribers', JSON.stringify(subs));
-  return true;
+// ─── CLAIM EVENTS ─────────────────────────────────────────────────────────────
+export async function getClaimEvents(userId?: string): Promise<ClaimEvent[]> {
+  let query = db.from('claim_events').select('*');
+  if (userId) query = query.eq('user_id', userId);
+  const { data } = await query.order('claimed_at', { ascending: false });
+  return (data || []).map((r: Record<string, unknown>) => ({
+    id: r.id as string, userId: r.user_id as string, dealId: r.deal_id as string,
+    promoCode: r.promo_code as string | undefined, claimedAt: r.claimed_at as string,
+  }));
 }
 
-export function unsubscribeFromDigest(email: string): void {
-  const subs = getDigestSubscribers().filter(s => s.email !== email);
-  localStorage.setItem('pn_digest_subscribers', JSON.stringify(subs));
+// ─── DEAL VIEWS ───────────────────────────────────────────────────────────────
+export async function trackDealView(dealId: string, userId?: string): Promise<void> {
+  await db.from('deal_views').insert({ deal_id: dealId, user_id: userId || null });
 }
+
+export async function getDealViewCount(dealId: string): Promise<number> {
+  const { count } = await db.from('deal_views').select('*', { count: 'exact', head: true }).eq('deal_id', dealId);
+  return count || 0;
+}
+
+// ─── WHITE LABEL CLIENTS ─────────────────────────────────────────────────────
+export async function getWLClients(): Promise<WLClient[]> {
+  const { data } = await db.from('wl_clients').select('*').order('created_at', { ascending: false });
+  return (data || []).map((r: Record<string, unknown>) => ({
+    id: r.id as string, name: r.name as string, subdomain: r.subdomain as string,
+    logoUrl: r.logo_url as string | undefined, primaryColor: r.primary_color as string,
+    status: r.status as string, plan: r.plan as string,
+    mrr: r.mrr as number, members: r.members as number, createdAt: r.created_at as string,
+  }));
+}
+
+// ─── EMAIL ────────────────────────────────────────────────────────────────────
+export async function sendEmail(type: string, to: string, name: string, dealName?: string, promoCode?: string): Promise<void> {
+  try {
+    await fetch('https://api.perksnest.co/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, to, name, dealName, promoCode }),
+    });
+  } catch {}
+}
+
+// ─── ADMIN SETTINGS (localStorage — non-sensitive UI prefs) ──────────────────
+export function getAdminSettings() {
+  try { return JSON.parse(localStorage.getItem('pn_admin_settings') || 'null') || {}; } catch { return {}; }
+}
+export function saveAdminSettings(settings: Record<string, unknown>) {
+  localStorage.setItem('pn_admin_settings', JSON.stringify(settings));
+}
+
+export function getPartnerSettings(partnerId: string) {
+  try {
+    const all = JSON.parse(localStorage.getItem('pn_partner_settings') || '{}');
+    return all[partnerId] || {};
+  } catch { return {}; }
+}
+export function savePartnerSettings(partnerId: string, settings: Record<string, unknown>) {
+  const all = JSON.parse(localStorage.getItem('pn_partner_settings') || '{}');
+  all[partnerId] = settings;
+  localStorage.setItem('pn_partner_settings', JSON.stringify(all));
+}
+
+export const updatePartnerDeal = updatePartnerDealStatus;
+
+export const addPartnerDeal = submitPartnerDeal;
+
+export const getMessageThread = getMessages;
+
+export const saveMessageThread = async (threadId: string, msgs: Message[]) => { /* deprecated - use sendMessage instead */ };
+
+export const markAllNotificationsRead = async (userId: string) => { await db.from('notifications').update({ read: true }).eq('user_id', userId); };
