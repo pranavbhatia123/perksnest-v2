@@ -27,6 +27,7 @@ import { getAllUsers } from "@/lib/auth";
 import { dealsData } from "@/data/deals";
 
 export const AdminUsers = () => {
+  const [allUsers, setAllUsers] = useState<any[]>([]);
   useEffect(() => { getAllUsers().then(setAllUsers); }, []);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +41,7 @@ export const AdminUsers = () => {
   // Calculate user stats
   const userStats = useMemo(() => {
     const total = allUsers.length;
-    const premium = allUsers.filter(u => u.plan === 'pro' || u.plan === 'enterprise').length;
+    const premium = allUsers.filter(u => u.plan === 'premium' || u.plan === 'enterprise').length;
     const free = allUsers.filter(u => u.plan === 'free').length;
     const enterprise = allUsers.filter(u => u.plan === 'enterprise').length;
 

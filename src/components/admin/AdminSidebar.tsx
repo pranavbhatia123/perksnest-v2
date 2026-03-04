@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "@/lib/auth";
 import {
-  LayoutDashboard, Users, Package, UserCheck, DollarSign, Settings, Bell, Globe
+  LayoutDashboard, Users, Package, UserCheck, DollarSign, Settings, Bell, Globe, Search
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +24,11 @@ const sidebarItems = [
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
-export const AdminHeader = () => (
+export const AdminHeader = () => {
+  const { user, logout } = useAuth();
+  const [open, setOpen] = useState(false);
+  const initial = user?.name?.charAt(0)?.toUpperCase() || 'A';
+  return (
   <header className="bg-background border-b sticky top-0 z-50">
     <div className="px-6 py-4">
       <div className="flex items-center justify-between">
@@ -38,14 +44,36 @@ export const AdminHeader = () => (
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
           </Button>
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
-            A
+          <div className="relative">
+            <button
+              onClick={() => setOpen(!open)}
+              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold hover:opacity-90"
+            >
+              {user?.avatar ? <img src={user.avatar} alt={initial} className="w-8 h-8 rounded-full object-cover" /> : initial}
+            </button>
+            {open && (
+              <div className="absolute right-0 top-10 w-52 bg-background border border-border rounded-xl shadow-lg z-50">
+                <div className="p-3 border-b border-border">
+                  <p className="font-medium text-sm truncate">{user?.name || 'Admin'}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                </div>
+                <div className="p-1">
+                  <Link to="/customer" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-secondary">🎁 Customer Portal</Link>
+                  {(user?.roles?.includes('partner') || user?.role === 'partner') && (
+                    <Link to="/partner" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-secondary">🤝 Partner Portal</Link>
+                  )}
+                  <button onClick={() => { logout(); window.location.href = '/'; }} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-secondary text-red-600">🚪 Sign out</button>
+                </div>
+              </div>
+            )}
+            {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />}
           </div>
         </div>
       </div>
     </div>
   </header>
-);
+  );
+};
 
 export const AdminSidebar = ({ activeTab, onTabChange }: AdminSidebarProps) => {
   return (

@@ -38,17 +38,19 @@ import { dealsData } from "@/data/deals";
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6366f1'];
 
 export const AdminRevenue = () => {
+  const [allUsers, setAllUsers] = useState<any[]>([]);
   useEffect(() => { getAllUsers().then(setAllUsers); }, []);
   // Calculate real revenue stats from users
   const stats = useMemo(() => {
     // allUsers from state (loaded async)
-    const premiumUsers = allUsers.filter(u => u.plan === 'pro' || u.plan === 'enterprise').length;
+    const premiumUsers = allUsers.filter(u => u.plan === 'premium' || u.plan === 'enterprise').length;
     const enterpriseUsers = allUsers.filter(u => u.plan === 'enterprise').length;
-    const proUsers = allUsers.filter(u => u.plan === 'pro').length;
+    const proUsers = allUsers.filter(u => u.plan === 'premium').length;
 
-    // Calculate revenue
-    const enterpriseRevenue = enterpriseUsers * 499; // $499/month per enterprise user
-    const proRevenue = proUsers * 14.99; // $14.99/month per pro user
+    // Calculate revenue - using real Stripe price ($12/mo production, $5/yr test)
+    // pranav@perksnest.co paid $5 (annual test plan), counts as 1 premium user
+    const enterpriseRevenue = enterpriseUsers * 99; // $99/year enterprise
+    const proRevenue = proUsers * 12; // $12/month per premium user
     const totalRevenue = enterpriseRevenue + proRevenue;
     const mrr = totalRevenue;
     const arr = totalRevenue * 12;
