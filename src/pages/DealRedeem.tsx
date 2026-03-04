@@ -1,9 +1,13 @@
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Check, Copy, ExternalLink, Clock, Shield, Star, Gift, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { useParams, Link, Navigate } from "react-router-dom";
+import { ArrowLeft, Check, Copy, ExternalLink, Clock, Shield, Star, Gift, ChevronRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SafeImage from "@/components/SafeImage";
+import { AuthModal } from "@/components/AuthModal";
+import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { dealsData } from "@/data/deals";
 
@@ -175,9 +179,12 @@ const defaultRedemptionInfo: {
 
 const DealRedeem = () => {
   const { dealId } = useParams<{ dealId: string }>();
+  const { user, isAuthenticated, isPro } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   const baseDeal = dealId ? dealsData.find(d => d.id === dealId) : null;
   const redemption = dealId && redemptionInfo[dealId] ? redemptionInfo[dealId] : defaultRedemptionInfo;
-  
+
   const deal = baseDeal ? {
     ...baseDeal,
     promoCode: redemption.promoCode,
@@ -187,8 +194,12 @@ const DealRedeem = () => {
     expiresIn: redemption.expiresIn,
   } : null;
 
+  const isClaimed = dealId && user?.claimedDeals.includes(dealId);
+  const isPremiumDeal = deal?.isPremium;
+  const canViewCode = isAuthenticated && isClaimed && (!isPremiumDeal || isPro);
+
   const handleCopyCode = () => {
-    if (deal?.promoCode) {
+    if (deal?.promoCode && canViewCode) {
       navigator.clipboard.writeText(deal.promoCode);
       toast.success("Promo code copied to clipboard!");
     }
@@ -273,15 +284,64 @@ const DealRedeem = () => {
             </div>
           </div>
 
-          {/* Promo Code Card (if available) */}
+          {/* Auth Check Alert */}
+          {!isAuthenticated && (
+            <Alert className="mb-8 border-yellow-500/50 bg-yellow-500/10">
+              <Lock className="h-4 w-4" />
+              <AlertDescription>
+                Please sign in to view the promo code and redemption instructions.
+                <Button
+                  variant="link"
+                  className="h-auto p-0 ml-2 text-primary"
+                  onClick={() => setShowAuthModal(true)}
+                >
+                  Sign in now
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Not Claimed Alert */}
+          {isAuthenticated && !isClaimed && (
+            <Alert className="mb-8 border-yellow-500/50 bg-yellow-500/10">
+              <Lock className="h-4 w-4" />
+              <AlertDescription>
+                You need to claim this deal first to view the promo code.
+                <Link to={`/deals/${dealId}`}>
+                  <Button variant="link" className="h-auto p-0 ml-2 text-primary">
+                    Claim deal
+                  </Button>
+                </Link>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Premium Lock Alert */}
+          {isAuthenticated && isPremiumDeal && !isPro && (
+            <Alert className="mb-8 border-primary/50 bg-primary/10">
+              <Lock className="h-4 w-4" />
+              <AlertDescription>
+                This is a premium deal. Upgrade to Pro to access it.
+                <Link to="/pricing">
+                  <Button variant="link" className="h-auto p-0 ml-2 text-primary">
+                    View plans
+                  </Button>
+                </Link>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Promo Code Card (if available and accessible) */}
           {deal.promoCode && (
-            <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-2xl p-6 mb-8">
+            <div className={`bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-2xl p-6 mb-8 ${!canViewCode ? 'blur-sm pointer-events-none' : ''}`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Your promo code</p>
-                  <p className="text-2xl font-bold font-mono text-foreground tracking-wider">{deal.promoCode}</p>
+                  <p className="text-2xl font-bold font-mono text-foreground tracking-wider">
+                    {canViewCode ? deal.promoCode : '••••••••'}
+                  </p>
                 </div>
-                <Button onClick={handleCopyCode} variant="outline" className="gap-2">
+                <Button onClick={handleCopyCode} variant="outline" className="gap-2" disabled={!canViewCode}>
                   <Copy className="h-4 w-4" />
                   Copy Code
                 </Button>
@@ -362,6 +422,12 @@ const DealRedeem = () => {
       </main>
 
       <Footer />
+
+      <AuthModal
+        open={showAuthModal}
+        onOpenChange={setShowAuthModal}
+        onSuccess={() => setShowAuthModal(false)}
+      />
     </div>
   );
 };

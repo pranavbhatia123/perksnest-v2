@@ -11,6 +11,7 @@ export interface Deal {
   isFree?: boolean;
   isPick?: boolean;
   category: string;
+  lastAdded?: string;
 }
 
 export const dealsData: Deal[] = [
@@ -25,6 +26,7 @@ export const dealsData: Deal[] = [
     isFree: true,
     isPick: true,
     category: "project",
+    lastAdded: "2026-02-28",
   },
   {
     id: "stripe",
@@ -217,6 +219,7 @@ export const dealsData: Deal[] = [
     memberCount: 1282,
     isFree: true,
     category: "ai",
+    lastAdded: "2026-03-01",
   },
   {
     id: "webflow",
@@ -229,6 +232,7 @@ export const dealsData: Deal[] = [
     isPremium: true,
     isFree: false,
     category: "development",
+    lastAdded: "2026-03-02",
   },
   {
     id: "shopify",

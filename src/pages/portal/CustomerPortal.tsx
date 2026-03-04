@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { 
-  User, Mail, Building, MapPin, Settings, Bell, CreditCard, Gift, 
-  Wallet, Calendar, Download, Share2, Copy, TrendingUp, Users, 
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  User, Mail, Building, MapPin, Settings, Bell, CreditCard, Gift,
+  Wallet, Calendar, Download, Share2, Copy, TrendingUp, Users,
   DollarSign, Award, CheckCircle, Clock, Bookmark, Star, Tag,
   Search, ChevronRight, ExternalLink
 } from "lucide-react";
@@ -12,76 +12,134 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/lib/auth";
+import { dealsData } from "@/data/deals";
+import { toast } from "sonner";
 
 const CustomerPortal = () => {
-  const [copiedCode, setCopiedCode] = useState<number | null>(null);
+  const navigate = useNavigate();
+  const { user, isAuthenticated, updateUser } = useAuth();
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [editedName, setEditedName] = useState("");
+  const [editedEmail, setEditedEmail] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Sample User Data
-  const userData = {
-    name: "Sarah Johnson",
-    email: "sarah@startup.com",
-    company: "TechStart Inc.",
-    role: "CEO",
-    location: "San Francisco, CA",
-    memberSince: "2024-01-15",
-    plan: "Premium",
-    dealsClaimed: 23,
-    totalSavings: 12450,
-    referralEarnings: 180
-  };
-
-  const claimedDeals = [
-    { 
-      id: 1, 
-      vendor: "Notion", 
-      logo: "📝", 
-      name: "Notion Pro - 6 Months Free",
-      claimedDate: "2024-01-20",
-      status: "active",
-      expiresDate: "2024-07-20",
-      savings: 120,
-      redemptionCode: "NOTION-PERK-2024"
-    },
-    { 
-      id: 2, 
-      vendor: "Google Cloud", 
-      logo: "☁️", 
-      name: "Google Cloud - $2000 Credits",
-      claimedDate: "2024-01-18",
-      status: "redeemed",
-      expiresDate: "2024-12-31",
-      savings: 2000,
-      redemptionCode: "GCP-STARTUP-5678"
-    },
-    { 
-      id: 3, 
-      vendor: "Make", 
-      logo: "⚡", 
-      name: "Make - 10,000 Credits + 40% Off",
-      claimedDate: "2024-01-22",
-      status: "pending",
-      expiresDate: "2024-06-30",
-      savings: 500,
-      redemptionCode: "MAKE-PERK-9012"
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to access your portal");
+      navigate("/");
     }
-  ];
+  }, [isAuthenticated, navigate]);
 
-  const referrals = [
-    { id: 1, name: "John Doe", email: "john@example.com", status: "converted", earnedAmount: 20, date: "2024-01-25" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", status: "pending", earnedAmount: 0, date: "2024-01-28" },
-    { id: 3, name: "Mike Chen", email: "mike@example.com", status: "converted", earnedAmount: 20, date: "2024-01-20" },
-  ];
+  // Initialize form fields when user data loads
+  useEffect(() => {
+    if (user) {
+      setEditedName(user.name);
+      setEditedEmail(user.email);
+    }
+  }, [user]);
 
-  const savedDeals = [
-    { id: 1, vendor: "Stripe", logo: "💳", name: "Stripe - Waived Fees", savings: "$1,450", category: "Payments" },
-    { id: 2, vendor: "AWS", logo: "🌩️", name: "AWS - $5,000 Credits", savings: "$5,000", category: "Cloud" },
-    { id: 3, vendor: "Figma", logo: "🎨", name: "Figma Pro - 50% Off", savings: "$180", category: "Design" },
-  ];
+  // If not authenticated, don't render anything (will redirect)
+  if (!user || !isAuthenticated) {
+    return null;
+  }
 
-  const copyCode = (id: number, code: string) => {
+  // Get claimed deals with full details from dealsData
+  const claimedDealsWithDetails = user.claimedDeals
+    .map(dealId => {
+      const deal = dealsData.find(d => d.id === dealId);
+      if (!deal) return null;
+      return {
+        id: deal.id,
+        vendor: deal.name,
+        logo: deal.logo,
+        name: deal.dealText,
+        claimedDate: user.createdAt, // Using user creation date as placeholder
+        status: "active" as const,
+        expiresDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(), // 6 months from now
+        savings: parseInt(deal.savings.replace(/[$,]/g, '')) || 0,
+        redemptionCode: `${deal.id.toUpperCase()}-${user.referralCode}`
+      };
+    })
+    .filter(Boolean) as Array<{
+      id: string;
+      vendor: string;
+      logo: string;
+      name: string;
+      claimedDate: string;
+      status: "active" | "redeemed" | "pending";
+      expiresDate: string;
+      savings: number;
+      redemptionCode: string;
+    }>;
+
+  // Calculate total savings from claimed deals
+  const totalSavings = claimedDealsWithDetails.reduce((acc, deal) => acc + deal.savings, 0);
+
+  // Mock referrals data (would come from backend in real app)
+  const referrals = Array.from({ length: user.referralCount }, (_, i) => ({
+    id: i + 1,
+    name: `Referral ${i + 1}`,
+    email: `referral${i + 1}@example.com`,
+    status: "converted" as const,
+    earnedAmount: 20,
+    date: new Date(Date.now() - i * 7 * 24 * 60 * 60 * 1000).toISOString()
+  }));
+
+  const referralEarnings = referrals.reduce((acc, ref) => acc + ref.earnedAmount, 0);
+
+  // Mock saved deals (would come from backend in real app)
+  const savedDeals: Array<{ id: string; vendor: string; logo: string; name: string; savings: string; category: string }> = [];
+
+  const copyCode = (id: string, code: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(id);
     setTimeout(() => setCopiedCode(null), 2000);
+    toast.success("Code copied to clipboard!");
+  };
+
+  const copyReferralLink = () => {
+    const referralLink = `perksnest.com/ref/${user.referralCode}`;
+    navigator.clipboard.writeText(referralLink);
+    toast.success("Referral link copied!");
+  };
+
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    try {
+      const success = updateUser({
+        name: editedName,
+        email: editedEmail,
+      });
+
+      if (success) {
+        toast.success("Settings updated successfully!");
+      } else {
+        toast.error("Failed to update settings");
+      }
+    } catch (error) {
+      toast.error("Failed to update settings");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Get plan badge variant
+  const getPlanBadgeClass = () => {
+    switch (user.plan) {
+      case 'pro':
+        return "bg-gradient-to-r from-primary to-purple-500";
+      case 'enterprise':
+        return "bg-gradient-to-r from-purple-500 to-pink-500";
+      case 'free':
+      default:
+        return "bg-gradient-to-r from-gray-500 to-gray-600";
+    }
+  };
+
+  const getPlanLabel = () => {
+    return user.plan.charAt(0).toUpperCase() + user.plan.slice(1);
   };
 
   return (
@@ -105,7 +163,7 @@ const CustomerPortal = () => {
                 <Bell className="h-5 w-5" />
               </Button>
               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
-                {userData.name.charAt(0)}
+                {user.name.charAt(0)}
               </div>
             </div>
           </div>
@@ -116,26 +174,23 @@ const CustomerPortal = () => {
         {/* Profile Header */}
         <div className="flex items-start gap-6 mb-8">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-3xl text-primary-foreground font-bold">
-            {userData.name.charAt(0)}
+            {user.name.charAt(0)}
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold">{userData.name}</h1>
-              <Badge className="bg-gradient-to-r from-primary to-purple-500">{userData.plan}</Badge>
+              <h1 className="text-2xl font-bold">{user.name}</h1>
+              <Badge className={getPlanBadgeClass()}>{getPlanLabel()}</Badge>
             </div>
             <div className="flex items-center gap-6 mt-2 text-muted-foreground">
               <span className="flex items-center gap-1">
-                <Building className="h-4 w-4" /> {userData.company}
+                <Mail className="h-4 w-4" /> {user.email}
               </span>
               <span className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" /> {userData.location}
-              </span>
-              <span className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" /> Member since {new Date(userData.memberSince).toLocaleDateString()}
+                <Calendar className="h-4 w-4" /> Member since {new Date(user.createdAt).toLocaleDateString()}
               </span>
             </div>
           </div>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => document.getElementById('settings-tab')?.click()}>
             <Settings className="h-4 w-4 mr-2" />
             Edit Profile
           </Button>
@@ -148,7 +203,7 @@ const CustomerPortal = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-primary">Total Savings</p>
-                  <p className="text-2xl font-bold text-primary">${userData.totalSavings.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-primary">${totalSavings.toLocaleString()}</p>
                 </div>
                 <DollarSign className="h-8 w-8 text-primary" />
               </div>
@@ -160,7 +215,7 @@ const CustomerPortal = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Deals Claimed</p>
-                  <p className="text-2xl font-bold">{userData.dealsClaimed}</p>
+                  <p className="text-2xl font-bold">{user.claimedDeals.length}</p>
                 </div>
                 <Gift className="h-8 w-8 text-primary" />
               </div>
@@ -172,7 +227,7 @@ const CustomerPortal = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Referral Earnings</p>
-                  <p className="text-2xl font-bold">${userData.referralEarnings}</p>
+                  <p className="text-2xl font-bold">${referralEarnings}</p>
                 </div>
                 <Users className="h-8 w-8 text-accent" />
               </div>
@@ -183,10 +238,10 @@ const CustomerPortal = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Saved Deals</p>
-                  <p className="text-2xl font-bold">{savedDeals.length}</p>
+                  <p className="text-sm text-muted-foreground">Referrals</p>
+                  <p className="text-2xl font-bold">{user.referralCount}</p>
                 </div>
-                <Bookmark className="h-8 w-8 text-accent" />
+                <Share2 className="h-8 w-8 text-accent" />
               </div>
             </CardContent>
           </Card>
@@ -207,7 +262,7 @@ const CustomerPortal = () => {
               <Share2 className="h-4 w-4" />
               Referrals
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2">
+            <TabsTrigger id="settings-tab" value="settings" className="gap-2">
               <Settings className="h-4 w-4" />
               Settings
             </TabsTrigger>
@@ -223,54 +278,66 @@ const CustomerPortal = () => {
                 </Link>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {claimedDeals.map((deal) => (
-                    <div key={deal.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-background border flex items-center justify-center text-2xl">
-                          {deal.logo}
-                        </div>
-                        <div>
-                          <p className="font-medium">{deal.name}</p>
-                          <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                            <span>Claimed {new Date(deal.claimedDate).toLocaleDateString()}</span>
-                            <span>•</span>
-                            <span>Expires {new Date(deal.expiresDate).toLocaleDateString()}</span>
+                {claimedDealsWithDetails.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Gift className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-lg font-medium mb-2">No deals claimed yet</p>
+                    <p className="text-muted-foreground mb-6">Start claiming deals to see them here</p>
+                    <Link to="/deals">
+                      <Button>Browse Deals</Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {claimedDealsWithDetails.map((deal) => (
+                      <div key={deal.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-lg bg-background border flex items-center justify-center overflow-hidden">
+                            <img src={deal.logo} alt={deal.vendor} className="w-8 h-8 object-contain" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{deal.vendor}</p>
+                            <p className="text-sm text-muted-foreground">{deal.name}</p>
+                            <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                              <span>Claimed {new Date(deal.claimedDate).toLocaleDateString()}</span>
+                              <span>•</span>
+                              <span>Expires {new Date(deal.expiresDate).toLocaleDateString()}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <Badge variant={
-                          deal.status === "active" ? "default" :
-                          deal.status === "redeemed" ? "secondary" : "outline"
-                        }>
-                          {deal.status === "active" && <CheckCircle className="h-3 w-3 mr-1" />}
-                          {deal.status === "pending" && <Clock className="h-3 w-3 mr-1" />}
-                          {deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
-                        </Badge>
-                        <div className="text-right">
-                          <p className="text-sm text-muted-foreground">Redemption Code</p>
-                          <div className="flex items-center gap-2">
-                            <code className="text-xs bg-muted px-2 py-1 rounded">{deal.redemptionCode}</code>
-                            <Button 
-                              size="icon" 
-                              variant="ghost" 
-                              className="h-8 w-8"
-                              onClick={() => copyCode(deal.id, deal.redemptionCode)}
-                            >
-                              {copiedCode === deal.id ? (
-                                <CheckCircle className="h-4 w-4 text-green-500" />
-                              ) : (
-                                <Copy className="h-4 w-4" />
-                              )}
-                            </Button>
+                        <div className="flex items-center gap-4">
+                          <Badge variant={
+                            deal.status === "active" ? "default" :
+                            deal.status === "redeemed" ? "secondary" : "outline"
+                          }>
+                            {deal.status === "active" && <CheckCircle className="h-3 w-3 mr-1" />}
+                            {deal.status === "pending" && <Clock className="h-3 w-3 mr-1" />}
+                            {deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
+                          </Badge>
+                          <div className="text-right">
+                            <p className="text-sm text-muted-foreground">Redemption Code</p>
+                            <div className="flex items-center gap-2">
+                              <code className="text-xs bg-muted px-2 py-1 rounded">{deal.redemptionCode}</code>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8"
+                                onClick={() => copyCode(deal.id, deal.redemptionCode)}
+                              >
+                                {copiedCode === deal.id ? (
+                                  <CheckCircle className="h-4 w-4 text-green-500" />
+                                ) : (
+                                  <Copy className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
                           </div>
+                          <p className="text-primary font-semibold">+${deal.savings.toLocaleString()}</p>
                         </div>
-                        <p className="text-primary font-semibold">+${deal.savings}</p>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -282,25 +349,13 @@ const CustomerPortal = () => {
                 <CardTitle>Saved Deals</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-4">
-                  {savedDeals.map((deal) => (
-                    <div key={deal.id} className="p-4 bg-muted/50 rounded-lg border hover:border-primary/50 transition-colors">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-lg bg-background border flex items-center justify-center text-xl">
-                          {deal.logo}
-                        </div>
-                        <div>
-                          <p className="font-medium">{deal.vendor}</p>
-                          <Badge variant="outline" className="text-xs">{deal.category}</Badge>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">{deal.name}</p>
-                      <div className="flex items-center justify-between">
-                        <p className="text-primary font-semibold">{deal.savings} savings</p>
-                        <Button size="sm">Claim Deal</Button>
-                      </div>
-                    </div>
-                  ))}
+                <div className="text-center py-12">
+                  <Bookmark className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium mb-2">No saved deals yet</p>
+                  <p className="text-muted-foreground mb-6">Save deals you're interested in for later</p>
+                  <Link to="/deals">
+                    <Button>Browse Deals</Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
@@ -311,32 +366,43 @@ const CustomerPortal = () => {
             <div className="grid lg:grid-cols-3 gap-6">
               <Card className="lg:col-span-2">
                 <CardHeader>
-                  <CardTitle>Your Referrals</CardTitle>
+                  <CardTitle>Your Referrals ({user.referralCount})</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {referrals.map((referral) => (
-                      <div key={referral.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                            {referral.name.charAt(0)}
+                  {referrals.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-lg font-medium mb-2">No referrals yet</p>
+                      <p className="text-muted-foreground">Share your referral link to start earning!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {referrals.map((referral) => (
+                        <div key={referral.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                              {referral.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="font-medium">{referral.name}</p>
+                              <p className="text-sm text-muted-foreground">{referral.email}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Joined {new Date(referral.date).toLocaleDateString()}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium">{referral.name}</p>
-                            <p className="text-sm text-muted-foreground">{referral.email}</p>
+                          <div className="flex items-center gap-4">
+                            <Badge variant={referral.status === "converted" ? "default" : "secondary"}>
+                              {referral.status}
+                            </Badge>
+                            {referral.earnedAmount > 0 && (
+                              <p className="text-primary font-semibold">+${referral.earnedAmount}</p>
+                            )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <Badge variant={referral.status === "converted" ? "default" : "secondary"}>
-                            {referral.status}
-                          </Badge>
-                          {referral.earnedAmount > 0 && (
-                            <p className="text-primary font-semibold">+${referral.earnedAmount}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -349,22 +415,34 @@ const CustomerPortal = () => {
                     Earn $20 for every friend who signs up and claims a deal!
                   </p>
                   <div className="p-4 bg-muted rounded-lg mb-4">
+                    <p className="text-sm text-muted-foreground mb-2">Your referral code</p>
+                    <div className="flex gap-2 mb-3">
+                      <Input value={user.referralCode} readOnly className="text-sm font-mono" />
+                      <Button size="icon" variant="outline" onClick={copyReferralLink}>
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
                     <p className="text-sm text-muted-foreground mb-2">Your referral link</p>
                     <div className="flex gap-2">
-                      <Input value="perksnest.com/ref/sarah123" readOnly className="text-sm" />
-                      <Button size="icon" variant="outline">
+                      <Input value={`perksnest.com/ref/${user.referralCode}`} readOnly className="text-sm" />
+                      <Button size="icon" variant="outline" onClick={copyReferralLink}>
                         <Copy className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
+                  <div className="p-4 bg-primary/5 rounded-lg mb-4 border border-primary/10">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-medium">Total Earned</p>
+                      <p className="text-2xl font-bold text-primary">${referralEarnings}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      From {user.referralCount} referral{user.referralCount !== 1 ? 's' : ''}
+                    </p>
+                  </div>
                   <div className="flex gap-2">
-                    <Button className="flex-1">
+                    <Button className="flex-1" onClick={copyReferralLink}>
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
-                    </Button>
-                    <Button variant="outline" className="flex-1">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Email
                     </Button>
                   </div>
                 </CardContent>
@@ -383,24 +461,53 @@ const CustomerPortal = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium mb-2 block">Full Name</label>
-                      <Input defaultValue={userData.name} />
+                      <Input
+                        value={editedName}
+                        onChange={(e) => setEditedName(e.target.value)}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-2 block">Email</label>
-                      <Input defaultValue={userData.email} type="email" />
+                      <Input
+                        value={editedEmail}
+                        onChange={(e) => setEditedEmail(e.target.value)}
+                        type="email"
+                      />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Company</label>
-                      <Input defaultValue={userData.company} />
+                      <label className="text-sm font-medium mb-2 block">User ID</label>
+                      <Input value={user.id} disabled />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Location</label>
-                      <Input defaultValue={userData.location} />
+                      <label className="text-sm font-medium mb-2 block">Plan</label>
+                      <Input value={getPlanLabel()} disabled />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Referral Code</label>
+                      <Input value={user.referralCode} disabled />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Member Since</label>
+                      <Input value={new Date(user.createdAt).toLocaleDateString()} disabled />
                     </div>
                   </div>
                   <div className="flex justify-end gap-3">
-                    <Button variant="outline">Cancel</Button>
-                    <Button>Save Changes</Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setEditedName(user.name);
+                        setEditedEmail(user.email);
+                      }}
+                      disabled={isSaving}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSaveSettings}
+                      disabled={isSaving || (editedName === user.name && editedEmail === user.email)}
+                    >
+                      {isSaving ? "Saving..." : "Save Changes"}
+                    </Button>
                   </div>
                 </div>
               </CardContent>

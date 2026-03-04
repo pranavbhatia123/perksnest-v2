@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { 
+import { useState, useMemo } from "react";
+import {
   Search, Filter, Download, Eye, Edit, Ban, Mail, MoreVertical,
   UserPlus, CheckCircle, XCircle, ArrowUpDown, ChevronLeft, ChevronRight
 } from "lucide-react";
@@ -23,40 +23,96 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-
-const users = [
-  { id: 1, name: "Sarah Johnson", email: "sarah@techstart.com", company: "TechStart Inc.", plan: "Premium", signupDate: "2024-01-28", status: "active", claimedDeals: 12, totalSavings: 4500, lastLogin: "2 hours ago" },
-  { id: 2, name: "Michael Chen", email: "michael@innovate.io", company: "Innovate Labs", plan: "Free", signupDate: "2024-01-28", status: "active", claimedDeals: 5, totalSavings: 1200, lastLogin: "5 hours ago" },
-  { id: 3, name: "Emily Rodriguez", email: "emily@growth.co", company: "GrowthCo", plan: "Premium", signupDate: "2024-01-27", status: "active", claimedDeals: 18, totalSavings: 8900, lastLogin: "1 day ago" },
-  { id: 4, name: "James Wilson", email: "james@dev.io", company: "DevStudio", plan: "Free", signupDate: "2024-01-27", status: "pending", claimedDeals: 2, totalSavings: 300, lastLogin: "3 days ago" },
-  { id: 5, name: "Lisa Park", email: "lisa@startup.co", company: "StartupCo", plan: "Premium", signupDate: "2024-01-26", status: "active", claimedDeals: 24, totalSavings: 12500, lastLogin: "1 hour ago" },
-  { id: 6, name: "David Kim", email: "david@enterprise.com", company: "Enterprise Corp", plan: "White Label", signupDate: "2024-01-25", status: "active", claimedDeals: 45, totalSavings: 34000, lastLogin: "30 mins ago" },
-  { id: 7, name: "Anna Smith", email: "anna@creative.io", company: "Creative Agency", plan: "Premium", signupDate: "2024-01-24", status: "suspended", claimedDeals: 8, totalSavings: 2100, lastLogin: "1 week ago" },
-  { id: 8, name: "Robert Brown", email: "robert@tech.co", company: "TechVentures", plan: "Free", signupDate: "2024-01-23", status: "active", claimedDeals: 3, totalSavings: 450, lastLogin: "2 days ago" },
-];
-
-const userStats = {
-  total: 212980,
-  active: 156432,
-  premium: 34567,
-  free: 178413,
-  newThisMonth: 4532,
-  pendingVerification: 234
-};
+import { getAllUsers } from "@/lib/auth";
+import { dealsData } from "@/data/deals";
 
 export const AdminUsers = () => {
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [planFilter, setPlanFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Get real users from localStorage
+  const allUsers = useMemo(() => getAllUsers(), []);
+
+  // Calculate user stats
+  const userStats = useMemo(() => {
+    const total = allUsers.length;
+    const premium = allUsers.filter(u => u.plan === 'pro' || u.plan === 'enterprise').length;
+    const free = allUsers.filter(u => u.plan === 'free').length;
+    const enterprise = allUsers.filter(u => u.plan === 'enterprise').length;
+
+    return {
+      total,
+      active: Math.floor(total * 0.85), // ~85% active
+      premium,
+      free,
+      enterprise,
+      newThisMonth: Math.floor(total * 0.15), // ~15% new this month
+      pendingVerification: 0
+    };
+  }, [allUsers]);
+
+  // Transform users for display
+  const displayUsers = useMemo(() => {
+    return allUsers.map(user => {
+      // Calculate total savings from claimed deals
+      const totalSavings = user.claimedDeals.reduce((sum, dealId) => {
+        const deal = dealsData.find(d => d.id === dealId);
+        if (deal) {
+          const savings = parseFloat(deal.savings.replace(/[$,]/g, ''));
+          return sum + savings;
+        }
+        return sum;
+      }, 0);
+
+      // Calculate last login time (mock)
+      const lastLoginOptions = ['1 hour ago', '2 hours ago', '1 day ago', '2 days ago', '1 week ago'];
+      const lastLogin = lastLoginOptions[Math.floor(Math.random() * lastLoginOptions.length)];
+
+      return {
+        ...user,
+        claimedDealsCount: user.claimedDeals.length,
+        totalSavings,
+        lastLogin,
+        status: 'active' as const,
+        company: user.name + ' Corp' // Mock company name
+      };
+    });
+  }, [allUsers]);
+
+  // Filter users
+  const filteredUsers = useMemo(() => {
+    return displayUsers.filter(user => {
+      const matchesSearch = searchQuery === "" ||
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.company.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesPlan = planFilter === "all" || user.plan === planFilter;
+
+      return matchesSearch && matchesPlan;
+    });
+  }, [displayUsers, searchQuery, planFilter]);
+
+  // Paginate users
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredUsers, currentPage]);
+
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   const toggleSelectAll = () => {
-    if (selectedUsers.length === users.length) {
+    if (selectedUsers.length === paginatedUsers.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(users.map(u => u.id));
+      setSelectedUsers(paginatedUsers.map(u => u.id));
     }
   };
 
-  const toggleSelectUser = (userId: number) => {
+  const toggleSelectUser = (userId: string) => {
     if (selectedUsers.includes(userId)) {
       setSelectedUsers(selectedUsers.filter(id => id !== userId));
     } else {
@@ -79,10 +135,10 @@ export const AdminUsers = () => {
 
   const getPlanBadge = (plan: string) => {
     switch (plan) {
-      case "Premium":
-        return <Badge className="bg-primary text-primary-foreground">Premium</Badge>;
-      case "White Label":
-        return <Badge className="bg-purple-600 text-white hover:bg-purple-600">White Label</Badge>;
+      case "pro":
+        return <Badge className="bg-primary text-primary-foreground">Pro</Badge>;
+      case "enterprise":
+        return <Badge className="bg-purple-600 text-white hover:bg-purple-600">Enterprise</Badge>;
       default:
         return <Badge variant="secondary">Free</Badge>;
     }
@@ -113,31 +169,31 @@ export const AdminUsers = () => {
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Total Users</p>
-            <p className="text-xl font-bold">{userStats.total.toLocaleString()}</p>
+            <p className="text-xl font-bold">{userStats.total}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Active</p>
-            <p className="text-xl font-bold text-green-600">{userStats.active.toLocaleString()}</p>
+            <p className="text-xl font-bold text-green-600">{userStats.active}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground">Premium</p>
-            <p className="text-xl font-bold text-primary">{userStats.premium.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">Pro/Enterprise</p>
+            <p className="text-xl font-bold text-primary">{userStats.premium}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Free</p>
-            <p className="text-xl font-bold">{userStats.free.toLocaleString()}</p>
+            <p className="text-xl font-bold">{userStats.free}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">New This Month</p>
-            <p className="text-xl font-bold text-blue-600">+{userStats.newThisMonth.toLocaleString()}</p>
+            <p className="text-xl font-bold text-blue-600">+{userStats.newThisMonth}</p>
           </CardContent>
         </Card>
         <Card>
@@ -154,38 +210,37 @@ export const AdminUsers = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search by name, email, or company..." 
+              <Input
+                placeholder="Search by name, email, or company..."
                 className="pl-10"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
               />
             </div>
-            <Select>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="suspended">Suspended</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select>
+            <Select value={planFilter} onValueChange={setPlanFilter}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Plan" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Plans</SelectItem>
                 <SelectItem value="free">Free</SelectItem>
-                <SelectItem value="premium">Premium</SelectItem>
-                <SelectItem value="whitelabel">White Label</SelectItem>
+                <SelectItem value="pro">Pro</SelectItem>
+                <SelectItem value="enterprise">Enterprise</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchQuery("");
+                setPlanFilter("all");
+                setCurrentPage(1);
+              }}
+            >
               <Filter className="h-4 w-4 mr-2" />
-              More Filters
+              Clear Filters
             </Button>
           </div>
         </CardContent>
@@ -224,8 +279,8 @@ export const AdminUsers = () => {
               <thead>
                 <tr className="border-b bg-muted/50">
                   <th className="text-left p-4 w-12">
-                    <Checkbox 
-                      checked={selectedUsers.length === users.length}
+                    <Checkbox
+                      checked={selectedUsers.length === paginatedUsers.length && paginatedUsers.length > 0}
                       onCheckedChange={toggleSelectAll}
                     />
                   </th>
@@ -236,7 +291,7 @@ export const AdminUsers = () => {
                   </th>
                   <th className="text-left p-4">Company</th>
                   <th className="text-left p-4">Plan</th>
-                  <th className="text-left p-4">Status</th>
+                  <th className="text-left p-4">Role</th>
                   <th className="text-left p-4">Claimed Deals</th>
                   <th className="text-left p-4">Total Savings</th>
                   <th className="text-left p-4">Last Login</th>
@@ -244,10 +299,10 @@ export const AdminUsers = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {paginatedUsers.map((user) => (
                   <tr key={user.id} className="border-b hover:bg-muted/30">
                     <td className="p-4">
-                      <Checkbox 
+                      <Checkbox
                         checked={selectedUsers.includes(user.id)}
                         onCheckedChange={() => toggleSelectUser(user.id)}
                       />
@@ -265,9 +320,13 @@ export const AdminUsers = () => {
                     </td>
                     <td className="p-4 text-sm">{user.company}</td>
                     <td className="p-4">{getPlanBadge(user.plan)}</td>
-                    <td className="p-4">{getStatusBadge(user.status)}</td>
-                    <td className="p-4 text-sm">{user.claimedDeals}</td>
-                    <td className="p-4 text-sm font-medium text-green-600">${user.totalSavings.toLocaleString()}</td>
+                    <td className="p-4">
+                      <Badge variant="outline" className="capitalize">{user.role}</Badge>
+                    </td>
+                    <td className="p-4 text-sm">{user.claimedDealsCount}</td>
+                    <td className="p-4 text-sm font-medium text-green-600">
+                      ${user.totalSavings.toLocaleString()}
+                    </td>
                     <td className="p-4 text-sm text-muted-foreground">{user.lastLogin}</td>
                     <td className="p-4">
                       <DropdownMenu>
@@ -300,22 +359,42 @@ export const AdminUsers = () => {
               </tbody>
             </table>
           </div>
-          
+
           {/* Pagination */}
           <div className="flex items-center justify-between p-4 border-t">
             <p className="text-sm text-muted-foreground">
-              Showing 1-8 of {userStats.total.toLocaleString()} users
+              Showing {((currentPage - 1) * itemsPerPage) + 1}-{Math.min(currentPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} users
             </p>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" disabled>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(p => p - 1)}
+              >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">1</Button>
-              <Button variant="outline" size="sm">2</Button>
-              <Button variant="outline" size="sm">3</Button>
-              <span className="text-muted-foreground">...</span>
-              <Button variant="outline" size="sm">26623</Button>
-              <Button variant="outline" size="sm">
+              {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <Button
+                    key={pageNum}
+                    variant="outline"
+                    size="sm"
+                    className={currentPage === pageNum ? "bg-primary text-primary-foreground" : ""}
+                    onClick={() => setCurrentPage(pageNum)}
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              })}
+              {totalPages > 5 && <span className="text-muted-foreground">...</span>}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(p => p + 1)}
+              >
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>

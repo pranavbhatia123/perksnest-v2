@@ -1,6 +1,7 @@
 import { Check, Zap, Crown, Building2, HelpCircle, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
@@ -9,6 +10,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAuth } from "@/lib/auth";
+import { AuthModal } from "@/components/AuthModal";
+import { useState } from "react";
 
 const plans = [
   {
@@ -122,6 +126,83 @@ const comparisonFeatures = [
 ];
 
 const Pricing = () => {
+  const { user, isAuthenticated } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login');
+
+  const handlePlanClick = (planName: string, ctaLink: string) => {
+    // If user is authenticated and clicking Pro plan, redirect to customer portal
+    if (isAuthenticated && planName === "Pro") {
+      window.location.href = 'https://billing.stripe.com/p/login/test_example';
+      return;
+    }
+
+    // If not authenticated and clicking Free or Pro, show auth modal
+    if (!isAuthenticated && (planName === "Free" || planName === "Pro")) {
+      setAuthModalTab(planName === "Pro" ? 'register' : 'login');
+      setAuthModalOpen(true);
+      return;
+    }
+
+    // For Enterprise or other cases, follow the original link behavior
+    // This will be handled by the Link component
+  };
+
+  const getPlanBadge = (planName: string) => {
+    if (!isAuthenticated || !user) return null;
+
+    const userPlan = user.plan.toLowerCase();
+    const currentPlan = planName.toLowerCase();
+
+    if (userPlan === currentPlan) {
+      return (
+        <Badge className="ml-2 bg-success text-white">
+          Current Plan
+        </Badge>
+      );
+    }
+
+    return null;
+  };
+
+  const getPlanCTA = (plan: typeof plans[0]) => {
+    const badge = getPlanBadge(plan.name);
+
+    // For Enterprise plan, always use Link
+    if (plan.name === "Enterprise") {
+      return (
+        <Link to={plan.ctaLink}>
+          <Button
+            className={`w-full ${
+              plan.highlighted
+                ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            }`}
+            size="lg"
+          >
+            {plan.cta}
+          </Button>
+        </Link>
+      );
+    }
+
+    // For Free and Pro plans, handle auth state
+    return (
+      <Button
+        onClick={() => handlePlanClick(plan.name, plan.ctaLink)}
+        className={`w-full ${
+          plan.highlighted
+            ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+            : "bg-primary text-primary-foreground hover:bg-primary/90"
+        }`}
+        size="lg"
+        disabled={badge !== null}
+      >
+        {badge ? "Current Plan" : plan.cta}
+      </Button>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -171,8 +252,9 @@ const Pricing = () => {
                       }`}>
                         <Icon className={`h-6 w-6 ${plan.highlighted ? "text-primary-foreground" : "text-primary"}`} />
                       </div>
-                      <div>
+                      <div className="flex items-center">
                         <h3 className="font-bold text-xl">{plan.name}</h3>
+                        {getPlanBadge(plan.name)}
                       </div>
                     </div>
 
@@ -207,18 +289,7 @@ const Pricing = () => {
                       ))}
                     </ul>
 
-                    <Link to={plan.ctaLink}>
-                      <Button
-                        className={`w-full ${
-                          plan.highlighted
-                            ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                            : "bg-primary text-primary-foreground hover:bg-primary/90"
-                        }`}
-                        size="lg"
-                      >
-                        {plan.cta}
-                      </Button>
-                    </Link>
+                    {getPlanCTA(plan)}
                   </div>
                 );
               })}
@@ -315,18 +386,38 @@ const Pricing = () => {
               <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
                 Join 212,000+ startups already saving millions on SaaS tools.
               </p>
-              <Link to="/deals">
-                <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2">
-                  Explore deals
+              {isAuthenticated ? (
+                <Link to="/deals">
+                  <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2">
+                    Explore deals
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  size="lg"
+                  className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2"
+                  onClick={() => {
+                    setAuthModalTab('register');
+                    setAuthModalOpen(true);
+                  }}
+                >
+                  Get started free
                   <ArrowRight className="h-5 w-5" />
                 </Button>
-              </Link>
+              )}
             </div>
           </div>
         </section>
       </main>
 
       <Footer />
+
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        defaultTab={authModalTab}
+      />
     </div>
   );
 };

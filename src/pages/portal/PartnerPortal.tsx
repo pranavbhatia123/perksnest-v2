@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Bell } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Bell, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PartnerSidebar } from "@/components/partner/PartnerSidebar";
 import { PartnerDashboard } from "@/components/partner/PartnerDashboard";
 import { PartnerDeals } from "@/components/partner/PartnerDeals";
@@ -10,60 +11,90 @@ import { PartnerAnalytics } from "@/components/partner/PartnerAnalytics";
 import { PartnerRevenue } from "@/components/partner/PartnerRevenue";
 import { PartnerMessages } from "@/components/partner/PartnerMessages";
 import { PartnerSettings } from "@/components/partner/PartnerSettings";
+import { useAuth } from "@/lib/auth";
+import { getPremiumDeals, type Deal } from "@/data/deals";
+
+// Generate mock analytics data for partner deals
+const generateMockAnalytics = (deal: Deal, index: number) => {
+  const baseViews = deal.memberCount * (10 + index * 2);
+  const claims = Math.floor(baseViews * (0.15 + index * 0.02));
+  const redemptions = Math.floor(claims * (0.8 + index * 0.05));
+  const redemptionRate = ((redemptions / claims) * 100).toFixed(1);
+  const revenue = Math.floor(parseInt(deal.savings.replace(/[^0-9]/g, '')) * 0.15);
+
+  return {
+    views: baseViews,
+    claims,
+    redemptions,
+    redemptionRate: parseFloat(redemptionRate),
+    revenue,
+  };
+};
 
 const PartnerPortal = () => {
+  const { user, isPartner, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // Sample Partner Data
-  const partnerData = {
-    name: "Notion Labs",
-    tier: "Premium Partner",
-    activeDeals: 8,
-    totalClaims: 15234,
-    totalRedemptions: 12891,
-    revenue: 45680,
-    pendingCommission: 3240,
-    performanceScore: 92
-  };
+  // Authentication Guard - Redirect if not partner
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/");
+    } else if (!isPartner) {
+      navigate("/");
+    }
+  }, [isAuthenticated, isPartner, navigate]);
 
-  const deals = [
-    { 
-      id: 1, 
-      name: "Notion Pro - 6 Months Free", 
-      status: "active",
-      views: 45234, 
-      claims: 3421, 
-      redemptions: 2987,
-      redemptionRate: 87.3,
-      revenue: 12450,
-      createdAt: "2024-01-15",
-      expiresAt: "2024-12-31"
-    },
-    { 
-      id: 2, 
-      name: "Notion Team - 50% Off", 
-      status: "active",
-      views: 23456, 
-      claims: 1876, 
-      redemptions: 1654,
-      redemptionRate: 88.2,
-      revenue: 8230,
-      createdAt: "2024-02-01",
-      expiresAt: "2024-12-31"
-    },
-    { 
-      id: 3, 
-      name: "Notion Enterprise Trial", 
-      status: "paused",
-      views: 12345, 
-      claims: 654, 
-      redemptions: 432,
-      redemptionRate: 66.1,
-      revenue: 2100,
-      createdAt: "2024-03-10",
-      expiresAt: "2024-11-30"
-    },
-  ];
+  // Return early if not authenticated to prevent flash
+  if (!isAuthenticated || !isPartner) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <Alert className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            You need to be logged in as a partner to access this portal.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  // Get premium deals for this partner
+  const premiumDeals = getPremiumDeals();
+
+  // Transform deals with mock analytics
+  const deals = premiumDeals.slice(0, 5).map((deal, index) => {
+    const analytics = generateMockAnalytics(deal, index);
+    return {
+      id: deal.id,
+      name: deal.dealText.length > 50 ? deal.name + " Premium" : deal.dealText,
+      status: index === 2 ? "paused" : "active",
+      ...analytics,
+      createdAt: "2026-01-15",
+      expiresAt: "2026-12-31"
+    };
+  });
+
+  // Calculate partner stats from deals
+  const totalViews = deals.reduce((sum, deal) => sum + deal.views, 0);
+  const totalClaims = deals.reduce((sum, deal) => sum + deal.claims, 0);
+  const totalRedemptions = deals.reduce((sum, deal) => sum + deal.redemptions, 0);
+  const totalRevenue = deals.reduce((sum, deal) => sum + deal.revenue, 0);
+  const conversionRate = totalClaims > 0 ? ((totalRedemptions / totalClaims) * 100).toFixed(1) : 0;
+
+  // Partner Data with calculated stats
+  const partnerData = {
+    name: user?.name || "Partner User",
+    tier: "Premium Partner",
+    activeDeals: deals.filter(d => d.status === "active").length,
+    totalClaims,
+    totalRedemptions,
+    revenue: totalRevenue,
+    pendingCommission: Math.floor(totalRevenue * 0.15),
+    performanceScore: 92,
+    totalViews,
+    conversionRate: parseFloat(conversionRate.toString())
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -72,7 +103,7 @@ const PartnerPortal = () => {
       case "deals":
         return <PartnerDeals />;
       case "analytics":
-        return <PartnerAnalytics />;
+        return <PartnerAnalytics partnerData={partnerData} deals={deals} />;
       case "revenue":
         return <PartnerRevenue />;
       case "messages":

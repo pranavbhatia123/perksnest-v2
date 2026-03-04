@@ -1,11 +1,14 @@
-import { useParams, Link } from "react-router-dom";
-import { Star, Heart, Share2, Info, Users, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Star, Heart, Share2, Info, Users, ExternalLink, Lock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DealCardNew from "@/components/DealCardNew";
 import SafeImage from "@/components/SafeImage";
+import { AuthModal } from "@/components/AuthModal";
+import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { dealsData } from "@/data/deals";
 
@@ -82,9 +85,14 @@ const relatedDeals = dealsData.slice(0, 3);
 
 const DealDetail = () => {
   const { dealId } = useParams<{ dealId: string }>();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, isPro, claimDeal } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
   const baseDeal = dealId ? dealsData.find(d => d.id === dealId) : null;
   const extendedInfo = dealId ? dealExtendedInfo[dealId] : null;
-  
+
   // Combine base deal with extended info
   const deal = baseDeal ? {
     ...baseDeal,
@@ -100,6 +108,29 @@ const DealDetail = () => {
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     },
   } : null;
+
+  const isClaimed = dealId && user?.claimedDeals.includes(dealId);
+  const isPremiumDeal = deal?.isPremium;
+  const canClaim = isAuthenticated && (!isPremiumDeal || isPro);
+
+  const handleClaimDeal = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (isPremiumDeal && !isPro) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
+    if (dealId && claimDeal(dealId)) {
+      toast.success(`${deal?.name} deal claimed successfully!`);
+      navigate(`/deals/${dealId}/redeem`);
+    } else {
+      toast.error('Deal already claimed');
+    }
+  };
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -302,12 +333,43 @@ const DealDetail = () => {
                 </h4>
 
                 {/* CTA Button */}
-                <Button className="w-full h-12 text-base font-semibold">
-                  View instructions
-                </Button>
+                {isClaimed ? (
+                  <Button
+                    className="w-full h-12 text-base font-semibold"
+                    onClick={() => navigate(`/deals/${dealId}/redeem`)}
+                  >
+                    <Check className="h-4 w-4 mr-2" />
+                    View Promo Code
+                  </Button>
+                ) : isPremiumDeal && !isPro ? (
+                  <Button
+                    className="w-full h-12 text-base font-semibold"
+                    onClick={() => navigate('/pricing')}
+                  >
+                    <Lock className="h-4 w-4 mr-2" />
+                    Upgrade to Claim
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-full h-12 text-base font-semibold"
+                    onClick={handleClaimDeal}
+                  >
+                    {!isAuthenticated && <Lock className="h-4 w-4 mr-2" />}
+                    Claim Deal
+                  </Button>
+                )}
               </div>
             </div>
           </div>
+
+          <AuthModal
+            open={showAuthModal}
+            onOpenChange={setShowAuthModal}
+            onSuccess={() => {
+              setShowAuthModal(false);
+              handleClaimDeal();
+            }}
+          />
 
           {/* Related Deals */}
           <section className="mt-16">

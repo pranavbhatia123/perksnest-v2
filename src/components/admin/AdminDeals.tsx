@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { 
+import { useState, useMemo } from "react";
+import {
   Search, Filter, Download, Eye, Edit, Trash2, MoreVertical, Plus,
   CheckCircle, XCircle, Clock, PauseCircle, Archive, ArrowUpDown,
   ChevronLeft, ChevronRight, TrendingUp, BarChart3, Calendar
@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dealsData } from "@/data/deals";
 
 const pendingDeals = [
   { id: 1, name: "Figma Professional - 50% Off", partner: "Figma Inc.", category: "Design", submittedAt: "2024-01-28", discount: "50% off for 12 months", estimatedSavings: "$600", priority: "high" },
@@ -33,28 +34,96 @@ const pendingDeals = [
   { id: 4, name: "Vercel Pro Credits", partner: "Vercel", category: "Development", submittedAt: "2024-01-25", discount: "$500 credits", estimatedSavings: "$500", priority: "low" },
 ];
 
-const activeDeals = [
-  { id: 1, name: "Notion - 6 Months Free", partner: "Notion Labs", category: "Productivity", status: "active", claims: 12453, redemptions: 10834, redemptionRate: 87, revenue: 24500, trend: "up" },
-  { id: 2, name: "Google Cloud - $2,000 Credits", partner: "Google", category: "Cloud", status: "active", claims: 9821, redemptions: 9034, redemptionRate: 92, revenue: 18600, trend: "up" },
-  { id: 3, name: "Stripe - Fee Waiver", partner: "Stripe", category: "Payments", status: "active", claims: 8764, redemptions: 6836, redemptionRate: 78, revenue: 15200, trend: "down" },
-  { id: 4, name: "Make - 10,000 Credits", partner: "Make", category: "Automation", status: "active", claims: 7632, redemptions: 6487, redemptionRate: 85, revenue: 12400, trend: "up" },
-  { id: 5, name: "HubSpot - 90% Off", partner: "HubSpot", category: "Marketing", status: "paused", claims: 6543, redemptions: 5300, redemptionRate: 81, revenue: 11200, trend: "up" },
-  { id: 6, name: "Auth0 - 12 Months Free", partner: "Auth0", category: "Security", status: "active", claims: 5421, redemptions: 4608, redemptionRate: 85, revenue: 9800, trend: "up" },
-];
-
-const dealStats = {
-  total: 563,
-  active: 487,
-  pending: 23,
-  paused: 34,
-  expired: 19,
-  totalClaims: 156789,
-  avgRedemptionRate: 84.2,
-  totalSavingsDelivered: 5495688436
-};
-
 export const AdminDeals = () => {
   const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Calculate real deal stats
+  const dealStats = useMemo(() => {
+    const totalClaims = dealsData.reduce((sum, deal) => sum + deal.memberCount, 0);
+    const avgRedemptionRate = 84.2; // Mock redemption rate
+
+    // Get category breakdown
+    const categoryMap = new Map<string, { count: number; claims: number }>();
+    dealsData.forEach(deal => {
+      const existing = categoryMap.get(deal.category) || { count: 0, claims: 0 };
+      categoryMap.set(deal.category, {
+        count: existing.count + 1,
+        claims: existing.claims + deal.memberCount
+      });
+    });
+
+    return {
+      total: dealsData.length,
+      active: dealsData.length,
+      pending: pendingDeals.length,
+      paused: 0,
+      expired: 0,
+      totalClaims,
+      avgRedemptionRate,
+      totalSavingsDelivered: dealsData.reduce((sum, deal) => {
+        const savings = parseFloat(deal.savings.replace(/[$,]/g, ''));
+        return sum + (savings * deal.memberCount);
+      }, 0),
+      categories: Array.from(categoryMap.entries()).map(([name, data]) => ({
+        category: name,
+        deals: data.count,
+        claims: data.claims,
+        redemption: Math.floor(78 + Math.random() * 15) // Mock redemption 78-93%
+      }))
+    };
+  }, []);
+
+  // Transform deals data for table
+  const allDeals = useMemo(() => {
+    return dealsData.map(deal => ({
+      id: deal.id,
+      name: deal.name,
+      partner: deal.name, // Using name as partner since we don't have separate partner field
+      category: deal.category,
+      status: "active" as const,
+      claims: deal.memberCount,
+      redemptions: Math.floor(deal.memberCount * (0.85 + Math.random() * 0.1)),
+      redemptionRate: Math.floor(85 + Math.random() * 10),
+      revenue: Math.floor(deal.memberCount * 12.5), // Mock revenue
+      trend: Math.random() > 0.3 ? "up" as const : "down" as const,
+      logo: deal.logo,
+      dealText: deal.dealText,
+      savings: deal.savings
+    }));
+  }, []);
+
+  // Filter and search deals
+  const filteredDeals = useMemo(() => {
+    return allDeals.filter(deal => {
+      const matchesSearch = searchQuery === "" ||
+        deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        deal.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesStatus = statusFilter === "all" || deal.status === statusFilter;
+      const matchesCategory = categoryFilter === "all" || deal.category === categoryFilter;
+
+      return matchesSearch && matchesStatus && matchesCategory;
+    });
+  }, [allDeals, searchQuery, statusFilter, categoryFilter]);
+
+  // Paginate deals
+  const paginatedDeals = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredDeals.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredDeals, currentPage]);
+
+  const totalPages = Math.ceil(filteredDeals.length / itemsPerPage);
+
+  // Get unique categories for filter
+  const categories = useMemo(() => {
+    const cats = new Set(dealsData.map(d => d.category));
+    return Array.from(cats);
+  }, []);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -159,9 +228,17 @@ export const AdminDeals = () => {
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search deals..." className="pl-10" />
+                  <Input
+                    placeholder="Search deals..."
+                    className="pl-10"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1); // Reset to first page on search
+                    }}
+                  />
                 </div>
-                <Select>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
@@ -172,21 +249,28 @@ export const AdminDeals = () => {
                     <SelectItem value="expired">Expired</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select>
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                   <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="productivity">Productivity</SelectItem>
-                    <SelectItem value="development">Development</SelectItem>
-                    <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="marketing">Marketing</SelectItem>
+                    {categories.map(cat => (
+                      <SelectItem key={cat} value={cat} className="capitalize">{cat}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
-                <Button variant="outline">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatusFilter("all");
+                    setCategoryFilter("all");
+                    setCurrentPage(1);
+                  }}
+                >
                   <Filter className="h-4 w-4 mr-2" />
-                  More Filters
+                  Clear Filters
                 </Button>
               </div>
             </CardContent>
@@ -200,42 +284,46 @@ export const AdminDeals = () => {
                   <thead>
                     <tr className="border-b bg-muted/50">
                       <th className="text-left p-4">Deal</th>
-                      <th className="text-left p-4">Partner</th>
                       <th className="text-left p-4">Category</th>
                       <th className="text-left p-4">Status</th>
                       <th className="text-left p-4">Claims</th>
+                      <th className="text-left p-4">Savings</th>
                       <th className="text-left p-4">Redemption Rate</th>
-                      <th className="text-left p-4">Revenue</th>
                       <th className="text-left p-4 w-12"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {activeDeals.map((deal) => (
+                    {paginatedDeals.map((deal) => (
                       <tr key={deal.id} className="border-b hover:bg-muted/30">
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-                              <BarChart3 className="h-5 w-5 text-muted-foreground" />
-                            </div>
+                            <img
+                              src={deal.logo}
+                              alt={deal.name}
+                              className="w-10 h-10 rounded-lg object-contain bg-white p-1"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                              }}
+                            />
                             <div>
                               <p className="font-medium">{deal.name}</p>
-                              <p className="text-xs text-muted-foreground">{deal.category}</p>
+                              <p className="text-xs text-muted-foreground truncate max-w-[200px]">{deal.dealText}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="p-4 text-sm">{deal.partner}</td>
                         <td className="p-4">
-                          <Badge variant="outline">{deal.category}</Badge>
+                          <Badge variant="outline" className="capitalize">{deal.category}</Badge>
                         </td>
                         <td className="p-4">{getStatusBadge(deal.status)}</td>
                         <td className="p-4 text-sm">{deal.claims.toLocaleString()}</td>
+                        <td className="p-4 text-sm font-medium text-green-600">{deal.savings}</td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
                             <Progress value={deal.redemptionRate} className="w-16 h-2" />
                             <span className="text-sm">{deal.redemptionRate}%</span>
                           </div>
                         </td>
-                        <td className="p-4 text-sm font-medium">${deal.revenue.toLocaleString()}</td>
                         <td className="p-4">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -261,15 +349,43 @@ export const AdminDeals = () => {
                   </tbody>
                 </table>
               </div>
-              
+
               <div className="flex items-center justify-between p-4 border-t">
-                <p className="text-sm text-muted-foreground">Showing 1-6 of {dealStats.total} deals</p>
+                <p className="text-sm text-muted-foreground">
+                  Showing {((currentPage - 1) * itemsPerPage) + 1}-{Math.min(currentPage * itemsPerPage, filteredDeals.length)} of {filteredDeals.length} deals
+                </p>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" disabled><ChevronLeft className="h-4 w-4" /></Button>
-                  <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">1</Button>
-                  <Button variant="outline" size="sm">2</Button>
-                  <Button variant="outline" size="sm">3</Button>
-                  <Button variant="outline" size="sm"><ChevronRight className="h-4 w-4" /></Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(p => p - 1)}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                    const pageNum = i + 1;
+                    return (
+                      <Button
+                        key={pageNum}
+                        variant="outline"
+                        size="sm"
+                        className={currentPage === pageNum ? "bg-primary text-primary-foreground" : ""}
+                        onClick={() => setCurrentPage(pageNum)}
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  })}
+                  {totalPages > 5 && <span className="text-muted-foreground">...</span>}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(p => p + 1)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -345,7 +461,7 @@ export const AdminDeals = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {activeDeals.slice(0, 5).map((deal, index) => (
+                  {allDeals.slice(0, 5).map((deal, index) => (
                     <div key={deal.id} className="flex items-center gap-4">
                       <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
                         {index + 1}
@@ -375,16 +491,10 @@ export const AdminDeals = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    { category: "Productivity", deals: 87, claims: 45230, redemption: 89 },
-                    { category: "Development", deals: 124, claims: 38900, redemption: 85 },
-                    { category: "Design", deals: 56, claims: 28400, redemption: 82 },
-                    { category: "Marketing", deals: 78, claims: 21500, redemption: 78 },
-                    { category: "Cloud", deals: 45, claims: 18600, redemption: 91 },
-                  ].map((cat) => (
+                  {dealStats.categories.slice(0, 5).map((cat) => (
                     <div key={cat.category}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium">{cat.category}</span>
+                        <span className="text-sm font-medium capitalize">{cat.category}</span>
                         <span className="text-sm text-muted-foreground">{cat.deals} deals</span>
                       </div>
                       <div className="flex items-center gap-2">

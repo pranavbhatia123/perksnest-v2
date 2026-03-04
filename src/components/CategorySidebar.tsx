@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { ChevronDown, ChevronRight, Bell } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import { useState, useMemo } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { dealsData } from "@/data/deals";
 
 interface SubCategory {
   id: string;
@@ -14,72 +14,17 @@ interface Category {
   subcategories?: SubCategory[];
 }
 
-const categories: Category[] = [
-  { id: "all", name: "All deals", count: 578 },
-  { 
-    id: "ai", 
-    name: "AI", 
-    count: 89,
-    subcategories: [
-      { id: "ai-writing", name: "AI Writing" },
-      { id: "ai-image", name: "AI Image" },
-      { id: "ai-chat", name: "AI Chat" },
-    ]
-  },
-  { 
-    id: "project", 
-    name: "Project Management", 
-    count: 67,
-    subcategories: [
-      { id: "collaboration", name: "Collaboration" },
-      { id: "task-management", name: "Task Management" },
-      { id: "productivity", name: "Productivity" },
-      { id: "presentation", name: "Presentation" },
-      { id: "time-management", name: "Time Management" },
-    ]
-  },
-  { 
-    id: "data", 
-    name: "Data", 
-    count: 45,
-    subcategories: [
-      { id: "analytics", name: "Analytics" },
-      { id: "business-intelligence", name: "Business Intelligence" },
-    ]
-  },
-  { 
-    id: "customer", 
-    name: "Customer", 
-    count: 52,
-    subcategories: [
-      { id: "crm", name: "CRM" },
-      { id: "support", name: "Support" },
-    ]
-  },
-  { 
-    id: "development", 
-    name: "Development", 
-    count: 78,
-    subcategories: [
-      { id: "devtools", name: "Developer Tools" },
-      { id: "testing", name: "Testing" },
-    ]
-  },
-  { 
-    id: "marketing", 
-    name: "Marketing", 
-    count: 94,
-    subcategories: [
-      { id: "email-marketing", name: "Email Marketing" },
-      { id: "social-media", name: "Social Media" },
-    ]
-  },
-  { id: "finance", name: "Finance", count: 38 },
-  { id: "communication", name: "Communication", count: 31 },
-  { id: "sales", name: "Sales", count: 29 },
-  { id: "business", name: "Business", count: 43 },
-  { id: "it", name: "IT & Security", count: 36 },
-  { id: "hr", name: "HR", count: 22 },
+const categoryTemplates: Omit<Category, 'count'>[] = [
+  { id: "all", name: "All deals" },
+  { id: "ai", name: "AI" },
+  { id: "project", name: "Project Management" },
+  { id: "data", name: "Data & Cloud" },
+  { id: "customer", name: "Customer" },
+  { id: "development", name: "Development" },
+  { id: "marketing", name: "Marketing" },
+  { id: "finance", name: "Finance" },
+  { id: "communication", name: "Communication" },
+  { id: "sales", name: "Sales" },
 ];
 
 interface CategorySidebarProps {
@@ -89,6 +34,15 @@ interface CategorySidebarProps {
 
 const CategorySidebar = ({ activeCategory, onCategoryChange }: CategorySidebarProps) => {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["project"]);
+
+  // Calculate real counts from deals data
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: dealsData.length };
+    dealsData.forEach(deal => {
+      counts[deal.category] = (counts[deal.category] || 0) + 1;
+    });
+    return counts;
+  }, []);
 
   const toggleExpanded = (categoryId: string) => {
     setExpandedCategories(prev => 
@@ -104,7 +58,10 @@ const CategorySidebar = ({ activeCategory, onCategoryChange }: CategorySidebarPr
         <h3 className="text-lg font-semibold text-foreground mb-4">Categories</h3>
         
         <nav className="space-y-1">
-          {categories.map((category) => (
+          {categoryTemplates.map((template) => {
+            const count = categoryCounts[template.id] || 0;
+            const category = { ...template, count };
+            return (
             <div key={category.id}>
               <button
                 onClick={() => {
@@ -134,6 +91,7 @@ const CategorySidebar = ({ activeCategory, onCategoryChange }: CategorySidebarPr
                   )}
                   <span>{category.name}</span>
                 </div>
+                <span className="text-xs text-muted-foreground">{category.count}</span>
               </button>
               
               {/* Subcategories */}
@@ -155,7 +113,8 @@ const CategorySidebar = ({ activeCategory, onCategoryChange }: CategorySidebarPr
                 </div>
               )}
             </div>
-          ))}
+          );
+          })}
         </nav>
       </div>
     </div>

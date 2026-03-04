@@ -13,9 +13,11 @@ interface PartnerDashboardProps {
     totalRedemptions: number;
     revenue: number;
     pendingCommission: number;
+    totalViews?: number;
+    conversionRate?: number;
   };
   deals: {
-    id: number;
+    id: string | number;
     name: string;
     status: string;
     views: number;
@@ -46,15 +48,16 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active Deals</p>
-                <p className="text-2xl font-bold">{partnerData.activeDeals}</p>
+                <p className="text-sm text-muted-foreground">Total Views</p>
+                <p className="text-2xl font-bold">{partnerData.totalViews?.toLocaleString() || 0}</p>
+                <p className="text-xs text-primary mt-1">+12.5% from last month</p>
               </div>
-              <Package className="h-8 w-8 text-primary" />
+              <Eye className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -65,6 +68,7 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
               <div>
                 <p className="text-sm text-muted-foreground">Total Claims</p>
                 <p className="text-2xl font-bold">{partnerData.totalClaims.toLocaleString()}</p>
+                <p className="text-xs text-accent mt-1">+8.3% from last month</p>
               </div>
               <Users className="h-8 w-8 text-accent" />
             </div>
@@ -75,10 +79,27 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Redemptions</p>
-                <p className="text-2xl font-bold">{partnerData.totalRedemptions.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">Conversion Rate</p>
+                <p className="text-2xl font-bold">{partnerData.conversionRate?.toFixed(1) || 0}%</p>
+                <p className="text-xs text-primary mt-1">+3.2% from last month</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-primary" />
+              <TrendingUp className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Revenue Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Revenue</p>
+                <p className="text-2xl font-bold">${partnerData.revenue.toLocaleString()}</p>
+                <p className="text-xs text-primary mt-1">+15.7% from last month</p>
+              </div>
+              <DollarSign className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -89,6 +110,7 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
               <div>
                 <p className="text-sm text-muted-foreground">Pending Commission</p>
                 <p className="text-2xl font-bold">${partnerData.pendingCommission.toLocaleString()}</p>
+                <p className="text-xs text-accent mt-1">Payout on 1st of month</p>
               </div>
               <DollarSign className="h-8 w-8 text-accent" />
             </div>

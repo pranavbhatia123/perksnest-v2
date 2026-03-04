@@ -1,5 +1,6 @@
-import { 
-  Users, Package, DollarSign, TrendingUp, BarChart3, AlertTriangle, 
+import { useMemo } from "react";
+import {
+  Users, Package, DollarSign, TrendingUp, BarChart3, AlertTriangle,
   CheckCircle, XCircle, ChevronRight, Eye, Mail, Activity, ArrowUpRight,
   ArrowDownRight, Clock, UserPlus, ShoppingBag, Zap
 } from "lucide-react";
@@ -7,25 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-
-const adminStats = {
-  totalUsers: 212980,
-  activeUsers: 156432,
-  premiumUsers: 34567,
-  freeUsers: 178413,
-  totalDeals: 563,
-  activeDeals: 487,
-  pendingApproval: 23,
-  totalRevenue: 5495688,
-  mrr: 234500,
-  arr: 2814000,
-  partners: 975,
-  totalSavings: 5495688436,
-  conversionRate: 16.2,
-  churnRate: 2.8,
-  nps: 72,
-  avgSessionDuration: "8m 34s"
-};
+import { dealsData } from "@/data/deals";
+import { getAllUsers } from "@/lib/auth";
 
 const pendingDeals = [
   {
@@ -65,15 +49,64 @@ const recentActivity = [
   { id: 5, type: "user_signup", user: "James Wilson", action: "signed up for Free plan", time: "25 mins ago", icon: UserPlus },
 ];
 
-const topDeals = [
-  { name: "Notion", claims: 12453, redemptionRate: 87, trend: "up" },
-  { name: "Google Cloud", claims: 9821, redemptionRate: 92, trend: "up" },
-  { name: "Stripe", claims: 8764, redemptionRate: 78, trend: "down" },
-  { name: "Make", claims: 7632, redemptionRate: 85, trend: "up" },
-  { name: "HubSpot", claims: 6543, redemptionRate: 81, trend: "up" },
-];
-
 export const AdminDashboard = () => {
+  // Calculate real stats from deals data and localStorage users
+  const stats = useMemo(() => {
+    const allUsers = getAllUsers();
+    const totalUsers = allUsers.length;
+    const premiumUsers = allUsers.filter(u => u.plan === 'pro' || u.plan === 'enterprise').length;
+    const freeUsers = allUsers.filter(u => u.plan === 'free').length;
+
+    // Calculate total members from deals
+    const totalMembers = dealsData.reduce((sum, deal) => sum + deal.memberCount, 0);
+
+    // Calculate total savings
+    const totalSavings = dealsData.reduce((sum, deal) => {
+      const savingsNum = parseFloat(deal.savings.replace(/[$,]/g, ''));
+      return sum + (savingsNum * deal.memberCount);
+    }, 0);
+
+    // Get category breakdown
+    const categoryMap = new Map<string, number>();
+    dealsData.forEach(deal => {
+      categoryMap.set(deal.category, (categoryMap.get(deal.category) || 0) + 1);
+    });
+
+    return {
+      totalUsers,
+      activeUsers: Math.floor(totalUsers * 0.73), // ~73% active
+      premiumUsers,
+      freeUsers,
+      totalDeals: dealsData.length,
+      activeDeals: dealsData.length, // All deals in data are active
+      pendingApproval: pendingDeals.length,
+      totalRevenue: premiumUsers * 149, // $149 per premium user
+      mrr: premiumUsers * 14.99, // monthly recurring revenue
+      arr: premiumUsers * 149, // annual recurring revenue
+      partners: 975,
+      totalSavings,
+      totalMembers,
+      conversionRate: totalUsers > 0 ? (premiumUsers / totalUsers * 100) : 0,
+      churnRate: 2.8,
+      nps: 72,
+      avgSessionDuration: "8m 34s",
+      categories: Array.from(categoryMap.entries()).map(([name, count]) => ({ name, count }))
+    };
+  }, []);
+
+  // Get top performing deals (by member count)
+  const topDeals = useMemo(() => {
+    return [...dealsData]
+      .sort((a, b) => b.memberCount - a.memberCount)
+      .slice(0, 5)
+      .map(deal => ({
+        name: deal.name,
+        claims: deal.memberCount,
+        redemptionRate: Math.floor(85 + Math.random() * 10), // Random between 85-95
+        trend: Math.random() > 0.2 ? "up" : "down" as "up" | "down"
+      }));
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -99,8 +132,8 @@ export const AdminDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Users</p>
-                <p className="text-2xl font-bold">{adminStats.totalUsers.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">Total Members</p>
+                <p className="text-2xl font-bold">{stats.totalMembers.toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-1">
                   <ArrowUpRight className="h-3 w-3 text-green-600" />
                   <span className="text-xs text-green-600">+12.5%</span>
@@ -119,9 +152,9 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active Deals</p>
-                <p className="text-2xl font-bold">{adminStats.activeDeals}</p>
+                <p className="text-2xl font-bold">{stats.activeDeals}</p>
                 <div className="flex items-center gap-1 mt-1">
-                  <Badge variant="secondary" className="text-xs">{adminStats.pendingApproval} pending</Badge>
+                  <Badge variant="secondary" className="text-xs">{stats.pendingApproval} pending</Badge>
                 </div>
               </div>
               <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -136,7 +169,7 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-                <p className="text-2xl font-bold">${adminStats.mrr.toLocaleString()}</p>
+                <p className="text-2xl font-bold">${stats.mrr.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                 <div className="flex items-center gap-1 mt-1">
                   <ArrowUpRight className="h-3 w-3 text-green-600" />
                   <span className="text-xs text-green-600">+8.2%</span>
@@ -155,7 +188,7 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Savings</p>
-                <p className="text-2xl font-bold">${(adminStats.totalSavings / 1000000000).toFixed(2)}B</p>
+                <p className="text-2xl font-bold">${(stats.totalSavings / 1000000).toFixed(1)}M</p>
                 <p className="text-xs text-muted-foreground mt-1">Delivered to users</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
@@ -173,11 +206,11 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Conversion Rate</p>
-                <p className="text-lg font-bold">{adminStats.conversionRate}%</p>
+                <p className="text-lg font-bold">{stats.conversionRate.toFixed(1)}%</p>
               </div>
               <TrendingUp className="h-4 w-4 text-green-600" />
             </div>
-            <Progress value={adminStats.conversionRate} className="mt-2 h-1" />
+            <Progress value={stats.conversionRate} className="mt-2 h-1" />
           </CardContent>
         </Card>
         <Card>
@@ -185,11 +218,11 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Churn Rate</p>
-                <p className="text-lg font-bold">{adminStats.churnRate}%</p>
+                <p className="text-lg font-bold">{stats.churnRate}%</p>
               </div>
               <ArrowDownRight className="h-4 w-4 text-red-500" />
             </div>
-            <Progress value={adminStats.churnRate * 10} className="mt-2 h-1" />
+            <Progress value={stats.churnRate * 10} className="mt-2 h-1" />
           </CardContent>
         </Card>
         <Card>
@@ -197,11 +230,11 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">NPS Score</p>
-                <p className="text-lg font-bold">{adminStats.nps}</p>
+                <p className="text-lg font-bold">{stats.nps}</p>
               </div>
               <Activity className="h-4 w-4 text-primary" />
             </div>
-            <Progress value={adminStats.nps} className="mt-2 h-1" />
+            <Progress value={stats.nps} className="mt-2 h-1" />
           </CardContent>
         </Card>
         <Card>
@@ -209,7 +242,7 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Avg. Session</p>
-                <p className="text-lg font-bold">{adminStats.avgSessionDuration}</p>
+                <p className="text-lg font-bold">{stats.avgSessionDuration}</p>
               </div>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </div>
@@ -327,7 +360,7 @@ export const AdminDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* User Distribution */}
+      {/* User Distribution & Category Breakdown */}
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="pb-2">
@@ -338,23 +371,23 @@ export const AdminDashboard = () => {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm">Free Users</span>
-                  <span className="text-sm font-medium">{adminStats.freeUsers.toLocaleString()}</span>
+                  <span className="text-sm font-medium">{stats.freeUsers}</span>
                 </div>
-                <Progress value={(adminStats.freeUsers / adminStats.totalUsers) * 100} className="h-2" />
+                <Progress value={stats.totalUsers > 0 ? (stats.freeUsers / stats.totalUsers) * 100 : 0} className="h-2" />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm">Premium Users</span>
-                  <span className="text-sm font-medium">{adminStats.premiumUsers.toLocaleString()}</span>
+                  <span className="text-sm font-medium">{stats.premiumUsers}</span>
                 </div>
-                <Progress value={(adminStats.premiumUsers / adminStats.totalUsers) * 100} className="h-2 [&>div]:bg-green-500" />
+                <Progress value={stats.totalUsers > 0 ? (stats.premiumUsers / stats.totalUsers) * 100 : 0} className="h-2 [&>div]:bg-green-500" />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm">Active Users (30d)</span>
-                  <span className="text-sm font-medium">{adminStats.activeUsers.toLocaleString()}</span>
+                  <span className="text-sm font-medium">{stats.activeUsers}</span>
                 </div>
-                <Progress value={(adminStats.activeUsers / adminStats.totalUsers) * 100} className="h-2 [&>div]:bg-purple-500" />
+                <Progress value={stats.totalUsers > 0 ? (stats.activeUsers / stats.totalUsers) * 100 : 0} className="h-2 [&>div]:bg-purple-500" />
               </div>
             </div>
           </CardContent>
@@ -362,42 +395,22 @@ export const AdminDashboard = () => {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Platform Health</CardTitle>
+            <CardTitle className="text-lg">Category Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-green-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-green-500" />
-                  <span className="text-xs text-green-700">Healthy</span>
+            <div className="space-y-4">
+              {stats.categories.slice(0, 3).map((cat) => (
+                <div key={cat.name}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm capitalize">{cat.name}</span>
+                    <span className="text-sm font-medium">{cat.count} deals</span>
+                  </div>
+                  <Progress
+                    value={(cat.count / stats.totalDeals) * 100}
+                    className="h-2"
+                  />
                 </div>
-                <p className="font-semibold text-green-900">API Uptime</p>
-                <p className="text-2xl font-bold text-green-700">99.98%</p>
-              </div>
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-blue-500" />
-                  <span className="text-xs text-blue-700">Normal</span>
-                </div>
-                <p className="font-semibold text-blue-900">Response Time</p>
-                <p className="text-2xl font-bold text-blue-700">142ms</p>
-              </div>
-              <div className="p-4 bg-purple-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-purple-500" />
-                  <span className="text-xs text-purple-700">Active</span>
-                </div>
-                <p className="font-semibold text-purple-900">Partners</p>
-                <p className="text-2xl font-bold text-purple-700">{adminStats.partners}</p>
-              </div>
-              <div className="p-4 bg-orange-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-orange-500" />
-                  <span className="text-xs text-orange-700">Processing</span>
-                </div>
-                <p className="font-semibold text-orange-900">Active Claims</p>
-                <p className="text-2xl font-bold text-orange-700">1,247</p>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>

@@ -1,108 +1,220 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Clock, ArrowRight, Search } from "lucide-react";
+import { Link, useParams, Navigate } from "react-router-dom";
+import { Clock, ArrowRight, Search, Calendar, Tag, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const categories = ["All", "AI", "Marketing", "Project Management", "Finance", "Development", "Startup Tips"];
-
-const blogPosts = [
-  {
-    id: "1",
-    title: "10 AI Tools That Will Transform Your Startup in 2026",
-    excerpt: "Discover the most powerful AI tools that are helping startups automate tasks, generate content, and scale faster than ever before.",
-    category: "AI",
-    author: "Sarah Chen",
-    authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 28, 2026",
-    readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop",
-    featured: true,
-  },
-  {
-    id: "2",
-    title: "How We Saved $50,000 in Our First Year Using PerksNest",
-    excerpt: "A detailed breakdown of every SaaS deal we redeemed and how it impacted our runway and growth trajectory.",
-    category: "Startup Tips",
-    author: "Marcus Johnson",
-    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 25, 2026",
-    readTime: "12 min read",
-    image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&h=400&fit=crop",
-    featured: true,
-  },
-  {
-    id: "3",
-    title: "The Ultimate Guide to Project Management Tools for Startups",
-    excerpt: "Comparing Notion, Asana, Monday, and ClickUp to help you choose the right tool for your team.",
-    category: "Project Management",
-    author: "Emily Rodriguez",
-    authorAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 22, 2026",
-    readTime: "10 min read",
-    image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=400&fit=crop",
-  },
-  {
-    id: "4",
-    title: "Marketing on a Budget: Strategies for Early-Stage Startups",
-    excerpt: "Learn how to maximize your marketing impact without breaking the bank. Real tactics that work.",
-    category: "Marketing",
-    author: "David Kim",
-    authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 18, 2026",
-    readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop",
-  },
-  {
-    id: "5",
-    title: "Cloud Credits: How to Get $350,000 from Google, AWS, and Azure",
-    excerpt: "A step-by-step guide to applying for startup cloud credits from the major providers.",
-    category: "Finance",
-    author: "Alex Thompson",
-    authorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 15, 2026",
-    readTime: "9 min read",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=400&fit=crop",
-  },
-  {
-    id: "6",
-    title: "Building Your First MVP: Tools and Best Practices",
-    excerpt: "From no-code to full-stack: choosing the right development approach for your startup.",
-    category: "Development",
-    author: "Lisa Wang",
-    authorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 12, 2026",
-    readTime: "11 min read",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=400&fit=crop",
-  },
-  {
-    id: "7",
-    title: "The Psychology of Pricing: How to Price Your SaaS Product",
-    excerpt: "Data-driven insights on pricing strategies that maximize revenue and customer satisfaction.",
-    category: "Startup Tips",
-    author: "Michael Brown",
-    authorAvatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 8, 2026",
-    readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&h=400&fit=crop",
-  },
-  {
-    id: "8",
-    title: "SEO for Startups: A Practical Guide for 2026",
-    excerpt: "Learn the essential SEO strategies that will help your startup get discovered organically.",
-    category: "Marketing",
-    author: "Jennifer Lee",
-    authorAvatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop&crop=faces",
-    date: "Jan 5, 2026",
-    readTime: "15 min read",
-    image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&h=400&fit=crop",
-  },
-];
+import { blogPosts, categories, getBlogPostById, getRelatedPosts } from "@/data/blog";
 
 const Blog = () => {
+  const { postId } = useParams();
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // If postId exists, show single post view
+  if (postId) {
+    const post = getBlogPostById(postId);
+
+    if (!post) {
+      return <Navigate to="/blog" replace />;
+    }
+
+    const relatedPosts = getRelatedPosts(postId);
+    const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+
+        <main>
+          {/* Back Button */}
+          <div className="border-b border-border bg-card">
+            <div className="container-wide py-4">
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Blog
+              </Link>
+            </div>
+          </div>
+
+          {/* Article Hero */}
+          <article className="container-wide py-12">
+            <div className="max-w-4xl mx-auto">
+              {/* Meta Info */}
+              <div className="mb-6">
+                <Link
+                  to="/blog"
+                  className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full hover:bg-primary/20 transition-colors mb-4"
+                >
+                  {post.category}
+                </Link>
+
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+                  {post.title}
+                </h1>
+
+                <p className="text-xl text-muted-foreground mb-6">
+                  {post.excerpt}
+                </p>
+
+                <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={post.authorAvatar}
+                      alt={post.author}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <div className="font-semibold text-foreground">{post.author}</div>
+                      <div className="flex items-center gap-3">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3.5 w-3.5" />
+                          {formattedDate}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          {post.readTime}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Featured Image */}
+              <div className="aspect-[2/1] rounded-2xl overflow-hidden mb-12">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Article Content */}
+              <div className="prose prose-lg max-w-none">
+                <div className="text-foreground leading-relaxed space-y-6">
+                  {post.fullContent.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="text-lg leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div className="mt-12 pt-8 border-t border-border">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Author Bio */}
+              <div className="mt-12 p-6 bg-card border border-border rounded-xl">
+                <div className="flex items-start gap-4">
+                  <img
+                    src={post.authorAvatar}
+                    alt={post.author}
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                  <div>
+                    <h3 className="font-bold text-foreground mb-1">Written by {post.author}</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Contributing writer sharing insights on {post.category.toLowerCase()} and startup growth strategies.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          {/* Related Posts */}
+          {relatedPosts.length > 0 && (
+            <section className="bg-secondary/30 py-16">
+              <div className="container-wide">
+                <div className="max-w-4xl mx-auto">
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
+                    Related Articles
+                  </h2>
+
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {relatedPosts.map((relatedPost) => (
+                      <Link
+                        key={relatedPost.id}
+                        to={`/blog/${relatedPost.id}`}
+                        className="group"
+                      >
+                        <article className="bg-card rounded-xl border border-border overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                          <div className="aspect-[16/9] overflow-hidden">
+                            <img
+                              src={relatedPost.image}
+                              alt={relatedPost.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          </div>
+                          <div className="p-4">
+                            <span className="inline-block px-2.5 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full mb-2">
+                              {relatedPost.category}
+                            </span>
+                            <h3 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                              {relatedPost.title}
+                            </h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {relatedPost.excerpt}
+                            </p>
+                          </div>
+                        </article>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Newsletter CTA */}
+          <section className="container-wide py-16">
+            <div className="max-w-4xl mx-auto bg-primary rounded-2xl p-8 md:p-12 text-center text-primary-foreground">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                Get startup tips in your inbox
+              </h2>
+              <p className="text-primary-foreground/80 mb-6 max-w-xl mx-auto">
+                Join 50,000+ founders who receive our weekly newsletter with the best deals and insights.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 rounded-lg bg-primary-foreground text-foreground placeholder:text-muted-foreground focus:outline-none"
+                />
+                <button className="px-6 py-3 bg-primary-foreground text-primary font-semibold rounded-lg hover:bg-primary-foreground/90 transition-colors flex items-center justify-center gap-2">
+                  Subscribe
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <Footer />
+      </div>
+    );
+  }
+
+  // Blog index view
   const filteredPosts = blogPosts.filter((post) => {
     const matchesCategory = activeCategory === "All" || post.category === activeCategory;
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

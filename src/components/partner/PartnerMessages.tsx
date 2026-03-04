@@ -11,58 +11,122 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const conversations = [
-  { 
-    id: 1, 
-    sender: "PerksNest Support", 
-    avatar: "🎯", 
-    lastMessage: "Your deal 'Notion Pro - 6 Months Free' has been approved!", 
-    time: "10 min ago", 
+  {
+    id: 1,
+    sender: "PerksNest Team",
+    avatar: "🎯",
+    lastMessage: "Welcome to the Partner Portal! Your premium deals are now live.",
+    time: "2 days ago",
     unread: true,
     type: "system"
   },
-  { 
-    id: 2, 
-    sender: "Account Manager", 
-    avatar: "👤", 
-    lastMessage: "Hi! Just wanted to check in on your Q1 performance goals...", 
-    time: "2 hours ago", 
-    unread: true,
-    type: "support"
-  },
-  { 
-    id: 3, 
-    sender: "PerksNest Platform", 
-    avatar: "🔔", 
-    lastMessage: "New feature: You can now schedule deal expiration dates", 
-    time: "Yesterday", 
+  {
+    id: 2,
+    sender: "PerksNest Team",
+    avatar: "🎯",
+    lastMessage: "Great performance this month! Your deals generated $45K+ in revenue.",
+    time: "1 week ago",
     unread: false,
-    type: "announcement"
+    type: "system"
   },
-  { 
-    id: 4, 
-    sender: "Billing Team", 
-    avatar: "💳", 
-    lastMessage: "Your January commission of $3,680 has been processed", 
-    time: "3 days ago", 
+  {
+    id: 3,
+    sender: "PerksNest Team",
+    avatar: "🎯",
+    lastMessage: "New analytics features are now available in your dashboard.",
+    time: "2 weeks ago",
     unread: false,
-    type: "billing"
+    type: "system"
   },
 ];
 
-const selectedConversation = {
-  id: 1,
-  messages: [
-    { id: 1, sender: "system", text: "Your deal submission has been received and is under review.", time: "Jan 20, 10:00 AM", read: true },
-    { id: 2, sender: "system", text: "Great news! Your deal 'Notion Pro - 6 Months Free' has been approved and is now live on PerksNest!", time: "Jan 20, 2:30 PM", read: true },
-    { id: 3, sender: "user", text: "Thank you! How can I track the performance of this deal?", time: "Jan 20, 3:15 PM", read: true },
-    { id: 4, sender: "system", text: "You can view all analytics in the Analytics tab of your Partner Portal. There you'll find views, claims, conversions, and revenue data in real-time.", time: "Jan 20, 3:20 PM", read: true },
-    { id: 5, sender: "system", text: "Pro tip: Deals with detailed descriptions and clear value propositions tend to perform 25% better!", time: "Jan 20, 3:21 PM", read: false },
-  ]
+const conversationDetails: Record<number, { id: number; messages: Array<{ id: number; sender: string; text: string; time: string; read: boolean }> }> = {
+  1: {
+    id: 1,
+    messages: [
+      {
+        id: 1,
+        sender: "system",
+        text: "Welcome to the PerksNest Partner Portal! We're excited to have you on board.",
+        time: "Mar 2, 10:00 AM",
+        read: true
+      },
+      {
+        id: 2,
+        sender: "system",
+        text: "Your premium deals have been successfully activated and are now visible to all PerksNest members. You can track their performance in real-time through the Analytics tab.",
+        time: "Mar 2, 10:05 AM",
+        read: true
+      },
+      {
+        id: 3,
+        sender: "system",
+        text: "Pro tip: Partners who respond to inquiries within 24 hours see 40% higher conversion rates. Make sure to check your messages regularly!",
+        time: "Mar 2, 10:10 AM",
+        read: false
+      },
+    ]
+  },
+  2: {
+    id: 2,
+    messages: [
+      {
+        id: 1,
+        sender: "system",
+        text: "Congratulations on an outstanding month! Your deals have generated over $45,000 in revenue.",
+        time: "Feb 25, 2:00 PM",
+        read: true
+      },
+      {
+        id: 2,
+        sender: "system",
+        text: "Your conversion rate of 84.6% is well above the platform average of 72%. Keep up the excellent work!",
+        time: "Feb 25, 2:05 PM",
+        read: true
+      },
+      {
+        id: 3,
+        sender: "system",
+        text: "Your commission payout of $6,750 has been scheduled for March 1st. You can view detailed revenue breakdowns in the Revenue tab.",
+        time: "Feb 25, 2:10 PM",
+        read: true
+      },
+    ]
+  },
+  3: {
+    id: 3,
+    messages: [
+      {
+        id: 1,
+        sender: "system",
+        text: "We've added new analytics features to your Partner Portal!",
+        time: "Feb 18, 11:00 AM",
+        read: true
+      },
+      {
+        id: 2,
+        sender: "system",
+        text: "You can now view: (1) Real-time traffic sources, (2) Conversion funnel analytics, (3) Historical performance charts, and (4) Deal-by-deal comparisons.",
+        time: "Feb 18, 11:05 AM",
+        read: true
+      },
+      {
+        id: 3,
+        sender: "system",
+        text: "These insights will help you optimize your deal offerings and maximize revenue. Check out the Analytics tab to explore these new features!",
+        time: "Feb 18, 11:10 AM",
+        read: true
+      },
+    ]
+  },
 };
 
 export const PartnerMessages = () => {
   const [selectedChat, setSelectedChat] = useState(1);
   const [message, setMessage] = useState("");
+
+  const selectedConversation = conversationDetails[selectedChat];
+  const selectedInfo = conversations.find(c => c.id === selectedChat);
 
   return (
     <div className="space-y-6">
@@ -70,7 +134,7 @@ export const PartnerMessages = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold">Messages</h2>
-          <p className="text-muted-foreground">Communicate with the PerksNest team</p>
+          <p className="text-muted-foreground">Communication from the PerksNest Team</p>
         </div>
         <Badge className="bg-primary text-primary-foreground">
           {conversations.filter(c => c.unread).length} unread
@@ -127,11 +191,11 @@ export const PartnerMessages = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-xl">
-                  🎯
+                  {selectedInfo?.avatar || "🎯"}
                 </div>
                 <div>
-                  <p className="font-medium">PerksNest Support</p>
-                  <p className="text-xs text-muted-foreground">Deal approval & platform updates</p>
+                  <p className="font-medium">{selectedInfo?.sender || "PerksNest Team"}</p>
+                  <p className="text-xs text-muted-foreground">Platform updates & support</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -150,7 +214,7 @@ export const PartnerMessages = () => {
           
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
-              {selectedConversation.messages.map((msg) => (
+              {selectedConversation?.messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}

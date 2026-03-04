@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Search, ChevronDown, Menu, X, Sparkles, Crown, ArrowUpRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, ChevronDown, Menu, X, Sparkles, Crown, ArrowUpRight, User, LogOut, Package, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AuthModal } from "@/components/AuthModal";
+import { useAuth } from "@/lib/auth";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -47,6 +52,19 @@ const categories = [
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const getUserInitials = () => {
+    if (!user) return 'U';
+    return user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
@@ -214,20 +232,103 @@ const Header = () => {
               <Search className="h-5 w-5" />
             </Link>
 
-            {/* Sign In */}
-            <a href="#" className="hidden sm:block nav-link font-medium">
-              Sign in
-            </a>
+            {isAuthenticated && user ? (
+              <>
+                {/* Claimed Deals Badge */}
+                {user.claimedDeals.length > 0 && (
+                  <Link
+                    to="/portal/customer"
+                    className="hidden sm:flex items-center gap-2 p-2 rounded-lg hover:bg-secondary transition-colors relative"
+                  >
+                    <Package className="h-5 w-5 text-muted-foreground" />
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                      {user.claimedDeals.length}
+                    </Badge>
+                  </Link>
+                )}
 
-            {/* CTA Buttons */}
-            <Button variant="outline" className="hidden sm:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-              Request a demo
-            </Button>
-            <Link to="/deals">
-              <Button className="hidden md:flex">
-                Get started
-              </Button>
-            </Link>
+                {/* User Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-2 p-1 rounded-lg hover:bg-secondary transition-colors">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <ChevronDown className="h-4 w-4 hidden sm:block text-muted-foreground" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="font-medium text-sm">{user.name}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                      <Badge variant="outline" className="mt-1 capitalize">
+                        {user.plan}
+                      </Badge>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <Link to="/portal/customer">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <User className="h-4 w-4 mr-2" />
+                        My Account
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link to="/portal/customer">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Package className="h-4 w-4 mr-2" />
+                        Claimed Deals ({user.claimedDeals.length})
+                      </DropdownMenuItem>
+                    </Link>
+                    {user.role === 'admin' && (
+                      <Link to="/portal/admin">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Settings className="h-4 w-4 mr-2" />
+                          Admin Portal
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+                    {user.role === 'partner' && (
+                      <Link to="/portal/partner">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Settings className="h-4 w-4 mr-2" />
+                          Partner Portal
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                {/* Sign In */}
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="hidden sm:block nav-link font-medium"
+                >
+                  Sign in
+                </button>
+
+                {/* CTA Buttons */}
+                <Button
+                  variant="outline"
+                  className="hidden sm:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                >
+                  Request a demo
+                </Button>
+                <Button
+                  className="hidden md:flex"
+                  onClick={() => setShowAuthModal(true)}
+                >
+                  Get started
+                </Button>
+              </>
+            )}
 
             {/* Mobile Menu Toggle */}
             <button
@@ -248,15 +349,57 @@ const Header = () => {
               <Link to="/blog" className="nav-link px-3 py-2 rounded-md hover:bg-secondary" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
               <Link to="/invite" className="nav-link px-3 py-2 rounded-md hover:bg-secondary" onClick={() => setMobileMenuOpen(false)}>Invite & Earn</Link>
               <div className="pt-3 border-t border-border mt-2 space-y-2">
-                <Button variant="outline" className="w-full border-primary text-primary">Sign in</Button>
-                <Link to="/deals" className="block" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full">Get started</Button>
-                </Link>
+                {isAuthenticated && user ? (
+                  <>
+                    <Link to="/portal/customer" className="block" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        My Account
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="outline"
+                      className="w-full border-red-500 text-red-500"
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="w-full border-primary text-primary"
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Sign in
+                    </Button>
+                    <Button
+                      className="w-full"
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Get started
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
         )}
       </div>
+
+      <AuthModal
+        open={showAuthModal}
+        onOpenChange={setShowAuthModal}
+      />
     </header>
   );
 };

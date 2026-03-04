@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Grid, List, Bell, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -14,22 +14,53 @@ const DEALS_PER_PAGE = 9;
 const filterOptions = ["Most popular", "Premium", "Free", "Recently added"];
 
 const Deals = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [activeFilter, setActiveFilter] = useState("Most popular");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Read from URL params, with defaults
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [activeCategory, setActiveCategory] = useState(searchParams.get("category") || "all");
+  const [activeFilter, setActiveFilter] = useState(searchParams.get("sort") || "Most popular");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+    const saved = localStorage.getItem("notificationsEnabled");
+    return saved === "true";
+  });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredDeals = dealsData.filter((deal) => {
-    const matchesSearch = deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         deal.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === "all" || deal.category === activeCategory;
-    const matchesFilter = activeFilter === "Most popular" ||
-                         (activeFilter === "Premium" && deal.isPremium) ||
-                         (activeFilter === "Free" && deal.isFree);
-    return matchesSearch && matchesCategory && matchesFilter;
-  });
+  // Update URL params when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.set("q", searchQuery);
+    if (activeCategory !== "all") params.set("category", activeCategory);
+    if (activeFilter !== "Most popular") params.set("sort", activeFilter);
+    setSearchParams(params, { replace: true });
+  }, [searchQuery, activeCategory, activeFilter, setSearchParams]);
+
+  // Save notification preference to localStorage
+  useEffect(() => {
+    localStorage.setItem("notificationsEnabled", String(notificationsEnabled));
+  }, [notificationsEnabled]);
+
+  const filteredDeals = dealsData
+    .filter((deal) => {
+      const matchesSearch = deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           deal.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = activeCategory === "all" || deal.category === activeCategory;
+      const matchesFilter = activeFilter === "Most popular" ||
+                           activeFilter === "Recently added" ||
+                           (activeFilter === "Premium" && deal.isPremium) ||
+                           (activeFilter === "Free" && deal.isFree);
+      return matchesSearch && matchesCategory && matchesFilter;
+    })
+    .sort((a, b) => {
+      if (activeFilter === "Recently added") {
+        // Sort by lastAdded date, most recent first
+        const dateA = a.lastAdded ? new Date(a.lastAdded).getTime() : 0;
+        const dateB = b.lastAdded ? new Date(b.lastAdded).getTime() : 0;
+        return dateB - dateA;
+      }
+      return 0; // Keep original order for other filters
+    });
 
   const totalPages = Math.ceil(filteredDeals.length / DEALS_PER_PAGE);
   const startIndex = (currentPage - 1) * DEALS_PER_PAGE;
