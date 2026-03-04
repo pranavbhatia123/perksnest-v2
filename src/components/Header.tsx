@@ -279,7 +279,7 @@ const Header = () => {
                         Claimed Deals ({user.claimedDeals.length})
                       </DropdownMenuItem>
                     </Link>
-                    {user.role === 'admin' && (
+                    {(user.role === 'admin' || user.roles?.includes('admin')) && (
                       <Link to="/admin">
                         <DropdownMenuItem className="cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
@@ -287,7 +287,7 @@ const Header = () => {
                         </DropdownMenuItem>
                       </Link>
                     )}
-                    {user.role === 'partner' && (
+                    {(user.role === 'partner' || user.roles?.includes('partner') || user.roles?.includes('admin')) && (
                       <Link to="/partner">
                         <DropdownMenuItem className="cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
@@ -307,7 +307,7 @@ const Header = () => {
               <>
                 {/* Sign In */}
                 <button
-                  onClick={() => setShowAuthModal(true)}
+                  onClick={() => window.location.href = '/login'}
                   className="hidden sm:block nav-link font-medium"
                 >
                   Sign in
@@ -322,7 +322,7 @@ const Header = () => {
                 </Button>
                 <Button
                   className="hidden md:flex"
-                  onClick={() => setShowAuthModal(true)}
+                  onClick={() => window.location.href = '/login'}
                 >
                   Get started
                 </Button>

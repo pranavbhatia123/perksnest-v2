@@ -24,6 +24,7 @@ const CustomerPortal = () => {
   const [editedName, setEditedName] = useState("");
   const [editedEmail, setEditedEmail] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -182,15 +183,18 @@ const CustomerPortal = () => {
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />
               </Button>
-              <div className="relative group">
-                <button className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold hover:opacity-90 transition-opacity">
+              <div className="relative">
+                <button 
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold hover:opacity-90 transition-opacity">
                   {user.avatar 
                     ? <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
                     : user.name.charAt(0)
                   }
                 </button>
                 {/* Dropdown */}
-                <div className="absolute right-0 top-12 w-56 bg-background border border-border rounded-xl shadow-lg z-50 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150">
+                {profileOpen && (
+                <div className="absolute right-0 top-12 w-56 bg-background border border-border rounded-xl shadow-lg z-50">
                   <div className="p-3 border-b border-border">
                     <p className="font-medium text-sm truncate">{user.name}</p>
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
@@ -215,6 +219,8 @@ const CustomerPortal = () => {
                     </button>
                   </div>
                 </div>
+                )}
+                {profileOpen && <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />}
               </div>
             </div>
           </div>
