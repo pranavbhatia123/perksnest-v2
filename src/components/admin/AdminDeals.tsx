@@ -19,8 +19,8 @@ interface DealEdit {
 }
 
 export const AdminDeals = () => {
-  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
   const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
+  useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [editDeal, setEditDeal] = useState<DealEdit | null>(null);

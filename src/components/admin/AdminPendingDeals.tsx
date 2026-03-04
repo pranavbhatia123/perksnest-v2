@@ -12,8 +12,8 @@ import { PartnerDeal } from "@/lib/store";
 import { getAllUsers } from "@/lib/auth";
 
 export const AdminPendingDeals = () => {
-  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
   const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
+  useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
   useEffect(() => { allUsers.then(setAllUsers); }, []);
   const [allUsers, setAllUsers] = useState<ReturnType<typeof Array>[0][]>([]);
   const [deals, setDeals] = useState<PartnerDeal[]>([]);

@@ -56,8 +56,8 @@ const partnerStats = {
 };
 
 export const AdminPartners = () => {
-  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
   const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
+  useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
   useEffect(() => { allUsers.then(setAllUsers); }, []);
   const [allUsers, setAllUsers] = useState<ReturnType<typeof Array>[0][]>([]);
   const realPartners = useMemo(() => {
