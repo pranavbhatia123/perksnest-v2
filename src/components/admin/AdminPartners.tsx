@@ -299,7 +299,7 @@ export const AdminPartners = () => {
                     <div className="flex-1">
                       <p className="font-medium text-lg">{partner.name}</p>
                       <p className="text-sm text-muted-foreground mb-3">{partner.website}</p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                         <div>
                           <p className="text-muted-foreground">Category</p>
                           <p className="font-medium">{partner.category}</p>

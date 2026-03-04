@@ -48,7 +48,7 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 sm:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -182,7 +182,7 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
           <CardTitle className="text-lg">Tips to Improve Performance</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="p-4 bg-primary/5 border border-primary/10 rounded-lg">
               <h4 className="font-medium text-primary mb-2">Optimize Deal Titles</h4>
               <p className="text-sm text-muted-foreground">Clear, value-focused titles increase claims by 25%</p>

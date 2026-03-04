@@ -79,30 +79,30 @@ const PartnerPortal = () => {
             <span className="text-muted-foreground">/</span>
             <span className="text-sm font-medium text-muted-foreground">Partner Portal</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <PartnerNotifications />
             <Button variant="ghost" size="sm" className="gap-1.5 text-sm" onClick={handleDownloadReport}>
-              <Download className="h-4 w-4" />Report
+              <Download className="h-4 w-4" /><span className="hidden sm:inline">Report</span>
             </Button>
             <Button variant="ghost" size="sm" className="gap-1.5 text-sm" asChild>
-              <Link to="/deals"><ExternalLink className="h-4 w-4" />View Marketplace</Link>
+              <Link to="/deals"><ExternalLink className="h-4 w-4" /><span className="hidden sm:inline">View Marketplace</span></Link>
             </Button>
             <Button variant="ghost" size="sm" className="gap-1.5 text-sm text-muted-foreground" onClick={() => { logout(); navigate("/"); }}>
-              <LogOut className="h-4 w-4" />Sign Out
+              <LogOut className="h-4 w-4" /><span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
         {/* Sidebar */}
-        <aside className="w-52 shrink-0">
-          <nav className="space-y-1">
+        <aside className="w-full sm:w-52 sm:shrink-0">
+          <nav className="flex sm:flex-col gap-1 overflow-x-auto pb-2 sm:pb-0">
             {TABS.map(tab => {
               const Icon = tab.icon;
               return (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
+                  className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-colors text-left whitespace-nowrap ${
                     activeTab === tab.id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}>
                   <Icon className="h-4 w-4 shrink-0" />{tab.label}

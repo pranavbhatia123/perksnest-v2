@@ -8,25 +8,25 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    name: "Aaron Artille",
-    role: "Co-Founder",
-    quote: "PerksNest was the best investment I made in the early days of my company. Pays for itself more or less instantly with Premium, very responsive staff, new offerings get added frequently. Great deal. Recommended.",
-    avatarInitial: "A",
-    avatarColor: "bg-primary" // Slack aubergine
+    name: "Rajan Mehta",
+    role: "Co-Founder at Launchpad AI",
+    quote: "PerksNest was the best investment I made in the early days of my company. Pays for itself instantly with Premium — very responsive team, new deals added every week. Highly recommended.",
+    avatarInitial: "R",
+    avatarColor: "bg-primary"
   },
   {
-    name: "David Velardo",
-    role: "Founder & CEO",
-    quote: "The team at PerksNest have been extremely responsive and helpful to my startup. Their offers have worked perfectly and saved my startup tons of $$",
-    avatarInitial: "D",
-    avatarColor: "bg-[hsl(38,92%,50%)]" // Slack yellow/orange
+    name: "Priya Nair",
+    role: "CEO at Orbit Health",
+    quote: "The PerksNest team has been incredibly responsive and helpful to our startup. Every offer has worked perfectly and saved us a huge amount on tools we use daily.",
+    avatarInitial: "P",
+    avatarColor: "bg-[hsl(38,92%,50%)]"
   },
   {
-    name: "Josh Bartolomucci",
-    role: "Marketing Manager",
-    quote: "PerksNest has helped us discover new tools as well as get free usage for tools we already use. It's like free money. Sounds too good to be true, but... it's real!",
-    avatarInitial: "J",
-    avatarColor: "bg-foreground" // Dark aubergine
+    name: "Marcus Osei",
+    role: "Head of Engineering at BuildFast",
+    quote: "PerksNest helped us discover great tools and claim free credits on ones we already use. Sounds too good to be true — but it's completely real!",
+    avatarInitial: "M",
+    avatarColor: "bg-foreground"
   },
 ];
 

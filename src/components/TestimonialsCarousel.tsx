@@ -2,22 +2,22 @@ import { useState, useEffect } from "react";
 
 const testimonials = [
   {
-    name: "Aaron Artille",
+    name: "Rajan Mehta",
     role: "Co-Founder",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces",
-    quote: "PerksNest was the best investment I made in the early days of my company. Pays for itself more or less instantly with Premium, very responsive staff, new offerings get added frequently. Great deal. Recommended.",
+    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
+    quote: "PerksNest was the best investment I made in the early days of my company. Pays for itself instantly with Premium, very responsive team, new deals added every week.",
   },
   {
-    name: "David Velardo",
+    name: "Priya Nair",
     role: "Founder & CEO",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
-    quote: "Jean-Loup and PerksNest have been extremely responsive and helpful to my startup. Their offers have worked perfectly and saved my startup tons of $$",
+    avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop&crop=faces",
+    quote: "The PerksNest team has been incredibly responsive and helpful. Every offer has worked perfectly and saved us thousands of dollars.",
   },
   {
-    name: "Josh Bartolomucci",
-    role: "Marketing Manager",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
-    quote: "PerksNest has helped us discover new tools as well as get free usage for tools we already use. It's like free money. Sounds too good to be true, but... it's real!",
+    name: "Marcus Osei",
+    role: "Head of Engineering",
+    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop&crop=faces",
+    quote: "PerksNest helped us discover new tools and get free credits on ones we already use. It's like free money — sounds too good to be true, but it's completely real!",
   },
 ];
 
