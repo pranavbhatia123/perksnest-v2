@@ -15,6 +15,7 @@ import { toggleBookmark, getBookmarkedDealIds, sendEmail } from '@/lib/store';
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { dealsData } from "@/data/deals";
+import { getPartnerDeals, PartnerDeal } from "@/lib/store";
 
 import notionLogo from "@/assets/logos/notion.png";
 import stripeLogo from "@/assets/logos/stripe.svg";
@@ -94,7 +95,33 @@ const DealDetail = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
+  const [partnerDeal, setPartnerDeal] = useState<PartnerDeal | null>(null);
+  
+  useEffect(() => {
+    if (dealId) {
+      getPartnerDeals().then(deals => {
+        const found = deals.find(d => d.id === dealId && d.status === 'approved');
+        setPartnerDeal(found || null);
+      });
+    }
+  }, [dealId]);
+
   const baseDeal = dealId ? dealsData.find(d => d.id === dealId) : null;
+  
+  // If it's a partner deal, convert to deal format
+  const effectiveDeal = baseDeal || (partnerDeal ? {
+    id: partnerDeal.id,
+    name: partnerDeal.name,
+    company: partnerDeal.partnerName,
+    description: partnerDeal.description,
+    dealText: partnerDeal.dealText,
+    savings: partnerDeal.savings,
+    category: partnerDeal.category,
+    websiteUrl: partnerDeal.websiteUrl,
+    promoCode: partnerDeal.promoCode,
+    isFree: true,
+    memberCount: partnerDeal.claims || 0,
+  } : null);
   const extendedInfo = dealId ? dealExtendedInfo[dealId] : null;
 
   // Combine base deal with extended info

@@ -46,7 +46,8 @@ export const AdminDashboard = ({ onTabChange }: { onTabChange?: (tab: string) =>
   const stats = useMemo(() => {
     // allUsers from state (loaded async)
     const totalUsers = allUsers.length;
-    const premiumUsers = allUsers.filter(u => u.plan === 'pro' || u.plan === 'enterprise').length;
+    const premiumUsers = allUsers.filter(u => u.plan === 'premium' || u.plan === 'enterprise').length;
+    const enterpriseUsers = allUsers.filter(u => u.plan === 'enterprise').length;
     const freeUsers = allUsers.filter(u => u.plan === 'free').length;
 
     // Calculate total members from deals
@@ -72,9 +73,9 @@ export const AdminDashboard = ({ onTabChange }: { onTabChange?: (tab: string) =>
       totalDeals: dealsData.length,
       activeDeals: dealsData.length, // All deals in data are active
       pendingApproval: allPartnerDeals.filter(d => d.status === "pending").length,
-      totalRevenue: premiumUsers * 149, // $149 per premium user
-      mrr: premiumUsers * 14.99, // monthly recurring revenue
-      arr: premiumUsers * 149, // annual recurring revenue
+      mrr: (premiumUsers * 12) + (enterpriseUsers * 8.25), // $12/mo premium, $99/yr enterprise
+      arr: (premiumUsers * 144) + (enterpriseUsers * 99),
+      totalRevenue: (premiumUsers * 12) + (enterpriseUsers * 8.25),
       partners: 975,
       totalSavings,
       totalMembers,
