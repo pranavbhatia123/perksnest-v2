@@ -24,6 +24,8 @@ export interface User {
   referralCount: number;
   claimedDeals: string[];
   roles?: string[];
+  avatar?: string | null;
+  status?: string;
   status?: string;
   createdAt: string;
 }
@@ -51,13 +53,16 @@ const generateReferralCode = (name: string): string => {
 const rowToUser = (row: Record<string, unknown>): User => ({
   id: row.id as string,
   email: row.email as string,
-  name: row.name as string,
-  plan: row.plan as UserPlan,
-  role: row.role as UserRole,
-  referralCode: row.referral_code as string,
-  referralCount: row.referral_count as number,
+  name: (row.name as string) || (row.email as string)?.split('@')[0] || 'User',
+  plan: (row.plan as UserPlan) || 'free',
+  role: (row.role as UserRole) || 'customer',
+  referralCode: row.referral_code as string || '',
+  referralCount: (row.referral_count as number) || 0,
   claimedDeals: (row.claimed_deals as string[]) || [],
-  createdAt: row.created_at as string,
+  createdAt: (row.created_at as string) || new Date().toISOString(),
+  roles: (row.roles as string[]) || [row.role as string || 'customer'],
+  status: (row.status as string) || 'active',
+  avatar: (row.avatar as string) || null,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
