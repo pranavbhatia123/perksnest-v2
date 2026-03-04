@@ -6,8 +6,7 @@ const footerLinks = {
     { name: "Features", href: "#" },
     { name: "Pricing", href: "/pricing" },
     { name: "Deals", href: "/deals" },
-    { name: "White Label", href: "/white-label" },
-  ],
+],
   company: [
     { name: "About", href: "/" },
     { name: "Blog", href: "/blog" },
@@ -18,8 +17,7 @@ const footerLinks = {
     { name: "Help Center", href: "#" },
     { name: "Community", href: "#" },
     { name: "Partners", href: "#" },
-    { name: "API Docs", href: "/docs" },
-  ],
+],
   portals: [
     { name: "Customer Portal", href: "/customer" },
     { name: "Partner Portal", href: "/partner" },

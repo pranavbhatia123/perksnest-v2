@@ -18,7 +18,7 @@ import Communities from "./pages/Communities";
 import AdminPortal from "./pages/portal/AdminPortal";
 import PartnerPortal from "./pages/portal/PartnerPortal";
 import CustomerPortal from "./pages/portal/CustomerPortal";
-import PartnerProfile from "./pages/PartnerProfile";
+import BrandProfile from "./pages/BrandProfile";
 import WhiteLabel from "./pages/WhiteLabel";
 import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
@@ -53,7 +53,7 @@ const App = () => (
             <Route path="/partner" element={<PartnerPortal />} />
             <Route path="/customer" element={<CustomerPortal />} />
             {/* Partner public profiles */}
-            <Route path="/brand/:slug" element={<PartnerProfile />} />
+            <Route path="/brand/:brandId" element={<BrandProfile />} />
             {/* Legacy redirects */}
             <Route path="/portal/admin" element={<Navigate to="/admin" replace />} />
             <Route path="/portal/partner" element={<Navigate to="/partner" replace />} />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Search, 
   ChevronDown, 
@@ -118,6 +118,8 @@ const categories = [
 const featuredDeals = dealsData.slice(0, 8);
 
 const MegaMenuHeader = () => {
+  const navigate = useNavigate();
+  const [headerSearch, setHeaderSearch] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dealsMenuOpen, setDealsMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(categories[0]);
@@ -270,6 +272,14 @@ const MegaMenuHeader = () => {
               <input
                 type="text"
                 placeholder="Search for deals"
+                value={headerSearch}
+                onChange={(e) => setHeaderSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && headerSearch.trim()) {
+                    navigate(`/deals?q=${encodeURIComponent(headerSearch.trim())}`);
+                    setHeaderSearch("");
+                  }
+                }}
                 className="w-full pl-10 pr-4 py-2 bg-secondary/50 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>

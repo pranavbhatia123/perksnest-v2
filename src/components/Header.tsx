@@ -218,13 +218,7 @@ const Header = () => {
                   </Link>
                   <DropdownMenuItem className="cursor-pointer">Help Center</DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
-
-              <Link to="/white-label" className="nav-link px-3 py-2 rounded-md hover:bg-secondary transition-colors">
-                For Communities
-              </Link>
-
-              <Link to="/pricing" className="nav-link px-3 py-2 rounded-md hover:bg-secondary transition-colors">
+              </DropdownMenu><Link to="/pricing" className="nav-link px-3 py-2 rounded-md hover:bg-secondary transition-colors">
                 Pricing
               </Link>
             </nav>
