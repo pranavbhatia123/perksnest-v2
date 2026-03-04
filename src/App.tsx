@@ -27,6 +27,10 @@ import CustomerPortal from "./pages/portal/CustomerPortal";
 import BrandProfile from "./pages/BrandProfile";
 import WhiteLabel from "./pages/WhiteLabel";
 import Docs from "./pages/Docs";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ForgotPassword from "./pages/ForgotPassword";
+import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
