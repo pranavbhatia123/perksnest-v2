@@ -7,28 +7,28 @@ const testimonials = [
     role: "Co-Founder",
     company: "TechStartup Inc",
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces",
-    quote: "Secret was the best investment I made in the early days of my company. Pays for itself more or less instantly with Premium, very responsive staff, new offerings get added frequently. Great deal. Recommended.",
+    quote: "PerksNest was the best investment I made in the early days of my company. Pays for itself more or less instantly with Premium, very responsive staff, new offerings get added frequently. Great deal. Recommended.",
   },
   {
     name: "David Velardo",
     role: "Founder & CEO",
     company: "Innovation Labs",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
-    quote: "Secret has been extremely responsive and helpful to my startup. Their offers have worked perfectly and saved my startup tons of $$",
+    quote: "PerksNest has been extremely responsive and helpful to my startup. Their offers have worked perfectly and saved my startup tons of $$",
   },
   {
     name: "Josh Bartolomucci",
     role: "Marketing Manager",
     company: "GrowthCo",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
-    quote: "Secret has helped us discover new tools as well as get free usage for tools we already use. It's like free money. Sounds too good to be true, but... it's real!",
+    quote: "PerksNest has helped us discover new tools as well as get free usage for tools we already use. It's like free money. Sounds too good to be true, but... it's real!",
   },
   {
     name: "Sarah Chen",
     role: "Head of Operations",
     company: "ScaleUp Ventures",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces",
-    quote: "We've saved over $50,000 in our first year using Secret. The platform is incredibly easy to use and the support team is always ready to help.",
+    quote: "We've saved over $50,000 in our first year using PerksNest. The platform is incredibly easy to use and the support team is always ready to help.",
   },
 ];
 
@@ -62,10 +62,10 @@ const Testimonials = () => {
         {/* Section Header */}
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Startups scale faster with Secret
+            Startups scale faster with PerksNest
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join 212,980+ businesses who trust Secret to find the best SaaS deals
+            Join 212,980+ businesses who trust PerksNest to find the best SaaS deals
           </p>
         </div>
 

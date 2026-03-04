@@ -25,7 +25,7 @@ const redemptionInfo: Record<string, {
   expiresIn: string;
 }> = {
   "notion": {
-    promoCode: "SECRET2024",
+    promoCode: "PERKSNEST2024",
     website: "https://notion.so",
     steps: [
       {
@@ -64,7 +64,7 @@ const redemptionInfo: Record<string, {
     steps: [
       {
         title: "Upgrade to Premium",
-        description: "This deal requires a Secret Premium membership. Upgrade to access exclusive deals.",
+        description: "This deal requires a PerksNest Premium membership. Upgrade to access exclusive deals.",
         link: "/pricing",
         linkText: "View Premium Plans",
       },
@@ -78,7 +78,7 @@ const redemptionInfo: Record<string, {
       },
     ],
     eligibility: [
-      "Secret Premium members only",
+      "PerksNest Premium members only",
       "New Stripe accounts",
       "Must process payments within 12 months",
     ],
@@ -109,13 +109,13 @@ const redemptionInfo: Record<string, {
     eligibility: [
       "Startups less than 10 years old",
       "Have not previously received Google Cloud credits",
-      "Associated with an approved partner (Secret qualifies!)",
+      "Associated with an approved partner (PerksNest qualifies!)",
       "Valid business registration required",
     ],
     expiresIn: "Ongoing",
   },
   "make": {
-    promoCode: "SECRETMAKE40",
+    promoCode: "PERKSNESTMAKE40",
     website: "https://make.com",
     steps: [
       {
@@ -162,7 +162,7 @@ const defaultRedemptionInfo: {
   website: "#",
   steps: [
     {
-      title: "Sign up through Secret",
+      title: "Sign up through PerksNest",
       description: "Click the button below to visit the partner website and create your account.",
     },
     {

@@ -1,3 +1,5 @@
+import { getAllUsers } from '@/lib/auth';
+import { getPartnerDeals } from '@/lib/store';
 import { useState } from "react";
 import { 
   Search, Filter, Download, Eye, Edit, MoreVertical, Plus, Mail,
@@ -54,6 +56,19 @@ const partnerStats = {
 };
 
 export const AdminPartners = () => {
+  const realPartners = useMemo(() => {
+    const users = getAllUsers().filter(u => u.role === 'partner');
+    const allDeals = getPartnerDeals();
+    return users.map(u => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      dealCount: allDeals.filter(d => d.partnerId === u.id).length,
+      approvedCount: allDeals.filter(d => d.partnerId === u.id && d.status === 'approved').length,
+      joinedDate: u.createdAt || new Date().toISOString(),
+    }));
+  }, []);
+
   const [activeTab, setActiveTab] = useState("all");
 
   const getTierBadge = (tier: string) => {

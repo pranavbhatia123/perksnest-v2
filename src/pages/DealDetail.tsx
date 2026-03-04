@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import DealCardNew from "@/components/DealCardNew";
 import SafeImage from "@/components/SafeImage";
 import { AuthModal } from "@/components/AuthModal";
+import { toggleBookmark, getBookmarks } from '@/lib/store';
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { dealsData } from "@/data/deals";
@@ -108,6 +109,20 @@ const DealDetail = () => {
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     },
   } : null;
+
+  const [isBookmarked, setIsBookmarked] = useState(() => {
+    if (!user || !dealId) return false;
+    return getBookmarks(user.id).includes(dealId);
+  });
+
+  const handleBookmark = () => {
+    if (!user) { toast.info("Sign in to save deals"); return; }
+    if (!dealId) return;
+    const result = toggleBookmark(user.id, dealId);
+    setIsBookmarked(result);
+    toast.success(result ? "Deal saved!" : "Deal removed from saved");
+    window.dispatchEvent(new Event('bookmarks-updated'));
+  };
 
   const isClaimed = dealId && user?.claimedDeals.includes(dealId);
   const isPremiumDeal = deal?.isPremium;

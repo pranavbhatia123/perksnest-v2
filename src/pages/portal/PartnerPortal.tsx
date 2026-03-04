@@ -1,158 +1,124 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Bell, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { PartnerSidebar } from "@/components/partner/PartnerSidebar";
-import { PartnerDashboard } from "@/components/partner/PartnerDashboard";
-import { PartnerDeals } from "@/components/partner/PartnerDeals";
-import { PartnerAnalytics } from "@/components/partner/PartnerAnalytics";
-import { PartnerRevenue } from "@/components/partner/PartnerRevenue";
-import { PartnerMessages } from "@/components/partner/PartnerMessages";
-import { PartnerSettings } from "@/components/partner/PartnerSettings";
 import { useAuth } from "@/lib/auth";
-import { getPremiumDeals, type Deal } from "@/data/deals";
+import { PartnerDashboard } from "@/components/partner/PartnerDashboard";
+import { PartnerAnalytics } from "@/components/partner/PartnerAnalytics";
+import { PartnerDealsTab } from "@/components/partner/PartnerDealsTab";
+import { PartnerMessagesTab } from "@/components/partner/PartnerMessagesTab";
+import { PartnerSettingsTab } from "@/components/partner/PartnerSettingsTab";
+import { PartnerNotifications } from "@/components/partner/PartnerNotifications";
+import { getPartnerDeals } from "@/lib/store";
+import {
+  LayoutDashboard, Package, BarChart3, MessageSquare, Settings,
+  LogOut, ExternalLink, Download,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
-// Generate mock analytics data for partner deals
-const generateMockAnalytics = (deal: Deal, index: number) => {
-  const baseViews = deal.memberCount * (10 + index * 2);
-  const claims = Math.floor(baseViews * (0.15 + index * 0.02));
-  const redemptions = Math.floor(claims * (0.8 + index * 0.05));
-  const redemptionRate = ((redemptions / claims) * 100).toFixed(1);
-  const revenue = Math.floor(parseInt(deal.savings.replace(/[^0-9]/g, '')) * 0.15);
-
-  return {
-    views: baseViews,
-    claims,
-    redemptions,
-    redemptionRate: parseFloat(redemptionRate),
-    revenue,
-  };
-};
+const TABS = [
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "deals", label: "My Deals", icon: Package },
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "messages", label: "Messages", icon: MessageSquare },
+  { id: "settings", label: "Settings", icon: Settings },
+];
 
 const PartnerPortal = () => {
-  const { user, isPartner, isAuthenticated } = useAuth();
+  const { user, isPartner, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // Authentication Guard - Redirect if not partner
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login?returnUrl=/partner");
-    } else if (!isPartner) {
-      navigate("/login?returnUrl=/partner");
-    }
+    if (!isAuthenticated) navigate("/login?returnUrl=/partner");
+    else if (!isPartner) navigate("/login?returnUrl=/partner");
   }, [isAuthenticated, isPartner, navigate]);
 
-  // Return early if not authenticated to prevent flash
-  if (!isAuthenticated || !isPartner) {
-    return (
-      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
-        <Alert className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            You need to be logged in as a partner to access this portal.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
+  if (!user || !isPartner) return null;
 
-  // Get premium deals for this partner
-  const premiumDeals = getPremiumDeals();
+  const myDeals = getPartnerDeals().filter(d => d.partnerId === user.id);
+  const approvedDeals = myDeals.filter(d => d.status === "approved");
+  const totalViews = approvedDeals.reduce((a, d) => a + d.views, 0);
+  const totalClaims = approvedDeals.reduce((a, d) => a + d.claims, 0);
+  const revenue = totalClaims * 25; // $25 per claim (mock commission)
 
-  // Transform deals with mock analytics
-  const deals = premiumDeals.slice(0, 5).map((deal, index) => {
-    const analytics = generateMockAnalytics(deal, index);
-    return {
-      id: deal.id,
-      name: deal.dealText.length > 50 ? deal.name + " Premium" : deal.dealText,
-      status: index === 2 ? "paused" : "active",
-      ...analytics,
-      createdAt: "2026-01-15",
-      expiresAt: "2026-12-31"
-    };
-  });
-
-  // Calculate partner stats from deals
-  const totalViews = deals.reduce((sum, deal) => sum + deal.views, 0);
-  const totalClaims = deals.reduce((sum, deal) => sum + deal.claims, 0);
-  const totalRedemptions = deals.reduce((sum, deal) => sum + deal.redemptions, 0);
-  const totalRevenue = deals.reduce((sum, deal) => sum + deal.revenue, 0);
-  const conversionRate = totalClaims > 0 ? ((totalRedemptions / totalClaims) * 100).toFixed(1) : 0;
-
-  // Partner Data with calculated stats
   const partnerData = {
-    name: user?.name || "Partner User",
-    tier: "Premium Partner",
-    activeDeals: deals.filter(d => d.status === "active").length,
+    name: user.name,
+    activeDeals: approvedDeals.length,
     totalClaims,
-    totalRedemptions,
-    revenue: totalRevenue,
-    pendingCommission: Math.floor(totalRevenue * 0.15),
-    performanceScore: 92,
+    totalRedemptions: Math.floor(totalClaims * 0.7),
+    revenue,
+    pendingCommission: Math.floor(revenue * 0.3),
     totalViews,
-    conversionRate: parseFloat(conversionRate.toString())
+    conversionRate: totalViews > 0 ? parseFloat(((totalClaims / totalViews) * 100).toFixed(1)) : 0,
   };
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "dashboard":
-        return <PartnerDashboard partnerData={partnerData} deals={deals} />;
-      case "deals":
-        return <PartnerDeals />;
-      case "analytics":
-        return <PartnerAnalytics partnerData={partnerData} deals={deals} />;
-      case "revenue":
-        return <PartnerRevenue />;
-      case "messages":
-        return <PartnerMessages />;
-      case "settings":
-        return <PartnerSettings />;
-      default:
-        return <PartnerDashboard partnerData={partnerData} deals={deals} />;
-    }
+  const dealRows = myDeals.slice(0, 5).map(d => ({
+    id: d.id, name: d.name, status: d.status,
+    views: d.views, claims: d.claims,
+    redemptions: Math.floor(d.claims * 0.7),
+    redemptionRate: d.claims > 0 ? parseFloat(((d.claims / Math.max(d.views, 1)) * 100).toFixed(1)) : 0,
+    revenue: d.claims * 25,
+  }));
+
+  const handleDownloadReport = () => {
+    const report = { partner: user.name, generatedAt: new Date().toISOString(), deals: myDeals, stats: partnerData };
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `perksnest-partner-report-${Date.now()}.json`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Report downloaded!");
   };
 
   return (
     <div className="min-h-screen bg-muted/30">
-      {/* Top Header */}
-      <header className="bg-background border-b sticky top-0 z-50">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <Link to="/" className="font-bold text-xl">perksnest.</Link>
-              <Badge className="bg-primary/10 text-primary border-primary/20">Partner Portal</Badge>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon">
-                <Bell className="h-5 w-5" />
-              </Button>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xl">
-                  📝
-                </div>
-                <div className="hidden md:block">
-                  <p className="font-medium text-sm">{partnerData.name}</p>
-                  <p className="text-xs text-muted-foreground">{partnerData.tier}</p>
-                </div>
-              </div>
-            </div>
+      {/* Header */}
+      <header className="bg-card border-b sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-lg font-bold">perksnest<span className="text-primary">.</span></Link>
+            <span className="text-muted-foreground">/</span>
+            <span className="text-sm font-medium text-muted-foreground">Partner Portal</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <PartnerNotifications />
+            <Button variant="ghost" size="sm" className="gap-1.5 text-sm" onClick={handleDownloadReport}>
+              <Download className="h-4 w-4" />Report
+            </Button>
+            <Button variant="ghost" size="sm" className="gap-1.5 text-sm" asChild>
+              <Link to="/deals"><ExternalLink className="h-4 w-4" />View Marketplace</Link>
+            </Button>
+            <Button variant="ghost" size="sm" className="gap-1.5 text-sm text-muted-foreground" onClick={() => { logout(); navigate("/"); }}>
+              <LogOut className="h-4 w-4" />Sign Out
+            </Button>
           </div>
         </div>
       </header>
 
-      <div className="flex">
-        <PartnerSidebar 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          performanceScore={partnerData.performanceScore} 
-        />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex gap-6">
+        {/* Sidebar */}
+        <aside className="w-52 shrink-0">
+          <nav className="space-y-1">
+            {TABS.map(tab => {
+              const Icon = tab.icon;
+              return (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
+                    activeTab === tab.id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}>
+                  <Icon className="h-4 w-4 shrink-0" />{tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 p-6">
-          {renderContent()}
+        {/* Content */}
+        <main className="flex-1 min-w-0">
+          {activeTab === "dashboard" && <PartnerDashboard partnerData={partnerData} deals={dealRows} />}
+          {activeTab === "deals" && <PartnerDealsTab />}
+          {activeTab === "analytics" && <PartnerAnalytics partnerData={partnerData} />}
+          {activeTab === "messages" && <PartnerMessagesTab />}
+          {activeTab === "settings" && <PartnerSettingsTab />}
         </main>
       </div>
     </div>

@@ -133,14 +133,13 @@ const Pricing = () => {
   const handlePlanClick = (planName: string, ctaLink: string) => {
     // If user is authenticated and clicking Pro plan, redirect to customer portal
     if (isAuthenticated && planName === "Pro") {
-      window.location.href = 'https://billing.stripe.com/p/login/test_example';
+      window.location.href = '/customer';
       return;
     }
 
     // If not authenticated and clicking Free or Pro, show auth modal
     if (!isAuthenticated && (planName === "Free" || planName === "Pro")) {
-      setAuthModalTab(planName === "Pro" ? 'register' : 'login');
-      setAuthModalOpen(true);
+      window.location.href = '/login';
       return;
     }
 
@@ -398,8 +397,7 @@ const Pricing = () => {
                   size="lg"
                   className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2"
                   onClick={() => {
-                    setAuthModalTab('register');
-                    setAuthModalOpen(true);
+                    window.location.href = '/login';
                   }}
                 >
                   Get started free

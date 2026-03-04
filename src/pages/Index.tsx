@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import MegaMenuHeader from "@/components/MegaMenuHeader";
 import Footer from "@/components/Footer";
 import PromoBanner from "@/components/PromoBanner";
@@ -58,7 +59,7 @@ const Index = () => {
         {/* Free Deals */}
         <DealCarousel
           title="Free deals"
-          subtitle="Discover all the software deals and discounts that are accessible for free on Secret"
+          subtitle="Discover all the software deals and discounts that are accessible for free on PerksNest"
           deals={freeDeals}
           browseLink="/deals?filter=free"
           browseLinkText="Browse free deals"

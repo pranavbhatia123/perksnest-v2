@@ -5,19 +5,19 @@ const testimonials = [
     name: "Aaron Artille",
     role: "Co-Founder",
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces",
-    quote: "Secret was the best investment I made in the early days of my company. Pays for itself more or less instantly with Premium, very responsive staff, new offerings get added frequently. Great deal. Recommended.",
+    quote: "PerksNest was the best investment I made in the early days of my company. Pays for itself more or less instantly with Premium, very responsive staff, new offerings get added frequently. Great deal. Recommended.",
   },
   {
     name: "David Velardo",
     role: "Founder & CEO",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
-    quote: "Jean-Loup and Secret have been extremely responsive and helpful to my startup. Their offers have worked perfectly and saved my startup tons of $$",
+    quote: "Jean-Loup and PerksNest have been extremely responsive and helpful to my startup. Their offers have worked perfectly and saved my startup tons of $$",
   },
   {
     name: "Josh Bartolomucci",
     role: "Marketing Manager",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
-    quote: "Secret has helped us discover new tools as well as get free usage for tools we already use. It's like free money. Sounds too good to be true, but... it's real!",
+    quote: "PerksNest has helped us discover new tools as well as get free usage for tools we already use. It's like free money. Sounds too good to be true, but... it's real!",
   },
 ];
 
@@ -35,7 +35,7 @@ const TestimonialsCarousel = () => {
     <section className="py-8 bg-secondary/50">
       <div className="container-wide">
         <h2 className="text-xl md:text-2xl font-bold text-foreground text-center mb-6">
-          They're growing more and spending less with Secret
+          They're growing more and spending less with PerksNest
         </h2>
         
         <div className="flex items-center justify-center gap-8 overflow-hidden">

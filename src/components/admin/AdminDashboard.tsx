@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { getClaimEvents, getPartnerDeals } from '@/lib/store';
 import { dealsData } from "@/data/deals";
 import { getAllUsers } from "@/lib/auth";
 
@@ -41,13 +42,24 @@ const pendingDeals = [
   }
 ];
 
-const recentActivity = [
-  { id: 1, type: "user_signup", user: "Sarah Johnson", action: "signed up for Premium", time: "2 mins ago", icon: UserPlus },
-  { id: 2, type: "deal_claimed", user: "Michael Chen", action: "claimed Notion deal", time: "5 mins ago", icon: ShoppingBag },
-  { id: 3, type: "partner_added", user: "Stripe", action: "submitted new deal", time: "12 mins ago", icon: Package },
-  { id: 4, type: "referral", user: "Emily Rodriguez", action: "earned $20 referral credit", time: "18 mins ago", icon: Zap },
-  { id: 5, type: "user_signup", user: "James Wilson", action: "signed up for Free plan", time: "25 mins ago", icon: UserPlus },
-];
+const recentActivity = useMemo(() => {
+    const claims = getClaimEvents().slice(0, 5).map(e => ({
+      action: `${e.userName} claimed ${e.dealName}`,
+      time: (() => { const d = (Date.now() - new Date(e.timestamp).getTime())/1000; return d<3600?`${Math.floor(d/60)}m ago`:`${Math.floor(d/3600)}h ago`; })(),
+      type: 'claim' as const,
+    }));
+    const partnerSubs = getPartnerDeals().slice(0, 3).map(d => ({
+      action: `${d.partnerName} submitted "${d.name}" deal`,
+      time: (() => { const d2 = (Date.now() - new Date(d.createdAt).getTime())/1000; return d2<3600?`${Math.floor(d2/60)}m ago`:`${Math.floor(d2/3600)}h ago`; })(),
+      type: 'partner' as const,
+    }));
+    const users = getAllUsers().slice(0,3).map(u => ({
+      action: `${u.name} signed up`,
+      time: (() => { const d = (Date.now() - new Date(u.createdAt || Date.now()).getTime())/1000; return d<3600?`${Math.floor(d/60)}m ago`:`${Math.floor(d/3600)}h ago`; })(),
+      type: 'signup' as const,
+    }));
+    return [...claims, ...partnerSubs, ...users].sort(() => Math.random() - 0.5).slice(0, 8);
+  }, []);
 
 export const AdminDashboard = () => {
   // Calculate real stats from deals data and localStorage users

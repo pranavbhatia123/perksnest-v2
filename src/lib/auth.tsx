@@ -1,3 +1,4 @@
+import { addClaimEvent } from '@/lib/store';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type UserPlan = 'free' | 'pro' | 'enterprise';
@@ -20,7 +21,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string, name: string) => Promise<boolean>;
   logout: () => void;
-  claimDeal: (dealId: string) => boolean;
+  claimDeal: (dealId: string, dealName?: string) => boolean;
   updateUser: (updates: Partial<Pick<User, 'name' | 'email'>>) => boolean;
   isAuthenticated: boolean;
   isPro: boolean;
@@ -165,7 +166,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  const claimDeal = (dealId: string): boolean => {
+  const claimDeal = (dealId: string, dealName?: string): boolean => {
     if (!user) return false;
 
     // Check if already claimed

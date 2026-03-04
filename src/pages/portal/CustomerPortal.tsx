@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/lib/auth";
+import { getBookmarks, toggleBookmark } from '@/lib/store';
 import { dealsData } from "@/data/deals";
 import { toast } from "sonner";
 
@@ -90,7 +91,21 @@ const CustomerPortal = () => {
   const referralEarnings = referrals.reduce((acc, ref) => acc + ref.earnedAmount, 0);
 
   // Mock saved deals (would come from backend in real app)
-  const savedDeals: Array<{ id: string; vendor: string; logo: string; name: string; savings: string; category: string }> = [];
+  const savedDeals = useMemo(() => {
+    if (!user) return [];
+    const bookmarkedIds = getBookmarks(user.id);
+    return bookmarkedIds
+      .map(id => dealsData.find(d => d.id === id))
+      .filter(Boolean)
+      .map(d => ({
+        id: d!.id,
+        vendor: d!.name,
+        logo: d!.logo,
+        name: d!.dealText,
+        savings: d!.savings,
+        category: d!.category || 'other',
+      }));
+  }, [user]);
 
   const copyCode = (id: string, code: string) => {
     navigator.clipboard.writeText(code);
