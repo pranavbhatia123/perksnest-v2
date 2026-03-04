@@ -42,7 +42,7 @@ const pendingDeals = [
   }
 ];
 
-const getRecentActivity = () => {
+const getRecentActivity = (allPartnerDeals: any[] = [], allUsers: any[] = []) => {
     const claims: any[] = [];
     const partnerSubs = allPartnerDeals.slice(0, 3).map((d, i) => ({
       id: `partner-${i}`,
@@ -64,7 +64,12 @@ const getRecentActivity = () => {
   };
 
 export const AdminDashboard = () => {
-  const recentActivity = getRecentActivity();
+  const [allPartnerDeals, setAllPartnerDeals] = useState<any[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
+  useEffect(() => { getAllUsers().then(setAllUsers); }, []);
+
+  const recentActivity = getRecentActivity(allPartnerDeals, allUsers);
 
   // Calculate real stats from deals data and localStorage users
   const stats = useMemo(() => {
