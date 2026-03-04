@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { PartnerDashboard } from "@/components/partner/PartnerDashboard";
 import { PartnerAnalytics } from "@/components/partner/PartnerAnalytics";
 import { PartnerDealsTab } from "@/components/partner/PartnerDealsTab";
-import { PartnerMessagesTab } from "@/components/partner/PartnerMessagesTab";
+import { MessagingTab } from "@/components/shared/MessagingTab";
 import { PartnerSettingsTab } from "@/components/partner/PartnerSettingsTab";
 import { PartnerNotifications } from "@/components/partner/PartnerNotifications";
 import { getPartnerDeals } from "@/lib/store";
@@ -116,7 +116,7 @@ const PartnerPortal = () => {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
+      <div className="px-4 sm:px-6 py-4 sm:py-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
         {/* Sidebar */}
         <aside className="w-full sm:w-52 sm:shrink-0">
           <nav className="flex sm:flex-col gap-1 overflow-x-auto pb-2 sm:pb-0">
@@ -139,7 +139,7 @@ const PartnerPortal = () => {
           {activeTab === "dashboard" && <PartnerDashboard partnerData={partnerData} deals={dealRows} />}
           {activeTab === "deals" && <PartnerDealsTab />}
           {activeTab === "analytics" && <PartnerAnalytics partnerData={partnerData} deals={dealRows} />}
-          {activeTab === "messages" && <PartnerMessagesTab />}
+          {activeTab === "messages" && <MessagingTab portalRole="partner" />}
           {activeTab === "settings" && <PartnerSettingsTab />}
         </main>
       </div>

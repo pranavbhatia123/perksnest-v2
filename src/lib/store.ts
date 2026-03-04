@@ -174,7 +174,9 @@ export async function getMessages(threadId: string): Promise<Message[]> {
   }));
 }
 
-export async function sendMessage(threadId: string, senderId: string, senderName: string, senderRole: string, content: string): Promise<void> {
+export async function sendMessage(args: {threadId: string; senderId: string; senderName: string; senderRole: string; recipientId?: string; content: string; subject?: string} | string, senderId?: string, senderName?: string, senderRole?: string, content?: string): Promise<void> {
+  // Support both object and positional arg forms
+  const a = typeof args === 'object' ? args : {threadId: args, senderId: senderId!, senderName: senderName!, senderRole: senderRole!, content: content!};
   await db.from('messages').insert({ thread_id: threadId, sender_id: senderId, sender_name: senderName, sender_role: senderRole, content });
 }
 
@@ -321,3 +323,21 @@ export const getMessageThread = getMessages;
 export const saveMessageThread = async (threadId: string, msgs: Message[]) => { /* deprecated - use sendMessage instead */ };
 
 export const markAllNotificationsRead = async (userId: string) => { await db.from('notifications').update({ read: true }).eq('user_id', userId); };
+
+export async function getThreadList(userId: string, role: string): Promise<{threadId: string; lastMessage: string; senderName: string; unread: number; updatedAt: string}[]> {
+  const { data } = await db.from('messages').select('*').order('created_at', { ascending: false });
+  const msgs = (data || []) as any[];
+  const filtered = role === 'admin' ? msgs : msgs.filter((m: any) => m.thread_id === `${role}_${userId}_admin`);
+  const threads = new Map<string, any>();
+  filtered.forEach((m: any) => {
+    if (!threads.has(m.thread_id)) {
+      threads.set(m.thread_id, { threadId: m.thread_id, lastMessage: m.content, senderName: m.sender_name, unread: 0, updatedAt: m.created_at });
+    }
+    if (!m.read && m.sender_role !== role) threads.get(m.thread_id).unread++;
+  });
+  return Array.from(threads.values());
+}
+
+export async function markThreadRead(threadId: string, readerRole: string): Promise<void> {
+  await db.from('messages').update({ read: true }).eq('thread_id', threadId).neq('sender_role', readerRole);
+}

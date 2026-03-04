@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import {
-  LayoutDashboard, Users, Package, UserCheck, DollarSign, Settings, Bell, Globe, Search
+  LayoutDashboard, Users, Package, UserCheck, DollarSign, Settings, Bell, Globe, Search, MessageSquare
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ const sidebarItems = [
   { id: "partners", label: "Partners", icon: UserCheck },
   { id: "revenue", label: "Revenue", icon: DollarSign },
   { id: "whitelabel", label: "White Label", icon: Globe },
+  { id: "messages", label: "Messages", icon: MessageSquare },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 

@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MessagingTab } from "@/components/shared/MessagingTab";
 import { useAuth } from "@/lib/auth";
 import { getBookmarkedDealIds, toggleBookmark } from '@/lib/store';
 import { dealsData } from "@/data/deals";
@@ -323,6 +324,10 @@ const CustomerPortal = () => {
               <CreditCard className="h-4 w-4" />
               Billing
             </TabsTrigger>
+            <TabsTrigger value="messages" className="gap-2">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.96 9.96 0 01-4.462-1.034L3 20l1.338-3.123C3.493 15.646 3 13.87 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+              Messages
+            </TabsTrigger>
             <TabsTrigger id="settings-tab" value="settings" className="gap-2">
               <Settings className="h-4 w-4" />
               Settings
@@ -509,6 +514,11 @@ const CustomerPortal = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Messages Tab */}
+          <TabsContent value="messages" className="space-y-6">
+            <MessagingTab portalRole="customer" />
           </TabsContent>
 
           {/* Settings Tab */}
