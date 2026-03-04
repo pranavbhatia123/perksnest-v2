@@ -148,6 +148,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem(STORAGE_KEY);
+    // Also sign out from Supabase (clears Google OAuth session)
+    db.auth.signOut().catch(() => {});
+    window.location.href = '/';
   };
 
   const updatePlan = async (plan: UserPlan) => {
