@@ -12,36 +12,7 @@ import { getClaimEvents, getPartnerDeals } from '@/lib/store';
 import { dealsData } from "@/data/deals";
 import { getAllUsers } from "@/lib/auth";
 
-const pendingDeals = [
-  {
-    id: 1,
-    name: "Figma Professional - 50% Off",
-    partner: "Figma Inc.",
-    category: "Design",
-    submittedAt: "2024-01-28",
-    discount: "50% off for 12 months",
-    estimatedSavings: "$600"
-  },
-  {
-    id: 2,
-    name: "MongoDB Atlas Credits",
-    partner: "MongoDB",
-    category: "Database",
-    submittedAt: "2024-01-27",
-    discount: "$500 in credits",
-    estimatedSavings: "$500"
-  },
-  {
-    id: 3,
-    name: "Stripe Fee Waiver",
-    partner: "Stripe",
-    category: "Payments",
-    submittedAt: "2024-01-26",
-    discount: "Waived fees on first $50K",
-    estimatedSavings: "$1,450"
-  }
-];
-
+// pendingDeals now comes from allPartnerDeals state
 const getRecentActivity = (allPartnerDeals: any[] = [], allUsers: any[] = []) => {
     const claims: any[] = [];
     const partnerSubs = allPartnerDeals.slice(0, 3).map((d, i) => ({
@@ -63,7 +34,7 @@ const getRecentActivity = (allPartnerDeals: any[] = [], allUsers: any[] = []) =>
     return [...claims, ...partnerSubs, ...users].sort(() => Math.random() - 0.5).slice(0, 8);
   };
 
-export const AdminDashboard = () => {
+export const AdminDashboard = ({ onTabChange }: { onTabChange?: (tab: string) => void }) => {
   const [allPartnerDeals, setAllPartnerDeals] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
@@ -100,7 +71,7 @@ export const AdminDashboard = () => {
       freeUsers,
       totalDeals: dealsData.length,
       activeDeals: dealsData.length, // All deals in data are active
-      pendingApproval: pendingDeals.length,
+      pendingApproval: allPartnerDeals.filter(d => d.status === "pending").length,
       totalRevenue: premiumUsers * 149, // $149 per premium user
       mrr: premiumUsers * 14.99, // monthly recurring revenue
       arr: premiumUsers * 149, // annual recurring revenue
@@ -279,34 +250,32 @@ export const AdminDashboard = () => {
               <AlertTriangle className="h-5 w-5 text-yellow-500" />
               Pending Deal Approvals
             </CardTitle>
-            <Badge variant="secondary">{pendingDeals.length} pending</Badge>
+            <Badge variant="secondary">{allPartnerDeals.filter(d => d.status === "pending").length} pending</Badge>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {pendingDeals.map((deal) => (
+              {allPartnerDeals.filter(d => d.status === "pending").slice(0,3).map((deal) => (
                 <div key={deal.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                   <div className="flex-1">
                     <p className="font-medium">{deal.name}</p>
                     <div className="flex items-center gap-3 mt-1">
-                      <span className="text-sm text-muted-foreground">{deal.partner}</span>
-                      <Badge variant="outline" className="text-xs">{deal.category}</Badge>
+                      <span className="text-sm text-muted-foreground">{deal.partnerName}</span>
+                      <Badge variant="outline" className="text-xs capitalize">{deal.category}</Badge>
                     </div>
-                    <p className="text-sm text-green-600 mt-1">{deal.discount}</p>
+                    <p className="text-sm text-green-600 mt-1">{deal.dealText}</p>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50">
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Approve
+                    <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50" onClick={() => { updatePartnerDealStatus(deal.id, 'approved').then(() => getPartnerDeals().then(setAllPartnerDeals)); }}>
+                      <CheckCircle className="h-4 w-4 mr-1" />Approve
                     </Button>
-                    <Button size="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10">
-                      <XCircle className="h-4 w-4 mr-1" />
-                      Reject
+                    <Button size="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10" onClick={() => { updatePartnerDealStatus(deal.id, 'rejected').then(() => getPartnerDeals().then(setAllPartnerDeals)); }}>
+                      <XCircle className="h-4 w-4 mr-1" />Reject
                     </Button>
                   </div>
                 </div>
               ))}
             </div>
-            <Button variant="ghost" className="w-full mt-4">
+            <Button variant="ghost" className="w-full mt-4" onClick={() => onTabChange?.('deals')}>
               View All Pending <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </CardContent>
@@ -337,7 +306,7 @@ export const AdminDashboard = () => {
                 );
               })}
             </div>
-            <Button variant="ghost" className="w-full mt-4">
+            <Button variant="ghost" className="w-full mt-4" onClick={() => onTabChange?.('users')}>
               View All Activity <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </CardContent>
@@ -348,7 +317,7 @@ export const AdminDashboard = () => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-lg">Top Performing Deals</CardTitle>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={() => onTabChange?.('revenue')}>
             View All <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
         </CardHeader>

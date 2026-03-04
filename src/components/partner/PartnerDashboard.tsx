@@ -36,7 +36,7 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
         <h1 className="text-2xl font-bold mb-2">Welcome back, {partnerData.name}!</h1>
         <p className="text-primary-foreground/80">Your deals have generated ${partnerData.revenue.toLocaleString()} in revenue this month.</p>
         <div className="flex gap-3 mt-4">
-          <Button className="bg-background text-foreground hover:bg-background/90">
+          <Button className="bg-background text-foreground hover:bg-background/90" onClick={() => window.location.href="/partner"}>
             <Plus className="h-4 w-4 mr-2" />
             Create New Deal
           </Button>

@@ -335,7 +335,7 @@ const CustomerPortal = () => {
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>My Claimed Deals</CardTitle>
                 <Link to="/deals">
-                  <Button>Browse More Deals</Button>
+                  <Button onClick={() => window.location.href="/deals"}>Browse More Deals</Button>
                 </Link>
               </CardHeader>
               <CardContent>
@@ -345,7 +345,7 @@ const CustomerPortal = () => {
                     <p className="text-lg font-medium mb-2">No deals claimed yet</p>
                     <p className="text-muted-foreground mb-6">Start claiming deals to see them here</p>
                     <Link to="/deals">
-                      <Button>Browse Deals</Button>
+                      <Button onClick={() => window.location.href="/deals"}>Browse Deals</Button>
                     </Link>
                   </div>
                 ) : (
@@ -415,7 +415,7 @@ const CustomerPortal = () => {
                   <p className="text-lg font-medium mb-2">No saved deals yet</p>
                   <p className="text-muted-foreground mb-6">Save deals you're interested in for later</p>
                   <Link to="/deals">
-                    <Button>Browse Deals</Button>
+                    <Button onClick={() => window.location.href="/deals"}>Browse Deals</Button>
                   </Link>
                 </div>
               </CardContent>

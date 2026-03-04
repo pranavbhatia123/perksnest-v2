@@ -57,7 +57,7 @@ const AdminPortal = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <AdminDashboard />;
+        return <AdminDashboard onTabChange={setActiveTab} />;
       case "users":
         return <AdminUsers />;
       case "deals":
@@ -71,7 +71,7 @@ const AdminPortal = () => {
       case "settings":
         return <AdminSettings />;
       default:
-        return <AdminDashboard />;
+        return <AdminDashboard onTabChange={setActiveTab} />;
     }
   };
 
