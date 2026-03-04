@@ -20,6 +20,7 @@ const TIERS = [
 
 const Invite = () => {
   const { user, isAuthenticated } = useAuth();
+  useEffect(() => { if (user) getReferralsByUser(user.id).then(setMyReferrals); }, [user?.id]);
   const [copied, setCopied] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -27,7 +28,7 @@ const Invite = () => {
 
   const referralCode = user?.referralCode || "";
   const referralLink = user ? `${window.location.origin}/login?ref=${referralCode}` : "";
-  const myReferrals = user ? getReferralsByUser(user.id) : [];
+  const [myReferrals, setMyReferrals] = useState<import("@/lib/store").ReferralEntry[]>([]);
   const converted = myReferrals.filter(r => r.status === "converted" || r.status === "paid");
   const pending = myReferrals.filter(r => r.status === "pending");
   const totalEarned = converted.length * REWARD_PER_REFERRAL;

@@ -1,6 +1,6 @@
 import { getAllUsers } from '@/lib/auth';
 import { getPartnerDeals } from '@/lib/store';
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import { 
   Search, Filter, Download, Eye, Edit, MoreVertical, Plus, Mail,
   CheckCircle, XCircle, Star, TrendingUp, DollarSign, ArrowUpDown,
@@ -56,9 +56,13 @@ const partnerStats = {
 };
 
 export const AdminPartners = () => {
+  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
+  const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
+  useEffect(() => { allUsers.then(setAllUsers); }, []);
+  const [allUsers, setAllUsers] = useState<ReturnType<typeof Array>[0][]>([]);
   const realPartners = useMemo(() => {
-    const users = getAllUsers().filter(u => u.role === 'partner');
-    const allDeals = getPartnerDeals();
+    const users = allUsers.filter(u => u.role === 'partner');
+    const allDeals = allPartnerDeals;
     return users.map(u => ({
       id: u.id,
       name: u.name,

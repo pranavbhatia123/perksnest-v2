@@ -37,7 +37,8 @@ const DealCard = ({
   featured = false,
 }: DealCardProps) => {
   const dealId = id || name.toLowerCase().replace(/\s+/g, '-');
-  const avgRating = getAverageRating(dealId);
+  const [avgRating, setAvgRating] = useState(0);
+  useEffect(() => { getAverageRating(dealId).then(setAvgRating); }, [dealId]);
 
   const slugify = (str: string) =>
     str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');

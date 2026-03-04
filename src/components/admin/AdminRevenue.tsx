@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import {
   DollarSign, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight,
   Download, Calendar, BarChart3, CreditCard, Users, RefreshCcw, AlertCircle
@@ -38,9 +38,10 @@ import { dealsData } from "@/data/deals";
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6366f1'];
 
 export const AdminRevenue = () => {
+  useEffect(() => { allUsers.then(setAllUsers); }, []);
   // Calculate real revenue stats from users
   const stats = useMemo(() => {
-    const allUsers = getAllUsers();
+    // allUsers from state (loaded async)
     const premiumUsers = allUsers.filter(u => u.plan === 'pro' || u.plan === 'enterprise').length;
     const enterpriseUsers = allUsers.filter(u => u.plan === 'enterprise').length;
     const proUsers = allUsers.filter(u => u.plan === 'pro').length;

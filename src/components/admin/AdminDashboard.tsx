@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import {
   Users, Package, DollarSign, TrendingUp, BarChart3, AlertTriangle,
   CheckCircle, XCircle, ChevronRight, Eye, Mail, Activity, ArrowUpRight,
@@ -43,15 +43,8 @@ const pendingDeals = [
 ];
 
 const getRecentActivity = () => {
-    const claims = getClaimEvents().slice(0, 5).map((e, i) => ({
-      id: `claim-${i}`,
-      user: e.userName,
-      action: `claimed ${e.dealName}`,
-      time: (() => { const d = (Date.now() - new Date(e.timestamp).getTime())/1000; return d<3600?`${Math.floor(d/60)}m ago`:`${Math.floor(d/3600)}h ago`; })(),
-      type: 'claim' as const,
-      icon: ShoppingBag,
-    }));
-    const partnerSubs = getPartnerDeals().slice(0, 3).map((d, i) => ({
+    const claims: any[] = [];
+    const partnerSubs = allPartnerDeals.slice(0, 3).map((d, i) => ({
       id: `partner-${i}`,
       user: d.partnerName,
       action: `submitted "${d.name}" deal`,
@@ -59,7 +52,7 @@ const getRecentActivity = () => {
       type: 'partner' as const,
       icon: Package,
     }));
-    const users = getAllUsers().slice(0,3).map((u, i) => ({
+    const users = allUsers.slice(0,3).map((u, i) => ({
       id: `signup-${i}`,
       user: u.name,
       action: 'signed up',
@@ -75,7 +68,7 @@ export const AdminDashboard = () => {
 
   // Calculate real stats from deals data and localStorage users
   const stats = useMemo(() => {
-    const allUsers = getAllUsers();
+    // allUsers from state (loaded async)
     const totalUsers = allUsers.length;
     const premiumUsers = allUsers.filter(u => u.plan === 'pro' || u.plan === 'enterprise').length;
     const freeUsers = allUsers.filter(u => u.plan === 'free').length;

@@ -15,7 +15,7 @@ interface DealReviewsProps {
 
 export function DealReviews({ dealId, dealName }: DealReviewsProps) {
   const { user } = useAuth();
-  const [reviews, setReviews] = useState(getReviews(dealId));
+  const [reviews, setReviews] = useState<import("@/lib/reviews").Review[]>([]);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
@@ -24,18 +24,21 @@ export function DealReviews({ dealId, dealName }: DealReviewsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      const userReview = getUserReview(dealId, user.id);
-      setHasUserReviewed(!!userReview);
+    const loadData = async () => {
+      if (user) {
+        const userReview = await getUserReview(dealId, user.id);
+        setHasUserReviewed(!!userReview);
 
-      // Check if user has claimed this deal
-      const claims = getClaimEvents();
-      const hasClaimed = claims.some(c => c.dealId === dealId && c.userId === user.id);
-      setHasUserClaimed(hasClaimed);
-    }
-  }, [dealId, user]);
+        // Check if user has claimed this deal
+        const claims = await getClaimEvents(user.id);
+        const hasClaimed = claims.some(c => c.dealId === dealId && c.userId === user.id);
+        setHasUserClaimed(hasClaimed);
+      }
+    };
+    loadData();
+  }, [dealId, user?.id]);
 
-  const avgRating = getAverageRating(dealId);
+  const [avgRating, setAvgRating] = useState(0);
   const reviewCount = reviews.length;
 
   // Calculate rating breakdown
@@ -50,25 +53,22 @@ export function DealReviews({ dealId, dealName }: DealReviewsProps) {
 
     setIsSubmitting(true);
     try {
-      const newReview = addReview({
-        dealId,
-        userId: user.id,
-        userName: user.name,
-        rating,
-        text: reviewText.trim()
-      });
-      setReviews([newReview, ...reviews]);
-      setHasUserReviewed(true);
-      setRating(0);
-      setReviewText('');
+      const newReview = await addReview(dealId, user.id, user.name, rating, reviewText.trim());
+      if (newReview) {
+        setReviews([newReview, ...reviews]);
+        setHasUserReviewed(true);
+        setRating(0);
+        setReviewText('');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleMarkHelpful = (reviewId: string) => {
-    markHelpful(reviewId);
-    setReviews(getReviews(dealId));
+    markHelpful(reviewId).then(() => {
+      getReviews(dealId).then(setReviews); getAverageRating(dealId).then(setAvgRating);
+    });
   };
 
   const maskName = (name: string) => {

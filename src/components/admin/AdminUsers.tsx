@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import {
   Search, Filter, Download, Eye, Edit, Ban, Mail, MoreVertical,
   UserPlus, CheckCircle, XCircle, ArrowUpDown, ChevronLeft, ChevronRight
@@ -27,6 +27,7 @@ import { getAllUsers } from "@/lib/auth";
 import { dealsData } from "@/data/deals";
 
 export const AdminUsers = () => {
+  useEffect(() => { allUsers.then(setAllUsers); }, []);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [planFilter, setPlanFilter] = useState("all");
@@ -34,7 +35,7 @@ export const AdminUsers = () => {
   const itemsPerPage = 10;
 
   // Get real users from localStorage
-  const allUsers = useMemo(() => getAllUsers(), []);
+  // allUsers loaded via useEffect+setState (see above)
 
   // Calculate user stats
   const userStats = useMemo(() => {

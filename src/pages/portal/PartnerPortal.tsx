@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { PartnerDashboard } from "@/components/partner/PartnerDashboard";
@@ -24,6 +24,8 @@ const TABS = [
 ];
 
 const PartnerPortal = () => {
+  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
+  const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
   const { user, isPartner, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -35,7 +37,7 @@ const PartnerPortal = () => {
 
   if (!user || !isPartner) return null;
 
-  const myDeals = getPartnerDeals().filter(d => d.partnerId === user.id);
+  const myDeals = allPartnerDeals.filter(d => d.partnerId === user.id);
   const approvedDeals = myDeals.filter(d => d.status === "approved");
   const totalViews = approvedDeals.reduce((a, d) => a + d.views, 0);
   const totalClaims = approvedDeals.reduce((a, d) => a + d.claims, 0);

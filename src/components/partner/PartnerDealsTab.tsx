@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,6 +14,8 @@ const statusConfig = {
 };
 
 export const PartnerDealsTab = () => {
+  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
+  const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
   const { user } = useAuth();
   const [deals, setDeals] = useState<PartnerDeal[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -21,7 +23,7 @@ export const PartnerDealsTab = () => {
 
   const load = () => {
     if (!user) return;
-    setDeals(getPartnerDeals().filter(d => d.partnerId === user.id));
+    setDeals(allPartnerDeals.filter(d => d.partnerId === user.id));
   };
 
   useEffect(() => { load(); }, [user]);

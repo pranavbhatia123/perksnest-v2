@@ -40,12 +40,17 @@ export const PartnerMessagesTab = () => {
 
   // Load conversations — merge initial with any saved replies
   useEffect(() => {
-    const merged = INITIAL_CONVERSATIONS.map(conv => {
-      const saved = getMessageThread(conv.id);
-      if (saved) return { ...conv, messages: saved.messages as Message[] };
-      return conv;
-    });
-    setConversations(merged);
+    const load = async () => {
+      const results = await Promise.all(
+        INITIAL_CONVERSATIONS.map(async conv => {
+          const saved = await getMessageThread(conv.id);
+          if (saved && saved.length > 0) return { ...conv, messages: saved };
+          return conv;
+        })
+      );
+      setConversations(results);
+    };
+    load();
   }, []);
 
   useEffect(() => {

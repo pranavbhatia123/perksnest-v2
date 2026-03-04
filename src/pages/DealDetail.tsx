@@ -11,7 +11,7 @@ import { AuthModal } from "@/components/AuthModal";
 import { DealReviews } from "@/components/DealReviews";
 import UpvoteButton from "@/components/UpvoteButton";
 import ExpiryBadge from "@/components/ExpiryBadge";
-import { toggleBookmark, getBookmarks, sendEmail } from '@/lib/store';
+import { toggleBookmark, getBookmarkedDealIds, sendEmail } from '@/lib/store';
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { dealsData } from "@/data/deals";
@@ -115,7 +115,7 @@ const DealDetail = () => {
 
   const [isBookmarked, setIsBookmarked] = useState(() => {
     if (!user || !dealId) return false;
-    return getBookmarks(user.id).includes(dealId);
+    return false; // loaded async below
   });
 
   const handleBookmark = () => {

@@ -10,7 +10,7 @@ export const PartnerNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
-  const load = () => { if (user) setNotifications(getNotifications(user.id)); };
+  const load = () => { if (user) getNotifications(user.id).then(setNotifications); };
   useEffect(() => { load(); const t = setInterval(load, 5000); return () => clearInterval(t); }, [user]);
   useEffect(() => {
     const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import { Search, Filter, Eye, Edit, Trash2, CheckCircle, XCircle, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,8 @@ interface DealEdit {
 }
 
 export const AdminDeals = () => {
+  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
+  const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [editDeal, setEditDeal] = useState<DealEdit | null>(null);
@@ -26,7 +28,7 @@ export const AdminDeals = () => {
   const [saving, setSaving] = useState(false);
 
   // Approved partner deals
-  const approvedPartnerDeals = useMemo(() => getPartnerDeals().filter(d => d.status === "approved"), []);
+  const approvedPartnerDeals = useMemo(() => allPartnerDeals.filter(d => d.status === "approved"), []);
 
   const allDeals = useMemo(() => [
     ...dealsData.map(d => ({ id: d.id, name: d.name, description: d.description, dealText: d.dealText, savings: d.savings, category: d.category || "other", isFree: d.isFree, source: "platform" as const })),

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,12 +12,16 @@ import { PartnerDeal } from "@/lib/store";
 import { getAllUsers } from "@/lib/auth";
 
 export const AdminPendingDeals = () => {
+  useEffect(() => { allPartnerDeals.then(setAllPartnerDeals); }, []);
+  const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
+  useEffect(() => { allUsers.then(setAllUsers); }, []);
+  const [allUsers, setAllUsers] = useState<ReturnType<typeof Array>[0][]>([]);
   const [deals, setDeals] = useState<PartnerDeal[]>([]);
   const [previewDeal, setPreviewDeal] = useState<PartnerDeal | null>(null);
   const [rejectDialog, setRejectDialog] = useState<PartnerDeal | null>(null);
   const [rejectReason, setRejectReason] = useState("");
 
-  const load = () => setDeals(getPartnerDeals().filter(d => d.status === "pending"));
+  const load = () => setDeals(allPartnerDeals.filter(d => d.status === "pending"));
   useEffect(() => { load(); }, []);
 
   const handleApprove = (deal: PartnerDeal) => {
@@ -33,7 +37,7 @@ export const AdminPendingDeals = () => {
       dealId: deal.id,
     });
     // Send approval email to partner
-    const users = getAllUsers();
+    const users = allUsers;
     const partner = users.find(u => u.id === deal.partnerId);
     if (partner?.email) {
       sendEmail({ type: 'deal_approved', to: partner.email, name: partner.name, dealName: deal.name, dealCategory: deal.category });
@@ -56,7 +60,7 @@ export const AdminPendingDeals = () => {
       dealId: rejectDialog.id,
     });
     // Send rejection email to partner
-    const users = getAllUsers();
+    const users = allUsers;
     const partner = users.find(u => u.id === rejectDialog.id || u.id === rejectDialog.partnerId);
     if (partner?.email) {
       sendEmail({ type: 'deal_rejected', to: partner.email, name: partner.name, dealName: rejectDialog.name, reason: rejectReason || undefined });
