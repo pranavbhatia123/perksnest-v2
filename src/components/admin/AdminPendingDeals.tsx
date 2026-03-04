@@ -8,14 +8,14 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, Eye, ExternalLink, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { getPartnerDeals, updatePartnerDeal, addNotification, sendEmail } from "@/lib/store";
-import { PartnerDeal } from "@/lib/store";
+import { PartnerDeal , getPartnerDeals} from '@/lib/store';
 import { getAllUsers } from "@/lib/auth";
 
 export const AdminPendingDeals = () => {
   const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
   useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
-  useEffect(() => { allUsers.then(setAllUsers); }, []);
   const [allUsers, setAllUsers] = useState<ReturnType<typeof Array>[0][]>([]);
+  useEffect(() => { getAllUsers().then(setAllUsers); }, []);
   const [deals, setDeals] = useState<PartnerDeal[]>([]);
   const [previewDeal, setPreviewDeal] = useState<PartnerDeal | null>(null);
   const [rejectDialog, setRejectDialog] = useState<PartnerDeal | null>(null);

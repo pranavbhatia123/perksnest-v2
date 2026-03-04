@@ -58,8 +58,8 @@ const partnerStats = {
 export const AdminPartners = () => {
   const [allPartnerDeals, setAllPartnerDeals] = useState<PartnerDeal[]>([]);
   useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
-  useEffect(() => { allUsers.then(setAllUsers); }, []);
   const [allUsers, setAllUsers] = useState<ReturnType<typeof Array>[0][]>([]);
+  useEffect(() => { getAllUsers().then(setAllUsers); }, []);
   const realPartners = useMemo(() => {
     const users = allUsers.filter(u => u.role === 'partner');
     const allDeals = allPartnerDeals;

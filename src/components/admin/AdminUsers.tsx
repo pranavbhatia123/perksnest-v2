@@ -27,7 +27,7 @@ import { getAllUsers } from "@/lib/auth";
 import { dealsData } from "@/data/deals";
 
 export const AdminUsers = () => {
-  useEffect(() => { allUsers.then(setAllUsers); }, []);
+  useEffect(() => { getAllUsers().then(setAllUsers); }, []);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [planFilter, setPlanFilter] = useState("all");
