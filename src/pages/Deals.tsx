@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Grid, List, Star, Search, X } from "lucide-react";
-import Header from "@/components/Header";
+import MegaMenuHeader from "@/components/MegaMenuHeader";
 import Footer from "@/components/Footer";
 import DealCardNew from "@/components/DealCardNew";
 import CategorySidebar from "@/components/CategorySidebar";
@@ -95,7 +95,7 @@ const Deals = () => {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <Header />
+      <MegaMenuHeader />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">

@@ -2,7 +2,7 @@ import { Check, Zap, Crown, Building2, HelpCircle, ArrowRight } from "lucide-rea
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Header from "@/components/Header";
+import MegaMenuHeader from "@/components/MegaMenuHeader";
 import Footer from "@/components/Footer";
 import {
   Accordion,
@@ -275,7 +275,7 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MegaMenuHeader />
       
       <main>
         {/* Hero */}

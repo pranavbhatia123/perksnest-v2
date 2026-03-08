@@ -162,7 +162,7 @@ const MegaMenuHeader = () => {
                           return (
                             <button
                               key={category.id}
-                              onClick={() => window.location.href = `/deals?category=${category.id}`}
+                              onClick={() => { navigate(`/deals?category=${category.id}`); setDealsOpen(false); }}
                               onMouseEnter={() => setActiveCategory(category)}
                               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors text-left ${
                                 activeCategory.id === category.id
@@ -251,9 +251,8 @@ const MegaMenuHeader = () => {
                 )}
               </div>
 
-              <Link to="/deals" className="nav-link flex items-center gap-1 px-3 py-2 rounded-md hover:bg-secondary transition-colors">
+              <Link to="/pricing" className="nav-link flex items-center gap-1 px-3 py-2 rounded-md hover:bg-secondary transition-colors">
                 Solutions
-                <ChevronDown className="h-4 w-4" />
               </Link>
 
               <Link to="/invite" className="nav-link px-3 py-2 rounded-md hover:bg-secondary transition-colors">

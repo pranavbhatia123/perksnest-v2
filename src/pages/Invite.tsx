@@ -3,7 +3,7 @@ import { Gift, Copy, Check, Twitter, Linkedin, Mail, DollarSign, Users, Trending
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import Header from "@/components/Header";
+import MegaMenuHeader from "@/components/MegaMenuHeader";
 import Footer from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/lib/auth";
@@ -71,7 +71,7 @@ const Invite = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+      <MegaMenuHeader />
       <main className="flex-1">
         {/* Hero */}
         <section className="bg-primary text-primary-foreground py-14 px-4">

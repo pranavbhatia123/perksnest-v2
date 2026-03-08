@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { Clock, ArrowRight, Search, Calendar, Tag, ArrowLeft } from "lucide-react";
-import Header from "@/components/Header";
+import MegaMenuHeader from "@/components/MegaMenuHeader";
 import Footer from "@/components/Footer";
 import { blogPosts, categories, getBlogPostById, getRelatedPosts } from "@/data/blog";
 
@@ -41,7 +41,7 @@ const Blog = () => {
 
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MegaMenuHeader />
 
         <main>
           {/* Back Button */}
@@ -249,7 +249,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MegaMenuHeader />
       
       <main>
         {/* Hero */}

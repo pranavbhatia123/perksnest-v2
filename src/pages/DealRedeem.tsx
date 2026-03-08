@@ -3,7 +3,7 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { ArrowLeft, Check, Copy, ExternalLink, Clock, Shield, Star, Gift, ChevronRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import Header from "@/components/Header";
+import MegaMenuHeader from "@/components/MegaMenuHeader";
 import Footer from "@/components/Footer";
 import SafeImage from "@/components/SafeImage";
 import { AuthModal } from "@/components/AuthModal";
@@ -208,7 +208,7 @@ const DealRedeem = () => {
   if (!deal) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MegaMenuHeader />
         <div className="container-wide py-20 text-center">
           <h1 className="text-2xl font-bold mb-4">Deal not found</h1>
           <Link to="/deals">
@@ -222,7 +222,7 @@ const DealRedeem = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MegaMenuHeader />
       
       <main className="py-8">
         <div className="container-wide max-w-4xl">

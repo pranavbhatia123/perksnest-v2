@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Trophy, ArrowRight, TrendingUp } from "lucide-react";
-import Header from "@/components/Header";
+import MegaMenuHeader from "@/components/MegaMenuHeader";
 import Footer from "@/components/Footer";
 import SafeImage from "@/components/SafeImage";
 import UpvoteButton from "@/components/UpvoteButton";
@@ -25,7 +25,7 @@ const Leaderboard = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+      <MegaMenuHeader />
       <main className="flex-1">
         <section className="bg-primary text-primary-foreground py-14 px-4">
           <div className="max-w-3xl mx-auto text-center">
