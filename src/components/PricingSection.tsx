@@ -147,8 +147,8 @@ const PricingSection = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {plans.filter(plan => plan.name !== "White Label Solution").map((plan, index) => (
             <div
               key={plan.name}
               className={`relative bg-card rounded-2xl p-6 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 ${

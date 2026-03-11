@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Grid, List, Star, Search, X } from "lucide-react";
-import MegaMenuHeader from "@/components/MegaMenuHeader";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DealCardNew from "@/components/DealCardNew";
 import CategorySidebar from "@/components/CategorySidebar";
@@ -10,6 +10,16 @@ import { getUpvoteCount, getPartnerDeals, PartnerDeal } from "@/lib/store";
 
 const DEALS_PER_PAGE = 9;
 const filterOptions = ["Most popular", "Most upvoted", "Expiring soon", "Premium", "Free", "Recently added"];
+
+// Map subcategory IDs to parent category IDs
+const subcategoryToParent: Record<string, string> = {
+  // Project Management subcategories
+  "collaboration": "project",
+  "task": "project",
+  "productivity": "project",
+  "presentation": "project",
+  "time": "project",
+};
 
 const Deals = () => {
   // SEO: unique page title
@@ -69,7 +79,13 @@ const Deals = () => {
         deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         deal.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         deal.description?.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = activeCategory === "all" || deal.category === activeCategory;
+
+      // Check if activeCategory is a subcategory; if so, map to parent
+      const parentCategory = subcategoryToParent[activeCategory];
+      const matchesCategory = activeCategory === "all" ||
+                              deal.category === activeCategory ||
+                              (parentCategory && deal.category === parentCategory);
+
       const matchesPremium = activeFilter !== "Premium" || deal.isPremium;
       const matchesFree = activeFilter !== "Free" || deal.isFree;
       return matchesSearch && matchesCategory && matchesPremium && matchesFree;
@@ -95,7 +111,7 @@ const Deals = () => {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <MegaMenuHeader />
+      <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">

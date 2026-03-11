@@ -28,6 +28,8 @@ import { dealsData } from "@/data/deals";
 
 export const AdminUsers = () => {
   const [allUsers, setAllUsers] = useState<any[]>([]);
+
+  // TODO: Backend API needed - GET /api/admin/users - Fetch all users with full details (email, plan, signup date, activity)
   useEffect(() => { getAllUsers().then(setAllUsers); }, []);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");

@@ -38,8 +38,14 @@ export const AdminDashboard = ({ onTabChange }: { onTabChange?: (tab: string) =>
   const [allPartnerDeals, setAllPartnerDeals] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [stripeData, setStripeData] = useState<{charges: any[], subscriptions: any[]}>({charges: [], subscriptions: []});
+
+  // TODO: Backend API needed - GET /api/admin/partner-deals - Fetch all partner deals with status, metrics
   useEffect(() => { getPartnerDeals().then(setAllPartnerDeals); }, []);
+
+  // TODO: Backend API needed - GET /api/admin/users - Fetch all users with plan info, signup dates
   useEffect(() => { getAllUsers().then(setAllUsers); }, []);
+
+  // TODO: Backend API needed - GET /api/admin/stripe/charges - Fetch Stripe transaction data
   useEffect(() => { fetch('https://api.perksnest.co/api/stripe/perksnest-charges').then(r=>r.json()).then(d=>setStripeData({charges:d.data||[],subscriptions:d.subscriptions||[]})).catch(()=>{}); }, []);
 
   const recentActivity = getRecentActivity(allPartnerDeals, allUsers);

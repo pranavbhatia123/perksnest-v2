@@ -31,9 +31,11 @@ export const AdminPendingDeals = () => {
   }, []);
 
   const handleApprove = async (deal: PartnerDeal) => {
+    // TODO: Backend API needed - PUT /api/admin/deals/:id/approve - Update deal status to approved
     await updatePartnerDealStatus(deal.id, 'approved');
     const partner = allUsers.find(u => u.id === deal.partnerId);
     if (partner) {
+      // TODO: Backend API needed - POST /api/notifications - Send notification to partner
       await addNotification({ id: `notif_${Date.now()}`, userId: deal.partnerId, title: "Deal Approved! 🎉", message: `Your deal "${deal.name}" is now live on the marketplace.`, type: "deal_approved", read: false, createdAt: new Date().toISOString(), dealId: deal.id });
     }
     toast.success(`"${deal.name}" approved and live!`);
@@ -42,6 +44,7 @@ export const AdminPendingDeals = () => {
 
   const handleReject = async () => {
     if (!rejectDialog) return;
+    // TODO: Backend API needed - PUT /api/admin/deals/:id/reject - Update deal status to rejected with reason
     await updatePartnerDealStatus(rejectDialog.id, 'rejected', rejectReason || "Does not meet requirements");
     const partner = allUsers.find(u => u.id === rejectDialog.partnerId);
     if (partner) {

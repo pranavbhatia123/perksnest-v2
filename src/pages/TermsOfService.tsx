@@ -1,11 +1,11 @@
-import MegaMenuHeader from "@/components/MegaMenuHeader";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <MegaMenuHeader />
+      <Header />
       <main className="flex-1 max-w-3xl mx-auto px-4 py-12 w-full">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Terms of Service</h1>

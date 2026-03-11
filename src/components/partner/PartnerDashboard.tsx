@@ -40,7 +40,7 @@ export const PartnerDashboard = ({ partnerData, deals }: PartnerDashboardProps) 
             <Plus className="h-4 w-4 mr-2" />
             Create New Deal
           </Button>
-          <Button variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+          <Button variant="outline" className="border-background bg-background/10 text-background hover:bg-background hover:text-foreground">
             <Download className="h-4 w-4 mr-2" />
             Download Report
           </Button>

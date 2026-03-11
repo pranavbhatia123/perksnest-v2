@@ -33,6 +33,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 import OAuthHandler from "./components/OAuthHandler";
+import ScrollToTop from "./components/ScrollToTop";
+import HelpCenter from "./pages/HelpCenter";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +45,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <OAuthHandler />
           <Routes>
             <Route path="/" element={<Index />} />
@@ -62,10 +65,12 @@ const App = () => (
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/compare/:slug" element={<Compare />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Login />} />
             <Route path="/communities" element={<Communities />} />
             <Route path="/accelerators" element={<Communities />} />
             <Route path="/white-label" element={<WhiteLabel />} />
             <Route path="/docs" element={<Docs />} />
+            <Route path="/help" element={<HelpCenter />} />
             {/* Clean portal URLs */}
             <Route path="/admin" element={<AdminPortal />} />
             <Route path="/partner" element={<PartnerPortal />} />

@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, Heart, Share2, Info, Users, ExternalLink, Lock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import MegaMenuHeader from "@/components/MegaMenuHeader";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DealCardNew from "@/components/DealCardNew";
 import SafeImage from "@/components/SafeImage";
@@ -189,7 +189,7 @@ const DealDetail = () => {
   if (!deal) {
     return (
       <div className="min-h-screen bg-background">
-        <MegaMenuHeader />
+        <Header />
         <div className="container-wide py-20 text-center">
           <h1 className="text-2xl font-bold mb-4">Deal not found</h1>
           <Link to="/deals">
@@ -203,7 +203,7 @@ const DealDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MegaMenuHeader />
+      <Header />
       
       <main className="py-8">
         <div className="container-wide">

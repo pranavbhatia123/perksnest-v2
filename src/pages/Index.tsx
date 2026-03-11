@@ -1,4 +1,4 @@
-import MegaMenuHeader from "@/components/MegaMenuHeader";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PromoBanner from "@/components/PromoBanner";
 import HeroBanner from "@/components/HeroBanner";
@@ -23,7 +23,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <PromoBanner />
-      <MegaMenuHeader />
+      <Header />
       
       <main>
         {/* Hero Banner */}

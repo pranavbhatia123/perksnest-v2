@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, ChevronDown, Menu, X, Sparkles, Crown, ArrowUpRight, User, LogOut, Package, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +56,7 @@ const Header = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -226,10 +227,12 @@ const Header = () => {
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
-            {/* Search */}
-            <Link to="/deals" className="hidden md:flex p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
-              <Search className="h-5 w-5" />
-            </Link>
+            {/* Search - hide on /deals page */}
+            {!location.pathname.startsWith('/deals') && (
+              <Link to="/deals" className="hidden md:flex p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+                <Search className="h-5 w-5" />
+              </Link>
+            )}
 
             {/* Login/Profile icon — always visible on all screen sizes */}
             <Link

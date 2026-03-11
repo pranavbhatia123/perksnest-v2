@@ -112,8 +112,8 @@ Save up to {savings}
           <ExpiryBadge expiresAt={expiresAt} />
           <UpvoteButton dealId={id} compact />
         </div>
-        <Link to={`/deals/${dealId}/redeem`}>
-          <Button 
+        <Link to={`/deals/${dealId}`}>
+          <Button
             variant={isFree ? "default" : "outline"}
             size="sm"
             className={`gap-1.5 group-hover:gap-2 transition-all ${!isFree ? 'border-primary text-primary hover:bg-primary hover:text-primary-foreground' : ''}`}

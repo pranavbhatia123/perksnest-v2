@@ -1,7 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth";
+import { useNavigate } from "react-router-dom";
 
 const CTASection = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <section className="py-24 relative overflow-hidden bg-primary">
       {/* Decorative Elements */}
@@ -24,17 +29,19 @@ const CTASection = () => {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2 text-base px-8"
+              onClick={() => navigate(isAuthenticated ? '/deals' : '/signup')}
             >
               Get started
               <ArrowRight className="h-5 w-5" />
             </Button>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="outline"
               className="border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary gap-2 text-base px-8"
+              onClick={() => window.location.href = 'mailto:sales@perksnest.co?subject=Sales Inquiry'}
             >
               Talk to sales
             </Button>
