@@ -194,7 +194,7 @@ const Header = () => {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <div className="w-[900px] p-0">
-                        <div className="flex">
+                        <div className="flex" style={{ minHeight: '520px' }}>
                           {/* Left: Categories */}
                           <div className="w-[220px] py-3 border-r border-border bg-muted/30">
                             {megaCategories.map((cat, i) => {
