@@ -108,7 +108,7 @@ function getFeaturedDeals(cat: typeof megaCategories[0]) {
   return dealsData
     .filter((d) => cat.keys.includes(d.category))
     .sort((a, b) => (b.memberCount || 0) - (a.memberCount || 0))
-    .slice(0, 8);
+    .slice(0, 6);
 }
 
 // Solutions testimonials
@@ -193,10 +193,10 @@ const Header = () => {
                       Deals
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <div className="w-[900px] p-0">
+                      <div className="w-[820px] p-0">
                         <div className="flex" style={{ minHeight: '520px' }}>
                           {/* Left: Categories */}
-                          <div className="w-[220px] py-3 border-r border-border bg-muted/30">
+                          <div className="w-[200px] py-3 border-r border-border bg-muted/30 shrink-0">
                             {megaCategories.map((cat, i) => {
                               const Icon = cat.icon;
                               return (
@@ -220,7 +220,7 @@ const Header = () => {
                           </div>
 
                           {/* Middle: Subcategories + Stats */}
-                          <div className="w-[280px] p-5 border-r border-border flex flex-col justify-between">
+                          <div className="w-[240px] p-4 border-r border-border flex flex-col justify-between shrink-0">
                             <div>
                               <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">
                                 {activeCat.name}
@@ -262,7 +262,7 @@ const Header = () => {
                           </div>
 
                           {/* Right: Featured Deals */}
-                          <div className="flex-1 p-5 ">
+                          <div className="flex-1 p-4 min-w-0 overflow-hidden">
                             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                               Featured Deals
                             </p>
@@ -287,18 +287,13 @@ const Header = () => {
                                       <p className="text-sm font-medium text-foreground truncate flex items-center gap-1">
                                         {deal.name}
                                         {deal.isPremium && (
-                                          <Crown className="h-3 w-3 text-amber-500" />
+                                          <Crown className="h-3 w-3 text-amber-500 shrink-0" />
                                         )}
                                       </p>
                                       <p className="text-xs text-muted-foreground truncate">
                                         {deal.dealText}
                                       </p>
                                     </div>
-                                    {deal.savings && (
-                                      <span className="text-xs font-semibold text-emerald-600 shrink-0">
-                                        Save {deal.savings}
-                                      </span>
-                                    )}
                                   </Link>
                                 ))
                               ) : (
@@ -493,10 +488,10 @@ const Header = () => {
             </form>
 
             {/* Explore Marketplace */}
-            <Link to="/deals">
-              <Button variant="outline" size="sm" className="hidden lg:flex items-center gap-2">
+            <Link to="/deals" className="hidden xl:flex">
+              <Button variant="outline" size="sm" className="flex items-center gap-2 whitespace-nowrap">
                 <LayoutGrid className="h-4 w-4" />
-                Explore Marketplace
+                Marketplace
               </Button>
             </Link>
 
