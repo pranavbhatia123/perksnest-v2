@@ -111,7 +111,7 @@ const HelpCenter = () => {
               },
               {
                 question: "What's the difference between Free and Premium?",
-                answer: "Free gives you access to 300+ deals. Premium unlocks all 500+ deals for $2/month."
+                answer: "Free gives you access to 300+ deals. Premium unlocks all 500+ deals for $20/year."
               },
               {
                 question: "How do I cancel my subscription?",
