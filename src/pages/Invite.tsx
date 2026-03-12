@@ -27,11 +27,17 @@ const Invite = () => {
   const { user, isAuthenticated } = useAuth();
   const [apiStats, setApiStats] = useState<any>(null);
 
-  // Fetch referral stats from backend API
+  // Fetch referral stats from backend API (/api/referrals/me)
   useEffect(() => {
     if (user) {
       getReferralStats()
-        .then(data => setApiStats(data))
+        .then(data => {
+          setApiStats(data);
+          // Also populate myReferrals from API data
+          if (data.referrals) {
+            setMyReferrals(data.referrals);
+          }
+        })
         .catch(err => {
           console.error('Failed to fetch referral stats:', err);
           // Fallback to local data

@@ -25,11 +25,15 @@ export async function claimDeal(dealId: string) {
 }
 
 export async function getReferralStats() {
-  return apiCall('/api/referrals/stats');
+  return apiCall('/api/referrals/me');
 }
 
 export async function trackReferralClick(referralCode: string) {
   return apiCall('/api/referrals/click', 'POST', { referralCode });
+}
+
+export async function convertReferral(referralCode: string) {
+  return apiCall('/api/referrals/convert', 'POST', { referralCode });
 }
 
 export async function getTickets() {

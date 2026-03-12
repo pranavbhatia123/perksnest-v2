@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import db from "./supabase";
 import { convertReferral } from "@/lib/store";
+import { convertReferral as apiConvertReferral } from "@/lib/api";
 
 // Simple deterministic hash for password storage
 // In production this would be bcrypt server-side — for now use SHA-256 via Web Crypto
@@ -139,9 +140,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, u.id);
     localStorage.removeItem('perksnest_logged_out');
 
-    // Track referral conversion
+    // Track referral conversion (both local and API)
     if (referrerCode) {
       convertReferral(email, u.id);
+      // Also call API endpoint
+      try {
+        await apiConvertReferral(referrerCode);
+      } catch (error) {
+        console.error('Failed to convert referral via API:', error);
+        // Don't fail registration if API call fails
+      }
     }
 
     return true;
