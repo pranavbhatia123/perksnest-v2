@@ -32,6 +32,15 @@ export async function getUserClaims() {
   return apiCall('/api/user/claims');
 }
 
+// Deals API
+export async function getAllDeals() {
+  return apiCall('/api/deals');
+}
+
+export async function getDealById(dealId: string) {
+  return apiCall(`/api/deals/${dealId}`);
+}
+
 export async function getReferralStats() {
   return apiCall('/api/referrals/me');
 }
