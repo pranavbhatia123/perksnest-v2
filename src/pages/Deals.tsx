@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Grid, List, Star, Search, X } from "lucide-react";
+import { Grid, List, Star, Search, X, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DealCardNew from "@/components/DealCardNew";
 import CategorySidebar from "@/components/CategorySidebar";
-import { dealsData, getExpiryLabel } from "@/data/deals";
+import { Deal, getExpiryLabel } from "@/data/deals";
 import { getUpvoteCount, getPartnerDeals, PartnerDeal } from "@/lib/store";
+import { getDeals } from "@/lib/deals";
 
 const DEALS_PER_PAGE = 9;
 const filterOptions = ["Most popular", "Most upvoted", "Expiring soon", "Premium", "Free", "Recently added"];
@@ -117,9 +118,26 @@ const Deals = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
   const [partnerDeals, setPartnerDeals] = useState<PartnerDeal[]>([]);
+  const [dealsData, setDealsData] = useState<Deal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getPartnerDeals().then(deals => setPartnerDeals(deals.filter(d => d.status === "approved")));
+  }, []);
+
+  // Fetch deals from API
+  useEffect(() => {
+    setIsLoading(true);
+    getDeals()
+      .then(deals => {
+        setDealsData(deals);
+      })
+      .catch(err => {
+        console.error('Failed to fetch deals:', err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   // Merge partner deals into deals list
@@ -294,7 +312,23 @@ const Deals = () => {
                 <h2 className="text-lg font-bold text-gray-900 mb-4">All Deals</h2>
               )}
 
-              {filteredDeals.length === 0 ? (
+              {isLoading ? (
+                <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i} className="bg-white border border-gray-200 rounded-xl p-5 animate-pulse">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                        <div className="flex-1">
+                          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                        </div>
+                      </div>
+                      <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : filteredDeals.length === 0 ? (
                 <div className="text-center py-16">
                   <p className="text-gray-500 text-lg mb-2">No deals found</p>
                   <p className="text-gray-400 text-sm">Try a different search or category</p>

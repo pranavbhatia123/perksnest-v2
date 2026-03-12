@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, Heart, Share2, Info, Users, ExternalLink, Lock, Check, ArrowUpRight } from "lucide-react";
+import { Star, Heart, Share2, Info, Users, ExternalLink, Lock, Check, ArrowUpRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from "@/components/Header";
@@ -14,9 +14,10 @@ import ExpiryBadge from "@/components/ExpiryBadge";
 import { toggleBookmark, getBookmarkedDealIds, sendEmail } from '@/lib/store';
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
-import { dealsData } from "@/data/deals";
+import { Deal } from "@/data/deals";
 import { getPartnerDeals, PartnerDeal } from "@/lib/store";
 import { claimDeal as apiClaimDeal, getDealClaims, getUserClaims } from "@/lib/api";
+import { getDeal, getDealsByCategory } from "@/lib/deals";
 
 import notionLogo from "@/assets/logos/notion.png";
 import stripeLogo from "@/assets/logos/stripe.svg";
@@ -87,8 +88,6 @@ const saasLogos = [
   { name: "Make", logo: makeLogo, discount: "-100%" },
 ];
 
-const relatedDeals = dealsData.slice(0, 3);
-
 const DealDetail = () => {
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
@@ -98,38 +97,75 @@ const DealDetail = () => {
   const [claimCount, setClaimCount] = useState<number>(0);
 
   const [partnerDeal, setPartnerDeal] = useState<PartnerDeal | null>(null);
+  const [serverClaimedDeals, setServerClaimedDeals] = useState<string[]>([]);
+  const [baseDeal, setBaseDeal] = useState<Deal | null>(null);
+  const [relatedDeals, setRelatedDeals] = useState<Deal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch deal details from API
   useEffect(() => {
     if (dealId) {
-      getPartnerDeals().then(deals => {
-        const found = deals.find(d => d.id === dealId && d.status === 'approved');
-        setPartnerDeal(found || null);
-      });
+      setIsLoading(true);
 
-      // Fetch claim count for this deal
-      getDealClaims(dealId)
-        .then(data => {
-          if (data.count !== undefined) {
-            setClaimCount(data.count);
+      Promise.all([
+        getDeal(dealId),
+        getPartnerDeals(),
+        getDealClaims(dealId)
+      ])
+        .then(([deal, partnerDealsData, claimData]) => {
+          setBaseDeal(deal);
+
+          const found = partnerDealsData.find(d => d.id === dealId && d.status === 'approved');
+          setPartnerDeal(found || null);
+
+          if (claimData.count !== undefined) {
+            setClaimCount(claimData.count);
+          }
+
+          // Fetch related deals by category
+          if (deal?.category) {
+            getDealsByCategory(deal.category)
+              .then(categoryDeals => {
+                const filtered = categoryDeals
+                  .filter(d => d.id !== dealId)
+                  .slice(0, 3);
+                setRelatedDeals(filtered);
+              })
+              .catch(err => console.error('Failed to fetch related deals:', err));
           }
         })
         .catch(err => {
-          console.error('Failed to fetch claim count:', err);
+          console.error('Failed to fetch deal details:', err);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   }, [dealId]);
 
+  // Fetch user's claimed deals from server
+  useEffect(() => {
+    if (isAuthenticated) {
+      getUserClaims()
+        .then(data => {
+          if (data.claimedDeals && Array.isArray(data.claimedDeals)) {
+            setServerClaimedDeals(data.claimedDeals);
+          }
+        })
+        .catch(err => {
+          console.error('Failed to fetch user claims:', err);
+        });
+    }
+  }, [isAuthenticated]);
+
   useEffect(() => {
     if (dealId) {
-      const baseDeal = dealsData.find(d => d.id === dealId);
       const dealName = baseDeal?.name || partnerDeal?.name;
       if (dealName) {
         document.title = `${dealName} Deal | PerksNest`;
       }
     }
-  }, [dealId, partnerDeal]);
-
-  const baseDeal = dealId ? dealsData.find(d => d.id === dealId) : null;
+  }, [dealId, baseDeal, partnerDeal]);
   
   // If it's a partner deal, convert to deal format
   const effectiveDeal = baseDeal || (partnerDeal ? {
@@ -177,7 +213,7 @@ const DealDetail = () => {
     window.dispatchEvent(new Event('bookmarks-updated'));
   };
 
-  const isClaimed = dealId && user?.claimedDeals.includes(dealId);
+  const isClaimed = dealId && (user?.claimedDeals.includes(dealId) || serverClaimedDeals.includes(dealId));
   const isPremiumDeal = deal?.isPremium;
   const canClaim = isAuthenticated && (!isPremiumDeal || isPro);
 
@@ -193,8 +229,8 @@ const DealDetail = () => {
     }
 
     if (dealId) {
-      // Check if already claimed locally
-      if (user?.claimedDeals.includes(dealId)) {
+      // Check if already claimed locally or on server
+      if (user?.claimedDeals.includes(dealId) || serverClaimedDeals.includes(dealId)) {
         toast.error('Deal already claimed');
         return;
       }
@@ -228,6 +264,40 @@ const DealDetail = () => {
     navigator.clipboard.writeText(window.location.href);
     toast.success("Link copied to clipboard!");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container-wide py-20">
+          <div className="grid lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2">
+              {/* Loading skeleton */}
+              <div className="animate-pulse">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-secondary"></div>
+                  <span className="text-2xl text-muted-foreground">&</span>
+                  <div className="w-14 h-14 rounded-xl bg-secondary"></div>
+                </div>
+                <div className="h-12 bg-secondary rounded w-3/4 mb-4"></div>
+                <div className="h-6 bg-secondary rounded w-1/2 mb-6"></div>
+                <div className="h-4 bg-secondary rounded w-full mb-2"></div>
+                <div className="h-4 bg-secondary rounded w-5/6 mb-8"></div>
+              </div>
+            </div>
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 bg-card border border-border rounded-2xl p-6 animate-pulse">
+                <div className="h-12 bg-secondary rounded mb-4"></div>
+                <div className="h-6 bg-secondary rounded w-2/3 mb-6"></div>
+                <div className="h-12 bg-secondary rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!deal) {
     return (

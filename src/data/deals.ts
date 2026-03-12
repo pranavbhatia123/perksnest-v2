@@ -32,6 +32,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "project",
+    subcategory: "collaboration",
     expiresAt: "2026-03-31",
     collection: "yc-starter-kit",
     lastAdded: "2026-02-28",
@@ -49,6 +50,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "finance",
+    subcategory: "payments",
     expiresAt: "2026-04-15",
     collection: "yc-starter-kit",
   },
@@ -63,6 +65,7 @@ export const dealsData: Deal[] = [
     isFree: true,
     featured: true,
     category: "data",
+    subcategory: "cloud",
     expiresAt: "2026-05-01",
     collection: "dev-essentials",
   },
@@ -76,6 +79,7 @@ export const dealsData: Deal[] = [
     memberCount: 9806,
     isFree: true,
     category: "ai",
+    subcategory: "ai-coding",
     expiresAt: "2026-03-20",
     collection: "growth-stack",
   },
@@ -90,6 +94,7 @@ export const dealsData: Deal[] = [
     isFree: true,
     isPick: true,
     category: "marketing",
+    subcategory: "content-marketing",
     expiresAt: "2026-04-30",
     collection: "growth-stack",
   },
@@ -103,6 +108,7 @@ export const dealsData: Deal[] = [
     memberCount: 1862,
     isFree: true,
     category: "communication",
+    subcategory: "video-conferencing",
     expiresAt: "2026-03-10",
     collection: "free-tools",
   },
@@ -117,6 +123,7 @@ export const dealsData: Deal[] = [
     isFree: true,
     featured: true,
     category: "customer",
+    subcategory: "crm",
     expiresAt: "2026-06-01",
     collection: "growth-stack",
   },
@@ -130,6 +137,7 @@ export const dealsData: Deal[] = [
     memberCount: 3208,
     isFree: true,
     category: "communication",
+    subcategory: "messaging",
     expiresAt: "2026-04-01",
     collection: "yc-starter-kit",
   },
@@ -143,6 +151,7 @@ export const dealsData: Deal[] = [
     memberCount: 7821,
     isFree: true,
     category: "development",
+    subcategory: "frontend",
     expiresAt: "2026-05-15",
     collection: "dev-essentials",
   },
@@ -157,6 +166,7 @@ export const dealsData: Deal[] = [
     isPremium: true,
     isFree: false,
     category: "project",
+    subcategory: "collaboration",
     expiresAt: "2026-03-25",
     collection: "yc-starter-kit",
   },
@@ -172,6 +182,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "data",
+    subcategory: "cloud",
     expiresAt: "2026-07-01",
     collection: "dev-essentials",
   },
@@ -185,6 +196,7 @@ export const dealsData: Deal[] = [
     memberCount: 2754,
     isFree: true,
     category: "customer",
+    subcategory: "live-chat",
     expiresAt: "2026-04-10",
     collection: "growth-stack",
   },
@@ -198,6 +210,7 @@ export const dealsData: Deal[] = [
     memberCount: 5788,
     isFree: true,
     category: "data",
+    subcategory: "cloud",
     expiresAt: "2026-06-15",
     collection: "dev-essentials",
   },
@@ -211,6 +224,7 @@ export const dealsData: Deal[] = [
     memberCount: 1315,
     isFree: true,
     category: "project",
+    subcategory: "task",
     expiresAt: "2026-03-28",
     collection: "yc-starter-kit",
   },
@@ -224,6 +238,7 @@ export const dealsData: Deal[] = [
     memberCount: 2492,
     isFree: true,
     category: "marketing",
+    subcategory: "seo",
     expiresAt: "2026-04-20",
     collection: "growth-stack",
   },
@@ -237,6 +252,7 @@ export const dealsData: Deal[] = [
     memberCount: 2382,
     isFree: true,
     category: "customer",
+    subcategory: "helpdesk",
     expiresAt: "2026-05-10",
     collection: "growth-stack",
   },
@@ -250,6 +266,7 @@ export const dealsData: Deal[] = [
     memberCount: 3033,
     isFree: true,
     category: "project",
+    subcategory: "task",
     expiresAt: "2026-04-05",
     collection: "free-tools",
   },
@@ -263,6 +280,7 @@ export const dealsData: Deal[] = [
     memberCount: 1282,
     isFree: true,
     category: "ai",
+    subcategory: "ai-agents",
     expiresAt: "2026-03-15",
     collection: "ai-stack",
     lastAdded: "2026-03-01",
@@ -278,6 +296,7 @@ export const dealsData: Deal[] = [
     isPremium: true,
     isFree: false,
     category: "development",
+    subcategory: "frontend",
     expiresAt: "2026-05-20",
     collection: "dev-essentials",
     lastAdded: "2026-03-02",
@@ -292,6 +311,7 @@ export const dealsData: Deal[] = [
     memberCount: 1876,
     isFree: true,
     category: "sales",
+    subcategory: "pipeline",
     expiresAt: "2026-06-30",
     collection: "growth-stack",
   },
@@ -308,6 +328,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "project",
+    subcategory: "task",
     redeemUrl: "https://linear.app/startups",
     lastAdded: "2026-03-09",
   },
@@ -323,6 +344,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "productivity",
+    subcategory: "productivity",
     redeemUrl: "https://www.loom.com/startups",
     lastAdded: "2026-03-09",
   },
@@ -338,6 +360,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: false,
     category: "automation",
+    subcategory: "ai-automation",
     redeemUrl: "https://n8n.partnerlinks.io/ip3q2vzra42d",
     lastAdded: "2026-03-09",
   },
@@ -354,6 +377,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-09",
   },
   {
@@ -369,6 +393,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "design",
+    subcategory: "ui-ux",
     lastAdded: "2026-03-09",
   },
   {
@@ -384,6 +409,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "ai",
+    subcategory: "ai-audio",
     lastAdded: "2026-03-09",
   },
   {
@@ -399,6 +425,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "development",
+    subcategory: "devops",
     lastAdded: "2026-03-09",
   },
   {
@@ -414,6 +441,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: false,
     category: "design",
+    subcategory: "ui-ux",
     lastAdded: "2026-03-09",
   },
   {
@@ -429,6 +457,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "development",
+    subcategory: "monitoring",
     lastAdded: "2026-03-09",
   },
   {
@@ -444,6 +473,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "infrastructure",
+    subcategory: "cloud",
     lastAdded: "2026-03-09",
   },
   {
@@ -459,6 +489,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "project",
+    subcategory: "task",
     lastAdded: "2026-03-09",
   },
   {
@@ -474,6 +505,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: false,
     category: "development",
+    subcategory: "frontend",
     lastAdded: "2026-03-09",
   },
   {
@@ -489,6 +521,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "sales",
+    subcategory: "pipeline",
     lastAdded: "2026-03-09",
   },
   {
@@ -504,6 +537,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "marketing",
+    subcategory: "lead-generation",
     lastAdded: "2026-03-09",
   },
   {
@@ -519,6 +553,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: false,
     category: "sales",
+    subcategory: "lead-gen",
     lastAdded: "2026-03-09",
   },
   {
@@ -534,6 +569,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "ai",
+    subcategory: "ai-coding",
     lastAdded: "2026-03-09",
   },
   {
@@ -548,6 +584,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "sales",
+    subcategory: "lead-gen",
     lastAdded: "2026-03-09",
   },
   {
@@ -562,6 +599,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "ai",
+    subcategory: "ai-writing",
     lastAdded: "2026-03-09",
   },
   {
@@ -577,6 +615,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: false,
     category: "development",
+    subcategory: "api",
     lastAdded: "2026-03-09",
   },
   {
@@ -592,6 +631,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "infrastructure",
+    subcategory: "cloud",
     lastAdded: "2026-03-09",
   },
   {
@@ -607,6 +647,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: false,
     category: "infrastructure",
+    subcategory: "cloud",
     lastAdded: "2026-03-09",
   },
   {
@@ -622,6 +663,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "development",
+    subcategory: "frontend",
     lastAdded: "2026-03-09",
   },
   {
@@ -637,6 +679,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "development",
+    subcategory: "database",
     lastAdded: "2026-03-09",
   },
   {
@@ -652,6 +695,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: false,
     category: "development",
+    subcategory: "devops",
     lastAdded: "2026-03-09",
   },
   {
@@ -667,6 +711,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "marketing",
+    subcategory: "content-marketing",
     lastAdded: "2026-03-09",
   },
   {
@@ -682,6 +727,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "sales",
+    subcategory: "outreach",
     lastAdded: "2026-03-09",
   },
   {
@@ -696,6 +742,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "marketing",
+    subcategory: "video-marketing",
     redeemUrl: "https://capcutaffiliateprogram.pxf.io/y203nD",
     lastAdded: "2026-03-09",
   },
@@ -712,6 +759,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "productivity",
+    subcategory: "productivity",
     promoCode: "67E3W3FMVFYHWD3",
     redeemUrl: "https://www.jdoqocy.com/click-100567186-14497232",
     lastAdded: "2026-03-09",
@@ -728,6 +776,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "sales",
+    subcategory: "lead-gen",
     lastAdded: "2026-03-09",
   },
   {
@@ -743,6 +792,7 @@ export const dealsData: Deal[] = [
     isPick: false,
     featured: false,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-09",
   },
   {
@@ -758,6 +808,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "marketing",
+    subcategory: "crm",
     lastAdded: "2026-03-09",
   },
   {
@@ -772,6 +823,7 @@ export const dealsData: Deal[] = [
     isPick: true,
     featured: true,
     category: "productivity",
+    subcategory: "productivity",
     redeemUrl: "mailto:hello@stirringminds.com?subject=PerksNest Coworking Deal",
     lastAdded: "2026-03-09",
   },
@@ -785,6 +837,7 @@ export const dealsData: Deal[] = [
     memberCount: 8500,
     isFree: true,
     category: "data",
+    subcategory: "cloud",
     lastAdded: "2026-03-10",
   },
   {
@@ -797,6 +850,7 @@ export const dealsData: Deal[] = [
     memberCount: 6200,
     isFree: true,
     category: "it",
+    subcategory: "cloud",
     lastAdded: "2026-03-10",
   },
   {
@@ -809,6 +863,7 @@ export const dealsData: Deal[] = [
     memberCount: 7100,
     isFree: true,
     category: "data",
+    subcategory: "cloud",
     lastAdded: "2026-03-10",
   },
   {
@@ -821,6 +876,7 @@ export const dealsData: Deal[] = [
     memberCount: 12500,
     isFree: true,
     category: "data",
+    subcategory: "cloud",
     lastAdded: "2026-03-10",
   },
   {
@@ -833,6 +889,7 @@ export const dealsData: Deal[] = [
     memberCount: 4800,
     isFree: true,
     category: "data",
+    subcategory: "cloud",
     lastAdded: "2026-03-10",
   },
   {
@@ -845,6 +902,7 @@ export const dealsData: Deal[] = [
     memberCount: 2200,
     isFree: true,
     category: "data",
+    subcategory: "cloud",
     lastAdded: "2026-03-10",
   },
   {
@@ -857,6 +915,7 @@ export const dealsData: Deal[] = [
     memberCount: 8900,
     isFree: true,
     category: "development",
+    subcategory: "frontend",
     lastAdded: "2026-03-10",
   },
   {
@@ -869,6 +928,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isFree: true,
     category: "ai",
+    subcategory: "ai-agents",
     lastAdded: "2026-03-10",
   },
   {
@@ -881,6 +941,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isFree: true,
     category: "ai",
+    subcategory: "ai-agents",
     lastAdded: "2026-03-10",
   },
   {
@@ -893,6 +954,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isFree: true,
     category: "ai",
+    subcategory: "ai-audio",
     lastAdded: "2026-03-10",
   },
   {
@@ -905,6 +967,7 @@ export const dealsData: Deal[] = [
     memberCount: 5600,
     isFree: true,
     category: "ai",
+    subcategory: "ai-agents",
     lastAdded: "2026-03-10",
   },
   {
@@ -917,6 +980,7 @@ export const dealsData: Deal[] = [
     memberCount: 6800,
     isFree: true,
     category: "development",
+    subcategory: "database",
     lastAdded: "2026-03-10",
   },
   {
@@ -929,6 +993,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isFree: true,
     category: "development",
+    subcategory: "database",
     lastAdded: "2026-03-10",
   },
   {
@@ -941,6 +1006,7 @@ export const dealsData: Deal[] = [
     memberCount: 7200,
     isFree: true,
     category: "development",
+    subcategory: "database",
     lastAdded: "2026-03-10",
   },
   {
@@ -953,6 +1019,7 @@ export const dealsData: Deal[] = [
     memberCount: 3400,
     isFree: true,
     category: "development",
+    subcategory: "database",
     lastAdded: "2026-03-10",
   },
   {
@@ -965,6 +1032,7 @@ export const dealsData: Deal[] = [
     memberCount: 5100,
     isFree: true,
     category: "data",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-10",
   },
   {
@@ -977,6 +1045,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isFree: true,
     category: "data",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-10",
   },
   {
@@ -989,6 +1058,7 @@ export const dealsData: Deal[] = [
     memberCount: 3800,
     isFree: true,
     category: "data",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-10",
   },
   {
@@ -1001,6 +1071,7 @@ export const dealsData: Deal[] = [
     memberCount: 4600,
     isFree: true,
     category: "data",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-10",
   },
   {
@@ -1013,6 +1084,7 @@ export const dealsData: Deal[] = [
     memberCount: 5900,
     isFree: true,
     category: "it",
+    subcategory: "monitoring",
     lastAdded: "2026-03-10",
   },
   {
@@ -1025,6 +1097,7 @@ export const dealsData: Deal[] = [
     memberCount: 8200,
     isFree: true,
     category: "development",
+    subcategory: "monitoring",
     lastAdded: "2026-03-10",
   },
   {
@@ -1037,6 +1110,7 @@ export const dealsData: Deal[] = [
     memberCount: 3700,
     isFree: true,
     category: "development",
+    subcategory: "lowcode",
     lastAdded: "2026-03-10",
   },
   {
@@ -1049,6 +1123,7 @@ export const dealsData: Deal[] = [
     memberCount: 4100,
     isFree: true,
     category: "development",
+    subcategory: "api",
     lastAdded: "2026-03-10",
   },
   {
@@ -1061,6 +1136,7 @@ export const dealsData: Deal[] = [
     memberCount: 14500,
     isFree: true,
     category: "project",
+    subcategory: "collaboration",
     lastAdded: "2026-03-10",
   },
   {
@@ -1073,6 +1149,7 @@ export const dealsData: Deal[] = [
     memberCount: 6300,
     isFree: true,
     category: "project",
+    subcategory: "collaboration",
     lastAdded: "2026-03-10",
   },
   {
@@ -1085,6 +1162,7 @@ export const dealsData: Deal[] = [
     memberCount: 18200,
     isFree: true,
     category: "development",
+    subcategory: "devops",
     lastAdded: "2026-03-10",
   },
   {
@@ -1097,6 +1175,7 @@ export const dealsData: Deal[] = [
     memberCount: 9200,
     isFree: true,
     category: "project",
+    subcategory: "task",
     lastAdded: "2026-03-10",
   },
   {
@@ -1109,6 +1188,7 @@ export const dealsData: Deal[] = [
     memberCount: 11200,
     isFree: true,
     category: "project",
+    subcategory: "collaboration",
     lastAdded: "2026-03-10",
   },
   {
@@ -1121,6 +1201,7 @@ export const dealsData: Deal[] = [
     memberCount: 7800,
     isFree: true,
     category: "communication",
+    subcategory: "voip",
     lastAdded: "2026-03-10",
   },
   {
@@ -1133,6 +1214,7 @@ export const dealsData: Deal[] = [
     memberCount: 6700,
     isFree: true,
     category: "customer",
+    subcategory: "live-chat",
     lastAdded: "2026-03-10",
   },
   {
@@ -1145,6 +1227,7 @@ export const dealsData: Deal[] = [
     memberCount: 9800,
     isFree: true,
     category: "marketing",
+    subcategory: "crm",
     lastAdded: "2026-03-10",
   },
   {
@@ -1157,6 +1240,7 @@ export const dealsData: Deal[] = [
     memberCount: 5400,
     isFree: true,
     category: "customer",
+    subcategory: "helpdesk",
     lastAdded: "2026-03-10",
   },
   {
@@ -1169,6 +1253,7 @@ export const dealsData: Deal[] = [
     memberCount: 16200,
     isFree: true,
     category: "design",
+    subcategory: "ui-ux",
     lastAdded: "2026-03-10",
   },
   {
@@ -1181,6 +1266,7 @@ export const dealsData: Deal[] = [
     memberCount: 12800,
     isFree: true,
     category: "design",
+    subcategory: "graphic-design",
     lastAdded: "2026-03-10",
   },
   {
@@ -1193,6 +1279,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isFree: true,
     category: "customer",
+    subcategory: "helpdesk",
     lastAdded: "2026-03-10",
   },
   {
@@ -1205,6 +1292,7 @@ export const dealsData: Deal[] = [
     memberCount: 15600,
     isFree: true,
     category: "finance",
+    subcategory: "payments",
     lastAdded: "2026-03-10",
   },
   {
@@ -1217,6 +1305,7 @@ export const dealsData: Deal[] = [
     memberCount: 8900,
     isFree: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-10",
   },
   {
@@ -1229,6 +1318,7 @@ export const dealsData: Deal[] = [
     memberCount: 6100,
     isFree: true,
     category: "business",
+    subcategory: "productivity",
     lastAdded: "2026-03-10",
   },
   {
@@ -1241,6 +1331,7 @@ export const dealsData: Deal[] = [
     memberCount: 4800,
     isFree: true,
     category: "finance",
+    subcategory: "expense",
     lastAdded: "2026-03-10",
   },
   {
@@ -1253,6 +1344,7 @@ export const dealsData: Deal[] = [
     memberCount: 5200,
     isFree: true,
     category: "finance",
+    subcategory: "expense",
     lastAdded: "2026-03-10",
   },
   {
@@ -1265,6 +1357,7 @@ export const dealsData: Deal[] = [
     memberCount: 7300,
     isFree: true,
     category: "hr",
+    subcategory: "onboarding",
     lastAdded: "2026-03-10",
   },
   {
@@ -1277,6 +1370,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isFree: true,
     category: "marketing",
+    subcategory: "social-media",
     lastAdded: "2026-03-11",
   },
   {
@@ -1289,6 +1383,7 @@ export const dealsData: Deal[] = [
     memberCount: 4100,
     isFree: true,
     category: "marketing",
+    subcategory: "video-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1301,6 +1396,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isFree: true,
     category: "marketing",
+    subcategory: "social-media",
     lastAdded: "2026-03-11",
   },
   {
@@ -1313,6 +1409,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isFree: true,
     category: "marketing",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1325,6 +1422,7 @@ export const dealsData: Deal[] = [
     memberCount: 8900,
     isFree: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1337,6 +1435,7 @@ export const dealsData: Deal[] = [
     memberCount: 5400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1349,6 +1448,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isPremium: true,
     category: "ai",
+    subcategory: "machine-learning",
     lastAdded: "2026-03-11",
   },
   {
@@ -1361,6 +1461,7 @@ export const dealsData: Deal[] = [
     memberCount: 6100,
     isPremium: true,
     category: "marketing",
+    subcategory: "social-media",
     lastAdded: "2026-03-11",
   },
   {
@@ -1373,6 +1474,7 @@ export const dealsData: Deal[] = [
     memberCount: 9200,
     isPremium: true,
     category: "marketing",
+    subcategory: "advertising",
     lastAdded: "2026-03-11",
   },
   {
@@ -1385,6 +1487,7 @@ export const dealsData: Deal[] = [
     memberCount: 3100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1397,6 +1500,7 @@ export const dealsData: Deal[] = [
     memberCount: 4800,
     isPremium: true,
     category: "marketing",
+    subcategory: "email-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1409,6 +1513,7 @@ export const dealsData: Deal[] = [
     memberCount: 5600,
     isPremium: true,
     category: "hr",
+    subcategory: "recruiting",
     lastAdded: "2026-03-11",
   },
   {
@@ -1421,6 +1526,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "development",
+    subcategory: "backend",
     lastAdded: "2026-03-11",
   },
   {
@@ -1433,6 +1539,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "marketing",
+    subcategory: "email-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1445,6 +1552,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "cloud",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -1457,6 +1565,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1469,6 +1578,7 @@ export const dealsData: Deal[] = [
     memberCount: 1900,
     isPremium: true,
     category: "crm",
+    subcategory: "crm",
     lastAdded: "2026-03-11",
   },
   {
@@ -1481,6 +1591,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isPremium: true,
     category: "finance",
+    subcategory: "billing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1493,6 +1604,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "marketing",
+    subcategory: "content-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1505,6 +1617,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "development",
+    subcategory: "api",
     lastAdded: "2026-03-11",
   },
   {
@@ -1517,6 +1630,7 @@ export const dealsData: Deal[] = [
     memberCount: 800,
     isPremium: true,
     category: "marketing",
+    subcategory: "seo",
     lastAdded: "2026-03-11",
   },
   {
@@ -1529,6 +1643,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "marketing",
+    subcategory: "lead-generation",
     lastAdded: "2026-03-11",
   },
   {
@@ -1541,6 +1656,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -1553,6 +1669,7 @@ export const dealsData: Deal[] = [
     memberCount: 3400,
     isPremium: true,
     category: "database",
+    subcategory: "database",
     lastAdded: "2026-03-11",
   },
   {
@@ -1565,6 +1682,7 @@ export const dealsData: Deal[] = [
     memberCount: 12400,
     isPremium: true,
     category: "crm",
+    subcategory: "crm",
     lastAdded: "2026-03-11",
   },
   {
@@ -1577,6 +1695,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1589,6 +1708,7 @@ export const dealsData: Deal[] = [
     memberCount: 4800,
     isPremium: true,
     category: "communication",
+    subcategory: "messaging",
     lastAdded: "2026-03-11",
   },
   {
@@ -1601,6 +1721,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "crm",
+    subcategory: "crm",
     lastAdded: "2026-03-11",
   },
   {
@@ -1613,6 +1734,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "communication",
+    subcategory: "video-conferencing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1625,6 +1747,7 @@ export const dealsData: Deal[] = [
     memberCount: 1900,
     isPremium: true,
     category: "development",
+    subcategory: "monitoring",
     lastAdded: "2026-03-11",
   },
   {
@@ -1637,6 +1760,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "development",
+    subcategory: "frontend",
     lastAdded: "2026-03-11",
   },
   {
@@ -1649,6 +1773,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "hr",
+    subcategory: "recruiting",
     lastAdded: "2026-03-11",
   },
   {
@@ -1661,6 +1786,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isPremium: true,
     category: "design",
+    subcategory: "ui-ux",
     lastAdded: "2026-03-11",
   },
   {
@@ -1673,6 +1799,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1685,6 +1812,7 @@ export const dealsData: Deal[] = [
     memberCount: 4100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1697,6 +1825,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "development",
+    subcategory: "api",
     lastAdded: "2026-03-11",
   },
   {
@@ -1709,6 +1838,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "development",
+    subcategory: "backend",
     lastAdded: "2026-03-11",
   },
   {
@@ -1721,6 +1851,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "marketing",
+    subcategory: "seo",
     lastAdded: "2026-03-11",
   },
   {
@@ -1733,6 +1864,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "marketing",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1745,6 +1877,7 @@ export const dealsData: Deal[] = [
     memberCount: 8900,
     isPremium: true,
     category: "development",
+    subcategory: "backend",
     lastAdded: "2026-03-11",
   },
   {
@@ -1757,6 +1890,7 @@ export const dealsData: Deal[] = [
     memberCount: 5400,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1769,6 +1903,7 @@ export const dealsData: Deal[] = [
     memberCount: 3100,
     isPremium: true,
     category: "cloud",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -1781,6 +1916,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "hr",
+    subcategory: "recruiting",
     lastAdded: "2026-03-11",
   },
   {
@@ -1793,6 +1929,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -1805,6 +1942,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "cloud",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -1817,6 +1955,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isPremium: true,
     category: "marketing",
+    subcategory: "email-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1829,6 +1968,7 @@ export const dealsData: Deal[] = [
     memberCount: 900,
     isPremium: true,
     category: "cloud",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -1841,6 +1981,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1853,6 +1994,7 @@ export const dealsData: Deal[] = [
     memberCount: 5600,
     isPremium: true,
     category: "cloud",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -1865,6 +2007,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "finance",
+    subcategory: "fundraising",
     lastAdded: "2026-03-11",
   },
   {
@@ -1877,6 +2020,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "marketing",
+    subcategory: "lead-generation",
     lastAdded: "2026-03-11",
   },
   {
@@ -1889,6 +2033,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1901,6 +2046,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "marketing",
+    subcategory: "content-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1913,6 +2059,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isPremium: true,
     category: "communication",
+    subcategory: "messaging",
     lastAdded: "2026-03-11",
   },
   {
@@ -1925,6 +2072,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1937,6 +2085,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1949,6 +2098,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "marketing",
+    subcategory: "social-media",
     lastAdded: "2026-03-11",
   },
   {
@@ -1961,6 +2111,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "finance",
+    subcategory: "invoicing",
     lastAdded: "2026-03-11",
   },
   {
@@ -1973,6 +2124,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "hr",
+    subcategory: "onboarding",
     lastAdded: "2026-03-11",
   },
   {
@@ -1985,6 +2137,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -1997,6 +2150,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "hr",
+    subcategory: "remote-work",
     lastAdded: "2026-03-11",
   },
   {
@@ -2009,6 +2163,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -2021,6 +2176,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "marketing",
+    subcategory: "lead-generation",
     lastAdded: "2026-03-11",
   },
   {
@@ -2033,6 +2189,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2045,6 +2202,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2057,6 +2215,7 @@ export const dealsData: Deal[] = [
     memberCount: 900,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2069,6 +2228,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2081,6 +2241,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "development",
+    subcategory: "api",
     lastAdded: "2026-03-11",
   },
   {
@@ -2093,6 +2254,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "development",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -2105,6 +2267,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2117,6 +2280,7 @@ export const dealsData: Deal[] = [
     memberCount: 800,
     isPremium: true,
     category: "design",
+    subcategory: "graphic-design",
     lastAdded: "2026-03-11",
   },
   {
@@ -2129,6 +2293,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "cloud",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -2141,6 +2306,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2153,6 +2319,7 @@ export const dealsData: Deal[] = [
     memberCount: 6200,
     isPremium: true,
     category: "development",
+    subcategory: "database",
     lastAdded: "2026-03-11",
   },
   {
@@ -2165,6 +2332,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2177,6 +2345,7 @@ export const dealsData: Deal[] = [
     memberCount: 3400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2189,6 +2358,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -2201,6 +2371,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "finance",
+    subcategory: "billing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2213,6 +2384,7 @@ export const dealsData: Deal[] = [
     memberCount: 4800,
     isPremium: true,
     category: "ai",
+    subcategory: "ai-writing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2225,6 +2397,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2237,6 +2410,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "communication",
+    subcategory: "email",
     lastAdded: "2026-03-11",
   },
   {
@@ -2249,6 +2423,7 @@ export const dealsData: Deal[] = [
     memberCount: 2600,
     isPremium: true,
     category: "marketing",
+    subcategory: "email-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2261,6 +2436,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "marketing",
+    subcategory: "advertising",
     lastAdded: "2026-03-11",
   },
   {
@@ -2273,6 +2449,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2285,6 +2462,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2297,6 +2475,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "hr",
+    subcategory: "remote-work",
     lastAdded: "2026-03-11",
   },
   {
@@ -2309,6 +2488,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2321,6 +2501,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isPremium: true,
     category: "development",
+    subcategory: "monitoring",
     lastAdded: "2026-03-11",
   },
   {
@@ -2333,6 +2514,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2345,6 +2527,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "hr",
+    subcategory: "remote-work",
     lastAdded: "2026-03-11",
   },
   {
@@ -2357,6 +2540,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2369,6 +2553,7 @@ export const dealsData: Deal[] = [
     memberCount: 5600,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -2381,6 +2566,7 @@ export const dealsData: Deal[] = [
     memberCount: 800,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2393,6 +2579,7 @@ export const dealsData: Deal[] = [
     memberCount: 600,
     isPremium: true,
     category: "marketing",
+    subcategory: "content-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2405,6 +2592,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2417,6 +2605,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -2429,6 +2618,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -2441,6 +2631,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "communication",
+    subcategory: "messaging",
     lastAdded: "2026-03-11",
   },
   {
@@ -2453,6 +2644,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "marketing",
+    subcategory: "video-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2465,6 +2657,7 @@ export const dealsData: Deal[] = [
     memberCount: 6800,
     isPremium: true,
     category: "communication",
+    subcategory: "messaging",
     lastAdded: "2026-03-11",
   },
   {
@@ -2477,6 +2670,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2489,6 +2683,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2501,6 +2696,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "marketing",
+    subcategory: "social-media",
     lastAdded: "2026-03-11",
   },
   {
@@ -2513,6 +2709,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "marketing",
+    subcategory: "email-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2525,6 +2722,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2537,6 +2735,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "finance",
+    subcategory: "fundraising",
     lastAdded: "2026-03-11",
   },
   {
@@ -2549,6 +2748,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "development",
+    subcategory: "frontend",
     lastAdded: "2026-03-11",
   },
   {
@@ -2561,6 +2761,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2573,6 +2774,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "design",
+    subcategory: "graphic-design",
     lastAdded: "2026-03-11",
   },
   {
@@ -2585,6 +2787,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "marketing",
+    subcategory: "lead-generation",
     lastAdded: "2026-03-11",
   },
   {
@@ -2597,6 +2800,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "marketing",
+    subcategory: "social-media",
     lastAdded: "2026-03-11",
   },
   {
@@ -2609,6 +2813,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "design",
+    subcategory: "branding",
     lastAdded: "2026-03-11",
   },
   {
@@ -2621,6 +2826,7 @@ export const dealsData: Deal[] = [
     memberCount: 5200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2633,6 +2839,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "analytics",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2645,6 +2852,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "hr",
+    subcategory: "employee-engagement",
     lastAdded: "2026-03-11",
   },
   {
@@ -2657,6 +2865,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isPremium: true,
     category: "design",
+    subcategory: "graphic-design",
     lastAdded: "2026-03-11",
   },
   {
@@ -2669,6 +2878,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "marketing",
+    subcategory: "content-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2681,6 +2891,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "ai",
+    subcategory: "ai-writing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2693,6 +2904,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "marketing",
+    subcategory: "analytics-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2705,6 +2917,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isPremium: true,
     category: "finance",
+    subcategory: "invoicing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2717,6 +2930,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "marketing",
+    subcategory: "affiliate",
     lastAdded: "2026-03-11",
   },
   {
@@ -2729,6 +2943,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "design",
+    subcategory: "photo-editing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2741,6 +2956,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2753,6 +2969,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "marketing",
+    subcategory: "influencer",
     lastAdded: "2026-03-11",
   },
   {
@@ -2765,6 +2982,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "ai",
+    subcategory: "ai-writing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2777,6 +2995,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2789,6 +3008,7 @@ export const dealsData: Deal[] = [
     memberCount: 800,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -2801,6 +3021,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "hr",
+    subcategory: "benefits",
     lastAdded: "2026-03-11",
   },
   {
@@ -2813,6 +3034,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "marketing",
+    subcategory: "email-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2825,6 +3047,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "development",
+    subcategory: "testing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2837,6 +3060,7 @@ export const dealsData: Deal[] = [
     memberCount: 900,
     isPremium: true,
     category: "communication",
+    subcategory: "messaging",
     lastAdded: "2026-03-11",
   },
   {
@@ -2849,6 +3073,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "hr",
+    subcategory: "performance",
     lastAdded: "2026-03-11",
   },
   {
@@ -2861,6 +3086,7 @@ export const dealsData: Deal[] = [
     memberCount: 5600,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2873,6 +3099,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2885,6 +3112,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "communication",
+    subcategory: "email",
     lastAdded: "2026-03-11",
   },
   {
@@ -2897,6 +3125,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2909,6 +3138,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "crm",
+    subcategory: "crm",
     lastAdded: "2026-03-11",
   },
   {
@@ -2921,6 +3151,7 @@ export const dealsData: Deal[] = [
     memberCount: 3400,
     isPremium: true,
     category: "design",
+    subcategory: "ui-ux",
     lastAdded: "2026-03-11",
   },
   {
@@ -2933,6 +3164,7 @@ export const dealsData: Deal[] = [
     memberCount: 4200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -2945,6 +3177,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "hr",
+    subcategory: "employee-engagement",
     lastAdded: "2026-03-11",
   },
   {
@@ -2957,6 +3190,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "development",
+    subcategory: "monitoring",
     lastAdded: "2026-03-11",
   },
   {
@@ -2969,6 +3203,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "marketing",
+    subcategory: "video-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2981,6 +3216,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "marketing",
+    subcategory: "video-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -2993,6 +3229,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -3005,6 +3242,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -3017,6 +3255,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -3029,6 +3268,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "marketing",
+    subcategory: "affiliate",
     lastAdded: "2026-03-11",
   },
   {
@@ -3041,6 +3281,7 @@ export const dealsData: Deal[] = [
     memberCount: 8900,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -3053,6 +3294,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "hr",
+    subcategory: "remote-work",
     lastAdded: "2026-03-11",
   },
   {
@@ -3065,6 +3307,7 @@ export const dealsData: Deal[] = [
     memberCount: 800,
     isPremium: true,
     category: "analytics",
+    subcategory: "cloud",
     lastAdded: "2026-03-11",
   },
   {
@@ -3077,6 +3320,7 @@ export const dealsData: Deal[] = [
     memberCount: 2400,
     isPremium: true,
     category: "hr",
+    subcategory: "remote-work",
     lastAdded: "2026-03-11",
   },
   {
@@ -3089,6 +3333,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "communication",
+    subcategory: "messaging",
     lastAdded: "2026-03-11",
   },
   {
@@ -3101,6 +3346,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "marketing",
+    subcategory: "influencer",
     lastAdded: "2026-03-11",
   },
   {
@@ -3113,6 +3359,7 @@ export const dealsData: Deal[] = [
     memberCount: 900,
     isPremium: true,
     category: "hr",
+    subcategory: "recruiting",
     lastAdded: "2026-03-11",
   },
   {
@@ -3125,6 +3372,7 @@ export const dealsData: Deal[] = [
     memberCount: 1400,
     isPremium: true,
     category: "communication",
+    subcategory: "voip",
     lastAdded: "2026-03-11",
   },
   {
@@ -3137,6 +3385,7 @@ export const dealsData: Deal[] = [
     memberCount: 1200,
     isPremium: true,
     category: "marketing",
+    subcategory: "content-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -3149,6 +3398,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -3161,6 +3411,7 @@ export const dealsData: Deal[] = [
     memberCount: 1800,
     isPremium: true,
     category: "ai",
+    subcategory: "ai-writing",
     lastAdded: "2026-03-11",
   },
   {
@@ -3173,6 +3424,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "marketing",
+    subcategory: "content-marketing",
     lastAdded: "2026-03-11",
   },
   {
@@ -3185,6 +3437,7 @@ export const dealsData: Deal[] = [
     memberCount: 1600,
     isPremium: true,
     category: "hr",
+    subcategory: "recruiting",
     lastAdded: "2026-03-11",
   },
   {
@@ -3197,6 +3450,7 @@ export const dealsData: Deal[] = [
     memberCount: 3200,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -3209,6 +3463,7 @@ export const dealsData: Deal[] = [
     memberCount: 800,
     isPremium: true,
     category: "finance",
+    subcategory: "accounting",
     lastAdded: "2026-03-11",
   },
   {
@@ -3221,6 +3476,7 @@ export const dealsData: Deal[] = [
     memberCount: 1100,
     isPremium: true,
     category: "productivity",
+    subcategory: "productivity",
     lastAdded: "2026-03-11",
   },
   {
@@ -3233,6 +3489,7 @@ export const dealsData: Deal[] = [
     memberCount: 2800,
     isPremium: true,
     category: "hr",
+    subcategory: "onboarding",
     lastAdded: "2026-03-11",
   },
   {
@@ -3245,6 +3502,7 @@ export const dealsData: Deal[] = [
     memberCount: 2100,
     isPremium: true,
     category: "marketing",
+    subcategory: "email-marketing",
     lastAdded: "2026-03-11",
   },
 
