@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search, Filter, Eye, Edit, Trash2, CheckCircle, XCircle, Tag } from "lucide-react";
+import { Search, Filter, Eye, Edit, Trash2, CheckCircle, XCircle, Tag, Plus, ToggleLeft, ToggleRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -12,10 +12,11 @@ import { toast } from "sonner";
 import { dealsData } from "@/data/deals";
 import { AdminPendingDeals } from "./AdminPendingDeals";
 import { getPartnerDeals } from "@/lib/store";
+import { apiCall } from "@/lib/api";
 
 interface DealEdit {
   id: string; name: string; description: string; dealText: string;
-  savings: string; category: string; isFree: boolean;
+  savings: string; category: string; isFree: boolean; logo?: string; link?: string; active?: boolean;
 }
 
 export const AdminDeals = () => {
@@ -26,6 +27,8 @@ export const AdminDeals = () => {
   const [editDeal, setEditDeal] = useState<DealEdit | null>(null);
   const [editForm, setEditForm] = useState<DealEdit | null>(null);
   const [saving, setSaving] = useState(false);
+  const [isNewDeal, setIsNewDeal] = useState(false);
+  const [deletingDealId, setDeletingDealId] = useState<string | null>(null);
 
   // Approved partner deals
   const approvedPartnerDeals = useMemo(() => allPartnerDeals.filter(d => d.status === "approved"), [allPartnerDeals]);
@@ -47,22 +50,101 @@ export const AdminDeals = () => {
   });
 
   const handleEdit = (deal: typeof filtered[0]) => {
-    const d: DealEdit = { id: deal.id, name: deal.name, description: deal.description, dealText: deal.dealText, savings: deal.savings, category: deal.category, isFree: deal.isFree };
-    setEditDeal(d); setEditForm(d);
+    const d: DealEdit = {
+      id: deal.id,
+      name: deal.name,
+      description: deal.description,
+      dealText: deal.dealText,
+      savings: deal.savings,
+      category: deal.category,
+      isFree: deal.isFree,
+      active: true
+    };
+    setEditDeal(d);
+    setEditForm(d);
+    setIsNewDeal(false);
+  };
+
+  const handleAddNew = () => {
+    const newDeal: DealEdit = {
+      id: `deal_${Date.now()}`,
+      name: "",
+      description: "",
+      dealText: "",
+      savings: "$0",
+      category: "other",
+      isFree: true,
+      logo: "",
+      link: "",
+      active: true
+    };
+    setEditDeal(newDeal);
+    setEditForm(newDeal);
+    setIsNewDeal(true);
   };
 
   const handleSaveEdit = async () => {
     if (!editForm) return;
+    if (!editForm.name.trim() || !editForm.description.trim() || !editForm.dealText.trim()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     setSaving(true);
-    await new Promise(r => setTimeout(r, 300));
-    // Save to localStorage overrides
-    const overrides = JSON.parse(localStorage.getItem("pn_deals_override") || "{}");
-    overrides[editForm.id] = editForm;
-    localStorage.setItem("pn_deals_override", JSON.stringify(overrides));
-    setSaving(false);
-    setEditDeal(null);
-    setEditForm(null);
-    toast.success("Deal updated!");
+    try {
+      if (isNewDeal) {
+        // Call API to create new deal
+        await apiCall('/api/admin/deals', 'POST', editForm);
+        toast.success("Deal created successfully!");
+      } else {
+        // Call API to update deal
+        await apiCall(`/api/admin/deals/${editForm.id}`, 'PUT', editForm);
+        toast.success("Deal updated successfully!");
+      }
+
+      // For now, also save to localStorage as fallback
+      const overrides = JSON.parse(localStorage.getItem("pn_deals_override") || "{}");
+      overrides[editForm.id] = editForm;
+      localStorage.setItem("pn_deals_override", JSON.stringify(overrides));
+    } catch (error) {
+      console.error("Failed to save deal:", error);
+      toast.error("Failed to save deal");
+    } finally {
+      setSaving(false);
+      setEditDeal(null);
+      setEditForm(null);
+      setIsNewDeal(false);
+    }
+  };
+
+  const handleDelete = async (dealId: string) => {
+    if (!confirm("Are you sure you want to delete this deal?")) return;
+
+    setDeletingDealId(dealId);
+    try {
+      await apiCall(`/api/admin/deals/${dealId}`, 'DELETE');
+      toast.success("Deal deleted successfully!");
+
+      // Also remove from localStorage
+      const overrides = JSON.parse(localStorage.getItem("pn_deals_override") || "{}");
+      delete overrides[dealId];
+      localStorage.setItem("pn_deals_override", JSON.stringify(overrides));
+    } catch (error) {
+      console.error("Failed to delete deal:", error);
+      toast.error("Failed to delete deal");
+    } finally {
+      setDeletingDealId(null);
+    }
+  };
+
+  const handleToggleActive = async (dealId: string, currentActive: boolean) => {
+    try {
+      await apiCall(`/api/admin/deals/${dealId}`, 'PUT', { active: !currentActive });
+      toast.success(`Deal ${!currentActive ? 'activated' : 'deactivated'}`);
+    } catch (error) {
+      console.error("Failed to toggle deal:", error);
+      toast.error("Failed to update deal");
+    }
   };
 
   return (
@@ -73,7 +155,13 @@ export const AdminDeals = () => {
       {/* All deals */}
       <Card>
         <CardHeader>
-          <CardTitle>All Deals ({filtered.length})</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>All Deals ({filtered.length})</CardTitle>
+            <Button onClick={handleAddNew} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Deal
+            </Button>
+          </div>
           <div className="flex gap-3 mt-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -96,6 +184,7 @@ export const AdminDeals = () => {
                   <th className="text-left py-3 pr-4 font-medium hidden md:table-cell">Offer</th>
                   <th className="text-left py-3 pr-4 font-medium hidden sm:table-cell">Savings</th>
                   <th className="text-left py-3 pr-4 font-medium">Type</th>
+                  <th className="text-left py-3 pr-4 font-medium hidden lg:table-cell">Active</th>
                   <th className="text-right py-3 font-medium">Actions</th>
                 </tr>
               </thead>
@@ -122,10 +211,29 @@ export const AdminDeals = () => {
                         <Badge className="bg-purple-100 text-purple-800 text-[10px]">Premium</Badge>
                       )}
                     </td>
+                    <td className="py-3 pr-4 hidden lg:table-cell">
+                      <button
+                        onClick={() => handleToggleActive(deal.id, true)}
+                        className="text-green-600 hover:text-green-800"
+                      >
+                        <ToggleRight className="h-5 w-5" />
+                      </button>
+                    </td>
                     <td className="py-3 text-right">
-                      <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => handleEdit(deal)}>
-                        <Edit className="h-3.5 w-3.5" />
-                      </Button>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => handleEdit(deal)}>
+                          <Edit className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 px-2 text-red-600 hover:text-red-700"
+                          onClick={() => handleDelete(deal.id)}
+                          disabled={deletingDealId === deal.id}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -135,17 +243,22 @@ export const AdminDeals = () => {
         </CardContent>
       </Card>
 
-      {/* Edit Deal Dialog */}
-      <Dialog open={!!editDeal} onOpenChange={() => { setEditDeal(null); setEditForm(null); }}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Edit Deal — {editDeal?.name}</DialogTitle></DialogHeader>
+      {/* Add/Edit Deal Dialog */}
+      <Dialog open={!!editDeal} onOpenChange={() => { setEditDeal(null); setEditForm(null); setIsNewDeal(false); }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isNewDeal ? "Add New Deal" : `Edit Deal — ${editDeal?.name}`}</DialogTitle>
+          </DialogHeader>
           {editForm && (
             <div className="space-y-4">
-              <div><Label>Deal Name</Label><Input value={editForm.name} onChange={e => setEditForm(f => f ? { ...f, name: e.target.value } : f)} className="mt-1" /></div>
-              <div><Label>Short Description</Label><Input value={editForm.description} onChange={e => setEditForm(f => f ? { ...f, description: e.target.value } : f)} className="mt-1" /></div>
-              <div><Label>Offer Text</Label><Input value={editForm.dealText} onChange={e => setEditForm(f => f ? { ...f, dealText: e.target.value } : f)} className="mt-1" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Savings Value</Label><Input value={editForm.savings} onChange={e => setEditForm(f => f ? { ...f, savings: e.target.value } : f)} className="mt-1" /></div>
+                <div><Label>Deal Name *</Label><Input value={editForm.name} onChange={e => setEditForm(f => f ? { ...f, name: e.target.value } : f)} className="mt-1" placeholder="e.g., Notion" /></div>
+                <div><Label>Category</Label><Input value={editForm.category} onChange={e => setEditForm(f => f ? { ...f, category: e.target.value } : f)} className="mt-1" placeholder="e.g., productivity" /></div>
+              </div>
+              <div><Label>Short Description *</Label><Input value={editForm.description} onChange={e => setEditForm(f => f ? { ...f, description: e.target.value } : f)} className="mt-1" placeholder="Brief one-line description" /></div>
+              <div><Label>Offer Text *</Label><Textarea value={editForm.dealText} onChange={e => setEditForm(f => f ? { ...f, dealText: e.target.value } : f)} className="mt-1 min-h-[80px]" placeholder="Full details of the deal offer" /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><Label>Savings Value</Label><Input value={editForm.savings} onChange={e => setEditForm(f => f ? { ...f, savings: e.target.value } : f)} className="mt-1" placeholder="e.g., $1,000" /></div>
                 <div>
                   <Label>Type</Label>
                   <Select value={editForm.isFree ? "free" : "premium"} onValueChange={v => setEditForm(f => f ? { ...f, isFree: v === "free" } : f)}>
@@ -157,11 +270,17 @@ export const AdminDeals = () => {
                   </Select>
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><Label>Logo URL</Label><Input value={editForm.logo || ""} onChange={e => setEditForm(f => f ? { ...f, logo: e.target.value } : f)} className="mt-1" placeholder="https://..." /></div>
+                <div><Label>Deal Link</Label><Input value={editForm.link || ""} onChange={e => setEditForm(f => f ? { ...f, link: e.target.value } : f)} className="mt-1" placeholder="https://..." /></div>
+              </div>
             </div>
           )}
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => { setEditDeal(null); setEditForm(null); }}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={saving}>{saving ? "Saving..." : "Save Changes"}</Button>
+            <Button variant="outline" onClick={() => { setEditDeal(null); setEditForm(null); setIsNewDeal(false); }}>Cancel</Button>
+            <Button onClick={handleSaveEdit} disabled={saving}>
+              {saving ? "Saving..." : isNewDeal ? "Create Deal" : "Save Changes"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

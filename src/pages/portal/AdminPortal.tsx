@@ -6,6 +6,7 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { AdminUsers } from "@/components/admin/AdminUsers";
 import { AdminDeals } from "@/components/admin/AdminDeals";
 import { AdminPartners } from "@/components/admin/AdminPartners";
+import { AdminTickets } from "@/components/admin/AdminTickets";
 import { AdminRevenue } from "@/components/admin/AdminRevenue";
 import { AdminWhiteLabel } from "@/components/admin/AdminWhiteLabel";
 import { AdminSettings } from "@/components/admin/AdminSettings";
@@ -68,6 +69,8 @@ const AdminPortal = () => {
         return <AdminDeals />;
       case "partners":
         return <AdminPartners />;
+      case "tickets":
+        return <AdminTickets />;
       case "revenue":
         return <AdminRevenue />;
       case "whitelabel":
