@@ -36,6 +36,7 @@ export async function getDeals(): Promise<Deal[]> {
         isPick: d.is_pick || d.isPick,
         featured: d.featured,
         category: d.category,
+        subcategory: d.subcategory,
         lastAdded: d.last_added || d.lastAdded,
         expiresAt: d.expires_at || d.expiresAt,
         collection: d.collection,
@@ -80,6 +81,7 @@ export async function getDeal(dealId: string): Promise<Deal | null> {
         isPick: d.is_pick || d.isPick,
         featured: d.featured,
         category: d.category,
+        subcategory: d.subcategory,
         lastAdded: d.last_added || d.lastAdded,
         expiresAt: d.expires_at || d.expiresAt,
         collection: d.collection,
@@ -101,6 +103,14 @@ export async function getDeal(dealId: string): Promise<Deal | null> {
 export async function getDealsByCategory(category: string): Promise<Deal[]> {
   const allDeals = await getDeals();
   return allDeals.filter(d => d.category === category);
+}
+
+/**
+ * Get deals by subcategory
+ */
+export async function getDealsBySubcategory(subcategory: string): Promise<Deal[]> {
+  const allDeals = await getDeals();
+  return allDeals.filter(d => d.subcategory === subcategory);
 }
 
 /**

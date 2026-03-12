@@ -13,6 +13,7 @@ export interface Deal {
   isPick?: boolean;
   featured?: boolean;
   category: string;
+  subcategory?: string; // More specific categorization within parent category
   lastAdded?: string;
   expiresAt?: string;  // ISO date string, undefined = no expiry
   collection?: string; // e.g. "yc-starter-kit", "free-tools", "growth-stack"

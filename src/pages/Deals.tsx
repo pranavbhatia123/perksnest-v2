@@ -164,10 +164,15 @@ const Deals = () => {
         deal.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         deal.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Check if activeCategory is a subcategory; if so, map to parent
+      // Enhanced subcategory matching logic
+      // 1. If "all", show everything
+      // 2. If exact category match (e.g., "ai"), show all deals in that category
+      // 3. If activeCategory is a subcategory ID, check if deal has that exact subcategory
+      // 4. Fallback: If activeCategory is a subcategory, show deals in parent category (backward compatible)
       const parentCategory = subcategoryToParent[activeCategory];
       const matchesCategory = activeCategory === "all" ||
                               deal.category === activeCategory ||
+                              deal.subcategory === activeCategory ||
                               (parentCategory && deal.category === parentCategory);
 
       const matchesPremium = activeFilter !== "Premium" || deal.isPremium;
