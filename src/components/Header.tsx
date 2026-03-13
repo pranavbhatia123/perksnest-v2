@@ -669,8 +669,18 @@ const Header = () => {
                     </Button>
                   </>
                 ) : (
+
                   <>
-                    
+                    <Button
+                      variant="outline"
+                      className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                      onClick={() => {
+                        window.location.href = "/login";
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Sign in
+                    </Button>
                   </>
                 )}
               </div>
